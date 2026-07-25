@@ -1,0 +1,17 @@
+{
+  "name": "Web thuong_mai_dien_tu",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "ejs": "^6.0.1",
+    "express": "^4.18.4"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "supertest": "^6.0.0"
+  }
+}

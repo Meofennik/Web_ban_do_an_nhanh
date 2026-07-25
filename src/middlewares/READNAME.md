@@ -1,0 +1,1 @@
+Thư mục này dùng các hàm can thiệp giữa Request và Controller

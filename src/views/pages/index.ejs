@@ -1,0 +1,63 @@
+<%- include('../partials/header') %>
+
+<main class="main-content">
+  <!-- Hero Section với hiệu ứng 3D -->
+  <section class="hero-3d-section">
+    <div class="hero-text">
+      <span class="tag">🔥 Ưu đãi cực hot hôm nay</span>
+      <h1>Đặt Đồ Ăn Ngon <br>Giao Hàng Trong 20 Phút</h1>
+      <p>Hàng ngàn món ngon từ các thương hiệu yêu thích đang giảm giá đến 50%.</p>
+      <button class="btn-cta">Khám phá ngay</button>
+    </div>
+
+    <!-- Khối Banner 3D tương tác -->
+    <div class="hero-3d-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+      <div class="card-background"></div>
+      <!-- Ảnh món ăn dạng PNG tách nền -->
+        <img src="/images/indexPhoto/do_an_nhanh.png" alt="Đồ ăn nhanh">
+      <div class="card-badge">Giảm 50%</div>
+    </div>
+  </section>
+
+  <!-- Categories Quick Access -->
+  <section class="categories-section">
+    <h2>Danh Mục Món Ăn</h2>
+    <div class="category-grid">
+      <div class="cat-card"><span>🍚</span><p>Cơm Văn Phòng</p></div>
+      <div class="cat-card"><span>🧋</span><p>Trà Sữa</p></div>
+      <div class="cat-card"><span>🍔</span><p>Đồ Ăn Nhanh</p></div>
+      <div class="cat-card"><span>🍜</span><p>Bún / Phở</p></div>
+      <div class="cat-card"><span>🍕</span><p>Pizza</p></div>
+    </div>
+  </section>
+
+  <!-- Product Feed (Layout Grid E-commerce) -->
+  <section class="products-section">
+    <h2>Quán Ăn Nổi Bật</h2>
+    <div class="product-grid">
+      
+      <!-- Card Sản Phẩm 1 -->
+      <div class="product-card">
+        <div class="product-thumb">
+          <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=500&auto=format&fit=crop" alt="Pizza">
+          <span class="promo-tag">Flash Sale</span>
+        </div>
+        <div class="product-info">
+          <h3>Pizza Hải Sản Sốt Pesto</h3>
+          <p class="store-name">Pizza Company - Cầu Giấy</p>
+          <div class="product-meta">
+            <span class="rating">⭐ 4.8</span>
+            <span class="time">⏱️ 15-20 phút</span>
+          </div>
+          <div class="product-bottom">
+            <span class="price">129.000đ</span>
+            <button class="btn-add-cart">+</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

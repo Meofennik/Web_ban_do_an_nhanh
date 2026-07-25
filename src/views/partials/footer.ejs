@@ -1,0 +1,44 @@
+<!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3 class="footer-logo">Food<span>Eats</span></h3>
+        <p>Ứng dụng đặt đồ ăn nhanh chóng, tiện lợi với hàng ngàn ưu đãi mỗi ngày.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Về FoodEats</h4>
+        <ul>
+          <li><a href="#">Giới thiệu</a></li>
+          <li><a href="#">Trung tâm trợ giúp</a></li>
+          <li><a href="#">Chính sách bảo mật</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Liên hệ</h4>
+        <p>📍 Hà Nội, Việt Nam</p>
+        <p>📧 support@foodeats.vn</p>
+        <p>📞 1900 1234</p>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2026 FoodEats. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Thư viện Vanilla Tilt khởi tạo cho hiệu ứng 3D Banner -->
+  <script>
+    // Kiểm tra và kích hoạt hiệu ứng nghiêng 3D nếu thư viện đã tải xong
+    if (typeof VanillaTilt !== 'undefined') {
+      VanillaTilt.init(document.querySelectorAll(".hero-3d-card"), {
+        max: 15,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.2,
+      });
+    }
+  </script>
+</body>
+</html>
