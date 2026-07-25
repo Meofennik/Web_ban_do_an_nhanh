@@ -35,10 +35,47 @@
       VanillaTilt.init(document.querySelectorAll(".hero-3d-card"), {
         max: 15,
         speed: 400,
-        glare: true,
+        glare: false,
         "max-glare": 0.2,
       });
     }
   </script>
+<!-- thuật toán nội suy quán tính -->
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const video = document.getElementById("bg-video");
+
+    if (video) {
+      let targetTime = 0;
+      let currentTime = 0;
+
+      video.addEventListener("loadedmetadata", () => {
+        
+        // 1. Lắng nghe vị trí cuộn chuột và tính thời gian (Target)
+        window.addEventListener("scroll", () => {
+          const scrollableDistance = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = Math.max(0, Math.min(1, window.scrollY / scrollableDistance));
+          targetTime = video.duration * progress;
+        });
+
+        // 2. Vòng lặp render (Animation Loop)
+        function render() {
+          // Thuật toán Lerp: Tiến từ currentTime đến targetTime với tốc độ 10% mỗi frame
+          currentTime += (targetTime - currentTime) * 0.1;
+
+          // Ép video chạy theo thời gian đã làm mượt
+          if (Math.abs(targetTime - currentTime) > 0.001) {
+            video.currentTime = currentTime;
+          }
+
+          requestAnimationFrame(render);
+        }
+
+        // Khởi chạy vòng lặp
+        requestAnimationFrame(render);
+      });
+    }
+  });
+</script>
 </body>
 </html>

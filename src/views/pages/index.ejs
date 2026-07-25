@@ -1,6 +1,18 @@
 <%- include('../partials/header') %>
 
-<main class="main-content">
+<div class="fixed-video-background">
+  <video id="bg-video" src="/videos/Animation Foodeats1.mp4" muted playsinline preload="auto"></video>
+</div>
+
+<main class="main-content transparent-content">
+  <div class="scroll-ambient" aria-hidden="true">
+    <span class="ambient-orb orb-1"></span>
+    <span class="ambient-orb orb-2"></span>
+    <span class="ambient-orb orb-3"></span>
+    <span class="ambient-wave wave-1"></span>
+    <span class="ambient-wave wave-2"></span>
+  </div>
+
   <!-- Hero Section với hiệu ứng 3D -->
   <section class="hero-3d-section">
     <div class="hero-text">
@@ -10,10 +22,8 @@
       <button class="btn-cta">Khám phá ngay</button>
     </div>
 
-    <!-- Khối Banner 3D tương tác -->
-    <div class="hero-3d-card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+    <div class="hero-3d-card" data-tilt data-tilt-max="15">
       <div class="card-background"></div>
-      <!-- Ảnh món ăn dạng PNG tách nền -->
         <img src="/images/indexPhoto/do_an_nhanh.png" alt="Đồ ăn nhanh">
       <div class="card-badge">Giảm 50%</div>
     </div>
@@ -31,11 +41,10 @@
     </div>
   </section>
 
-  <!-- Product Feed (Layout Grid E-commerce) -->
+  <!-- Product Feed -->
   <section class="products-section">
     <h2>Quán Ăn Nổi Bật</h2>
     <div class="product-grid">
-      
       <!-- Card Sản Phẩm 1 -->
       <div class="product-card">
         <div class="product-thumb">
@@ -55,7 +64,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </section>
 </main>

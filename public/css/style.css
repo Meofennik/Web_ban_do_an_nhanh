@@ -14,7 +14,7 @@ body {
 
 /* Navbar */
 .navbar {
-  background: #fff;
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
   position: sticky;
   top: 0;
@@ -41,14 +41,18 @@ body {
 .hero-3d-section {
   max-width: 1200px;
   margin: 20px auto;
-  background: linear-gradient(135deg, #ff7e5f, #feb47b);
-  border-radius: 20px;
   padding: 40px 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px); 
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.5); 
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
   color: #fff;
-  overflow: hidden;
 }
 
 .hero-text h1 { font-size: 2.5rem; margin: 10px 0; }
@@ -99,6 +103,43 @@ body {
   0% { transform: translateZ(50px) translateY(0px) rotate(0deg); }
   50% { transform: translateZ(80px) translateY(-15px) rotate(2deg); }
   100% { transform: translateZ(50px) translateY(0px) rotate(0deg); }
+}
+
+/* Khối nền Video cố định phía sau */
+.fixed-video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Ép video nằm dưới cùng mọi nội dung */
+  pointer-events: none; /* Tránh video chặn click chuột vào các nút bấm / thẻ món ăn */
+}
+
+.fixed-video-background video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Nội dung trang web đè lên video */
+.transparent-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* 
+  Lưu ý: Nếu video của bạn quá sáng làm chữ bị khó đọc, 
+  bạn có thể thêm một lớp màng đen mờ đè lên video bằng cách sửa css như sau:
+*/
+.fixed-video-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Chỉnh 0.4 (40%) tối đi tùy ý */
 }
 
 /* Product Cards Grid */
