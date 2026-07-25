@@ -42,40 +42,55 @@
   </script>
 <!-- thuật toán nội suy quán tính -->
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const video = document.getElementById("bg-video");
+ document.addEventListener("DOMContentLoaded", () => {
+  const video = document.getElementById("bg-video");
 
-    if (video) {
-      let targetTime = 0;
-      let currentTime = 0;
+  if (video) {
+    let targetTime = 0;
+    let currentTime = 0;
+    let isSeeking = false;
+    let animationFrameId = null;
 
-      video.addEventListener("loadedmetadata", () => {
+    video.addEventListener("loadedmetadata", () => {
+      
+      // 1. Lắng nghe vị trí cuộn chuột -> Chỉ cập nhật thời gian ĐÍCH (Target)
+      window.addEventListener("scroll", () => {
+        const scrollableDistance = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = Math.max(0, Math.min(1, window.scrollY / scrollableDistance));
         
-        // 1. Lắng nghe vị trí cuộn chuột và tính thời gian (Target)
-        window.addEventListener("scroll", () => {
-          const scrollableDistance = document.documentElement.scrollHeight - window.innerHeight;
-          const progress = Math.max(0, Math.min(1, window.scrollY / scrollableDistance));
-          targetTime = video.duration * progress;
-        });
+        targetTime = video.duration * progress;
 
-        // 2. Vòng lặp render (Animation Loop)
-        function render() {
-          // Thuật toán Lerp: Tiến từ currentTime đến targetTime với tốc độ 10% mỗi frame
-          currentTime += (targetTime - currentTime) * 0.1;
+        // Bắt đầu vòng lặp render mượt nếu chưa chạy
+        if (!isSeeking) {
+          isSeeking = true;
+          animationFrameId = requestAnimationFrame(updateVideoTime);
+        }
+      });
 
-          // Ép video chạy theo thời gian đã làm mượt
-          if (Math.abs(targetTime - currentTime) > 0.001) {
-            video.currentTime = currentTime;
-          }
+      // 2. Vòng lặp cập nhật thời gian video
+      function updateVideoTime() {
+        const diff = targetTime - currentTime;
 
-          requestAnimationFrame(render);
+        // NGƯỠNG DẬP TẮT (Chống trôi dừ & giật khựng khi dừng):
+        // Nếu khoảng cách < 0.03 giây (khoảng 1 frame), dừng trớn ngay lập tức!
+        if (Math.abs(diff) < 0.03) {
+          currentTime = targetTime;
+          video.currentTime = currentTime;
+          isSeeking = false; // Ngừng vòng lặp Seek
+          return; 
         }
 
-        // Khởi chạy vòng lặp
-        requestAnimationFrame(render);
-      });
-    }
-  });
+        // Lerp làm mượt: Nhích 25% quãng đường còn lại ở mỗi frame (dừng nhanh và khớp tay hơn)
+        currentTime += diff * 0.25; 
+        video.currentTime = currentTime;
+
+        // Tiếp tục vòng lặp
+        animationFrameId = requestAnimationFrame(updateVideoTime);
+      }
+
+    });
+  }
+});
 </script>
 </body>
 </html>
