@@ -1,9 +1,46 @@
-/* 3D Hero Banner Section */
+/* =========================================
+   1. KHỐI NỀN VIDEO CỐ ĐỊNH PHÍA SAU
+========================================= */
+.fixed-video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; 
+  pointer-events: none; 
+}
+
+.fixed-video-background video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fixed-video-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); 
+}
+
+/* Nội dung trang web đè lên video */
 .main-content {
   position: relative;
   z-index: 1;
 }
 
+.transparent-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================================
+   2. HERO BANNER 3D SECTION
+========================================= */
 .hero-3d-section {
   max-width: 1200px;
   margin: 20px auto;
@@ -37,7 +74,7 @@
 
 .btn-cta {
   background: #fff;
-  color: var(--primary-color);
+  color: var(--primary-color, #ee4d2d); /* Thêm mã màu dự phòng */
   border: none;
   padding: 12px 28px;
   font-weight: bold;
@@ -46,68 +83,10 @@
   margin-top: 15px;
 }
 
-.menu-section {
-  max-width: 1200px;
-  margin: 30px auto 60px;
-  padding: 0 20px;
-}
-
-.glass-container {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-}
-
-.section-title {
-  margin-top: 0;
-  margin-bottom: 18px;
-  color: #333;
-}
-
-.category-wrapper {
-  margin-bottom: 18px;
-}
-
-.category-title {
-  margin-bottom: 12px;
-  color: #444;
-}
-
-.food-carousel {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 16px;
-}
-
-.food-item {
-  background: #fff;
-  border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-}
-
-.food-item img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.empty-state {
-  color: #666;
-  padding: 20px 0;
-}
-
-.hero-text h1 { font-size: 2.5rem; margin: 10px 0; }
-.btn-cta { background: #fff; color: var(--primary-color); border: none; padding: 12px 28px; font-weight: bold; border-radius: 25px; cursor: pointer; margin-top: 15px; }
-
 /* Khối Card 3D */
-/* 1. Khung chứa 3D (Cố định kích thước khung banner) */
 .hero-3d-card {
-  width: 350px;           /* Chiều rộng của khung banner 3D */
-  height: 350px;          /* Chiều cao của khung banner 3D */
+  width: 350px;
+  height: 350px;
   position: relative;
   display: flex;
   align-items: center;
@@ -117,19 +96,15 @@
   cursor: pointer;
 }
 
-/* 2. Thẻ ảnh món ăn (Thu nhỏ vừa vặn và tạo chiều sâu 3D) */
 .hero-3d-card img {
-  width: 85%;             /* Cho ảnh chiếm 85% khung để không bị sát viền */
-  height: 85%;            /* Chiều cao ăn theo tỉ lệ */
-  object-fit: contain;    /* Giữ nguyên tỉ lệ ảnh PNG, không bị méo hay cắt hình */
-  
-  /* Đẩy bức ảnh nổi hẳn lên khỏi nền 3D khi rê chuột */
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
   transform: translateZ(60px); 
-  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.3)); /* Tạo bóng đổ chân thực */
+  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.3));
   transition: transform 0.3s ease;
 }
 
-/* 3. Thẻ Badge Giảm giá (Gắn ở góc) */
 .card-badge {
   position: absolute;
   top: 15px;
@@ -140,7 +115,7 @@
   font-weight: bold;
   border-radius: 20px;
   font-size: 14px;
-  transform: translateZ(80px); /* Làm nổi cao hơn cả bức ảnh */
+  transform: translateZ(80px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
@@ -150,47 +125,127 @@
   100% { transform: translateZ(50px) translateY(0px) rotate(0deg); }
 }
 
-/* Khối nền Video cố định phía sau */
-.fixed-video-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1; /* Ép video nằm dưới cùng mọi nội dung */
-  pointer-events: none; /* Tránh video chặn click chuột vào các nút bấm / thẻ món ăn */
+/* =========================================
+   3. DANH MỤC & HIỆU ỨNG TRƯỢT CHỮ
+========================================= */
+.menu-section {
+  max-width: 1200px;
+  margin: 30px auto 60px;
+  padding: 0 20px;
 }
 
-.fixed-video-background video {
+.transparent-container {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 10px 0;
+  margin: 40px auto;
+  max-width: 1200px;
+}
+
+.category-title {
+  font-size: 24px;
+  color: #fff; /* Tùy chỉnh màu theo ý bạn */
+  margin-bottom: 20px;
+}
+
+.empty-state {
+  color: #fff; /* Đổi sang màu trắng cho dễ đọc trên nền tối */
+  padding: 20px 0;
+}
+
+/* =========================================
+   4. BỐ CỤC SLIDER TRƯỢT NGANG (MÓN ĂN)
+========================================= */
+.food-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 15px 5px; 
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+.food-carousel::-webkit-scrollbar {
+  display: none; 
+}
+
+.food-item {
+  flex: 0 0 240px; 
+  max-width: 240px; 
+  background: rgba(255, 255, 255, 0.1); 
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 15px;
+  text-align: left; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column; 
+}
+
+.food-item:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.food-item img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: 160px; 
+  object-fit: cover; 
+  border-radius: 10px;
+  margin-bottom: 12px;
 }
 
-/* Nội dung trang web đè lên video */
-.transparent-content {
-  position: relative;
-  z-index: 1;
+.food-item h4 {
+  font-size: 16px;
+  margin: 0 0 10px 0;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 }
 
-.fixed-video-background::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4); /* Chỉnh 0.4 (40%)*/
+.food-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto; 
 }
 
-/* Product Cards Grid */
+.food-bottom p {
+  margin: 0;
+  color: #ff4757; 
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.food-bottom .btn-add-cart {
+  background: #ff4757;
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.food-bottom .btn-add-cart:hover {
+  background: #e84118;
+  transform: scale(1.1); 
+}
+
+/* =========================================
+   5. CÁC CLASS DỰ PHÒNG CŨ
+========================================= */
 .products-section { max-width: 1200px; margin: 30px auto; }
 .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; margin-top: 15px; }
-
-.product-card {
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease;
-}
+.product-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s ease; }

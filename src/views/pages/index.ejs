@@ -28,30 +28,40 @@
     </div>
   </section>
 
-  <section class="menu-section fade-in-element">
-    <div class="glass-container">
-      <h2 class="section-title">Thực Đơn Gia Đình</h2>
+  <!-- Đã gỡ bỏ class fade-in-element gây tàng hình -->
+  <section class="menu-section">
+    <div class="transparent-container">
 
-      <% if (typeof categoriesData !== 'undefined' && categoriesData) { %>
-        <% Object.keys(categoriesData).forEach(categoryName => { %>
+      <% if (categoriesData && Object.keys(categoriesData).length) { %>
+        <% const categoryKeys = Object.keys(categoriesData); %>
+        <% for (let index = 0; index < categoryKeys.length; index++) { %>
+          <% const categoryName = categoryKeys[index]; %>
           <div class="category-wrapper">
+            
+            <!-- Danh mục sẽ hiển thị trực tiếp mà không bị ẩn -->
             <h3 class="category-title"><%= categoryName %></h3>
+
             <button class="slide-btn left-btn" style="display: none;">&#10094;</button>
 
             <div class="food-carousel">
-              <% categoriesData[categoryName].forEach(product => { %>
+              <% const products = Array.isArray(categoriesData[categoryName]) ? categoriesData[categoryName] : []; %>
+              <% for (let p = 0; p < products.length; p++) { %>
+                <% const product = products[p]; %>
                 <div class="food-item">
-                  <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
-                  <h4><%= product.name %></h4>
-                  <p><%= product.price.toLocaleString('vi-VN') %>đ</p>
-                  <button class="btn-add-cart">Thêm</button>
+                  <img src="<%= product && product.imageUrl ? product.imageUrl : '/images/placeholder.png' %>" alt="<%= product && product.name ? product.name : 'Sản phẩm' %>">
+                  <h4><%= product && product.name ? product.name : 'Không tên' %></h4>
+
+                  <div class="food-bottom">
+                    <p><%= (Number(product && product.price) || 0).toLocaleString('vi-VN') %>đ</p>
+                    <button class="btn-add-cart">+</button>
+                  </div>
                 </div>
-              <% }) %>
+              <% } %>
             </div>
 
             <button class="slide-btn right-btn">&#10095;</button>
           </div>
-        <% }) %>
+        <% } %>
       <% } else { %>
         <p class="empty-state">Chưa có dữ liệu món ăn để hiển thị.</p>
       <% } %>

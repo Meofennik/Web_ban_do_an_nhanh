@@ -8,6 +8,9 @@ const app = express();
 
 // 1. Khởi chạy kết nối Database
 connectDB();
+// Cho phép Express đọc dữ liệu từ Form (x-www-form-urlencoded) và JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // 2. Cấu hình middleware cho file tĩnh
 app.use(express.static(path.join(__dirname, '..', 'public')));
