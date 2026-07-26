@@ -2,35 +2,114 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thêm món ăn mới</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #fff7ed, #ffe7d9);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      color: #333;
+    }
+    .add-page {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+    }
+    .add-page h1 {
+      color: #ee4d2d;
+      margin-bottom: 8px;
+    }
+    .add-page p {
+      color: #666;
+      margin-bottom: 24px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-group label {
+      font-weight: 600;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+    }
+    .full-width { grid-column: 1 / -1; }
+    .submit-btn {
+      margin-top: 12px;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff7e5f, #ee4d2d);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Thêm Món Ăn Mới</h1>
-  
-  <!-- Chú ý: enctype="multipart/form-data" là bắt buộc để form gửi được file ảnh -->
-  <form action="/products/add" method="POST" enctype="multipart/form-data">
-    <div>
-      <label>Tên món ăn:</label>
-      <input type="text" name="name" placeholder="Ví dụ: Cá om dưa" required>
-    </div>
-    
-    <div>
-      <label>Giá (VNĐ):</label>
-      <input type="number" name="price" placeholder="Ví dụ: 65000" required>
-    </div>
+  <div class="add-page">
+    <h1>➕ Thêm món ăn mới</h1>
+    <p>Điền thông tin để đưa món ăn của bạn lên cửa hàng FoodEats.</p>
 
-    <div>
-      <label>Mô tả:</label>
-      <textarea name="description" placeholder="Nhập mô tả món ăn..."></textarea>
-    </div>
+    <form action="/products/add" method="POST" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tên món ăn</label>
+          <input type="text" name="name" placeholder="Ví dụ: Phở bò đặc biệt" required>
+        </div>
 
-    <div>
-      <label>Hình ảnh món ăn:</label>
-      <!-- Thuộc tính name="productImage" phải khớp chính xác với khai báo trong Route -->
-      <input type="file" name="productImage" accept="image/*" required>
-    </div>
+        <div class="form-group">
+          <label>Giá (VNĐ)</label>
+          <input type="number" name="price" placeholder="Ví dụ: 65000" required>
+        </div>
 
-    <button type="submit">Lên món!</button>
-  </form>
+        <div class="form-group">
+          <label>Danh mục</label>
+          <select name="category">
+            <option value="Cơm Văn Phòng">Cơm Văn Phòng</option>
+            <option value="Đồ Ăn Nhanh">Đồ Ăn Nhanh</option>
+            <option value="Trà Sữa">Trà Sữa</option>
+            <option value="Bún/Phở">Bún/Phở</option>
+            <option value="Pizza">Pizza</option>
+            <option value="Món Ngon">Món Ngon</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Hình ảnh</label>
+          <input type="file" name="productImage" accept="image/*" required>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Mô tả</label>
+          <textarea name="description" rows="4" placeholder="Nhập mô tả món ăn..."></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <button type="submit" class="submit-btn">Lên món ngay</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </body>
 </html>

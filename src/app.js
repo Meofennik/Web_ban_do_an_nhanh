@@ -26,7 +26,12 @@ app.get('/add-product', (req, res) => {
   res.render('pages/add-product');
 });
 
-// 6. Sử dụng route sản phẩm
+// 6. Route chọn địa điểm
+app.get('/location', (req, res) => {
+  res.render('pages/location');
+});
+
+// 7. Sử dụng route sản phẩm
 app.use('/products', productRoutes);
 
 // 7. Xuất app để server.js sử dụng

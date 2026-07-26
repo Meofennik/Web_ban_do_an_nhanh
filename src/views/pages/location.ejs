@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chọn địa chỉ giao hàng</title>
+  
+  <!-- 1. THÊM CSS CỦA LEAFLET VÀO ĐÂY -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyobQFXqwk/O21MQ=" crossorigin=""/><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyobQFXqwk/O21MQ=" crossorigin=""/>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f7f7f7;
+    }
+
+    #map {
+      width: 100%;
+      height: 100vh;
+      z-index: 1;
+    }
+
+    .leaflet-container img {
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .map-card {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-radius: 999px;
+      padding: 10px 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: #ee4d2d;
+    }
+
+    .confirm-box {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      padding: 18px 20px 24px;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.14);
+      box-sizing: border-box;
+      border-radius: 24px 24px 0 0;
+      text-align: center;
+      z-index: 1000;
+    }
+
+    .confirm-box h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    #address-text {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 14px;
+      min-height: 20px;
+      line-height: 1.4;
+    }
+
+    .location-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .btn-location,
+    .btn-confirm {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      min-width: 170px;
+    }
+
+    .btn-location {
+      background: #fff;
+      color: #333;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+    .btn-location:hover,
+    .btn-confirm:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-confirm {
+      background: linear-gradient(135deg, #ff7e5f, #ee4d2d);
+      color: white;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 6px 16px rgba(238,77,45,0.2);
+    }
+
+    .btn-back {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 50%;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.16);
+      cursor: pointer;
+      z-index: 1000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="btn-back" onclick="window.history.back()">❮</button>
+  <div class="map-card">📍 Chọn vị trí giao hàng</div>
+  
+  <div id="map"></div>
+
+  <div class="confirm-box">
+    <h3>Địa chỉ giao hàng của bạn:</h3>
+    <p id="address-text">Nhấn vào bản đồ để chọn vị trí giao hàng.</p>
+    <div class="location-actions">
+      <button class="btn-location" id="btn-current-location">Định vị hiện tại</button>
+      <button class="btn-confirm" id="btn-save-location">Xác nhận địa chỉ này</button>
+    </div>
+    <p id="hint-text" style="font-size:13px; color:#999; margin:12px 0 0;">Chỉ click chọn vị trí, hoặc dùng nút định vị nếu muốn lấy vị trí hiện tại.</p>
+  </div>
+
+  <!-- 2. THÊM SCRIPT CỦA LEAFLET (Đặt trước file location.js của bạn) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- 3. QUAN TRỌNG: Đã xóa dòng script của Google Maps -->
+  
+  <script src="/js/location.js"></script>
+</body>
+</html>

@@ -15,34 +15,40 @@
 </head>
 <body>
 
-  <!-- Header E-commerce -->
   <header class="navbar">
     <div class="nav-container">
-      <a href="/" class="logo">Food<span>Eats</span></a>
-      
-      <!-- Địa chỉ giao hàng -->
-      <div class="location-picker">
-        <span class="icon">📍</span>
-        <span class="text">Giao đến: <b>Hà Nội</b></span>
+      <div class="nav-top">
+        <a href="/" class="logo">Food<span>Eats</span></a>
+
+        <div class="search-box">
+          <input type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
+          <button class="btn-search">Tìm kiếm</button>
+        </div>
+
+        <div class="header-actions">
+          <a href="/add-product" class="add-product-btn">➕ Thêm món ăn</a>
+          <a href="/cart" class="cart-btn">🛒 <span class="badge">3</span></a>
+          <a href="/login" class="btn-login">Đăng nhập</a>
+        </div>
       </div>
 
-      <!-- Thanh tìm kiếm -->
-      <div class="search-box">
-        <input type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
-        <button class="btn-search">Tìm kiếm</button>
-      </div>
-<!-- Nút chuyển sang trang thêm sản phẩm -->
-<div style="margin: 20px; text-align: center;">
-  <a href="/add-product" style="background-color: #ff4757; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-    ➕ Thêm món ăn mới
-  </a>
-</div>
-      <!-- Giỏ hàng & User -->
-      <div class="nav-actions">
-        <a href="/cart" class="cart-btn">
-          🛒 Giỏ hàng <span class="badge">3</span>
-        </a>
-        <a href="/login" class="btn-login">Đăng nhập</a>
+      <div class="nav-bottom">
+        <div class="nav-location">
+          <a href="/location" class="location-display">
+            📍 <span id="navbar-address">Giao đến: Nhấn để chọn địa điểm</span>
+          </a>
+        </div>
       </div>
     </div>
   </header>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const addressEl = document.getElementById('navbar-address');
+      if (!addressEl) return;
+      const savedAddress = localStorage.getItem('userAddress');
+      if (savedAddress) {
+        addressEl.textContent = `Giao đến: ${savedAddress}`;
+      }
+    });
+  </script>

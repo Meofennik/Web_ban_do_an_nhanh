@@ -4,15 +4,23 @@ const Product = require('../models/Product');
 
 router.get('/', async (req, res) => {
   try {
-    const allProducts = await Product.find({});
+    const allProducts = await Product.find({}).sort({ createdAt: -1 });
 
-    const groupedCategories = {};
+    const groupedCategories = {
+      'Cơm Văn Phòng': [],
+      'Đồ Ăn Nhanh': [],
+      'Trà Sữa': [],
+      'Bún/Phở': [],
+      'Pizza': [],
+      'Món Ngon': []
+    };
 
     allProducts.forEach((product) => {
-      if (!groupedCategories[product.category]) {
-        groupedCategories[product.category] = [];
+      const category = product.category || 'Món Ngon';
+      if (!groupedCategories[category]) {
+        groupedCategories[category] = [];
       }
-      groupedCategories[product.category].push(product);
+      groupedCategories[category].push(product);
     });
 
     res.render('pages/index', {
