@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FoodEats - Đặt Đồ Ăn Ngon Tận Nơi</title>
+  <!-- Gọi file CSS chung cho mọi trang -->
   <link rel="stylesheet" href="/css/style.css">
+  <!-- Nếu Route có truyền biến customCss, thì mới tải thêm file CSS riêng của trang đó -->
+  <% if (typeof customCss !== 'undefined') { %>
+    <link rel="stylesheet" href="<%= customCss %>">
+  <% } %>
   <!-- Thư viện hỗ trợ hiệu ứng nghiêng 3D -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
 </head>
@@ -26,7 +31,12 @@
         <input type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
         <button class="btn-search">Tìm kiếm</button>
       </div>
-
+<!-- Nút chuyển sang trang thêm sản phẩm -->
+<div style="margin: 20px; text-align: center;">
+  <a href="/add-product" style="background-color: #ff4757; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+    ➕ Thêm món ăn mới
+  </a>
+</div>
       <!-- Giỏ hàng & User -->
       <div class="nav-actions">
         <a href="/cart" class="cart-btn">

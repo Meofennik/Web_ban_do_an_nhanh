@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm món ăn mới</title>
+</head>
+<body>
+  <h1>Thêm Món Ăn Mới</h1>
+  
+  <!-- Chú ý: enctype="multipart/form-data" là bắt buộc để form gửi được file ảnh -->
+  <form action="/products/add" method="POST" enctype="multipart/form-data">
+    <div>
+      <label>Tên món ăn:</label>
+      <input type="text" name="name" placeholder="Ví dụ: Cá om dưa" required>
+    </div>
+    
+    <div>
+      <label>Giá (VNĐ):</label>
+      <input type="number" name="price" placeholder="Ví dụ: 65000" required>
+    </div>
+
+    <div>
+      <label>Mô tả:</label>
+      <textarea name="description" placeholder="Nhập mô tả món ăn..."></textarea>
+    </div>
+
+    <div>
+      <label>Hình ảnh món ăn:</label>
+      <!-- Thuộc tính name="productImage" phải khớp chính xác với khai báo trong Route -->
+      <input type="file" name="productImage" accept="image/*" required>
+    </div>
+
+    <button type="submit">Lên món!</button>
+  </form>
+</body>
+</html>

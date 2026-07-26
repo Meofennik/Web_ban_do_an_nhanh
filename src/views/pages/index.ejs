@@ -13,7 +13,6 @@
     <span class="ambient-wave wave-2"></span>
   </div>
 
-  <!-- Hero Section với hiệu ứng 3D -->
   <section class="hero-3d-section">
     <div class="hero-text">
       <span class="tag">🔥 Ưu đãi cực hot hôm nay</span>
@@ -24,46 +23,38 @@
 
     <div class="hero-3d-card" data-tilt data-tilt-max="15">
       <div class="card-background"></div>
-        <img src="/images/indexPhoto/do_an_nhanh.png" alt="Đồ ăn nhanh">
+      <img src="/images/indexPhoto/do_an_nhanh.png" alt="Đồ ăn nhanh">
       <div class="card-badge">Giảm 50%</div>
     </div>
   </section>
 
-  <!-- Categories Quick Access -->
-  <section class="categories-section">
-    <h2>Danh Mục Món Ăn</h2>
-    <div class="category-grid">
-      <div class="cat-card"><span>🍚</span><p>Cơm Văn Phòng</p></div>
-      <div class="cat-card"><span>🧋</span><p>Trà Sữa</p></div>
-      <div class="cat-card"><span>🍔</span><p>Đồ Ăn Nhanh</p></div>
-      <div class="cat-card"><span>🍜</span><p>Bún / Phở</p></div>
-      <div class="cat-card"><span>🍕</span><p>Pizza</p></div>
-    </div>
-  </section>
+  <section class="menu-section fade-in-element">
+    <div class="glass-container">
+      <h2 class="section-title">Thực Đơn Gia Đình</h2>
 
-  <!-- Product Feed -->
-  <section class="products-section">
-    <h2>Quán Ăn Nổi Bật</h2>
-    <div class="product-grid">
-      <!-- Card Sản Phẩm 1 -->
-      <div class="product-card">
-        <div class="product-thumb">
-          <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=500&auto=format&fit=crop" alt="Pizza">
-          <span class="promo-tag">Flash Sale</span>
-        </div>
-        <div class="product-info">
-          <h3>Pizza Hải Sản Sốt Pesto</h3>
-          <p class="store-name">Pizza Company - Cầu Giấy</p>
-          <div class="product-meta">
-            <span class="rating">⭐ 4.8</span>
-            <span class="time">⏱️ 15-20 phút</span>
+      <% if (typeof categoriesData !== 'undefined' && categoriesData) { %>
+        <% Object.keys(categoriesData).forEach(categoryName => { %>
+          <div class="category-wrapper">
+            <h3 class="category-title"><%= categoryName %></h3>
+            <button class="slide-btn left-btn" style="display: none;">&#10094;</button>
+
+            <div class="food-carousel">
+              <% categoriesData[categoryName].forEach(product => { %>
+                <div class="food-item">
+                  <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
+                  <h4><%= product.name %></h4>
+                  <p><%= product.price.toLocaleString('vi-VN') %>đ</p>
+                  <button class="btn-add-cart">Thêm</button>
+                </div>
+              <% }) %>
+            </div>
+
+            <button class="slide-btn right-btn">&#10095;</button>
           </div>
-          <div class="product-bottom">
-            <span class="price">129.000đ</span>
-            <button class="btn-add-cart">+</button>
-          </div>
-        </div>
-      </div>
+        <% }) %>
+      <% } else { %>
+        <p class="empty-state">Chưa có dữ liệu món ăn để hiển thị.</p>
+      <% } %>
     </div>
   </section>
 </main>

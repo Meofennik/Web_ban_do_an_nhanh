@@ -28,69 +28,10 @@
     </div>
   </footer>
 
-  <!-- Thư viện Vanilla Tilt khởi tạo cho hiệu ứng 3D Banner -->
-  <script>
-    // Kiểm tra và kích hoạt hiệu ứng nghiêng 3D nếu thư viện đã tải xong
-    if (typeof VanillaTilt !== 'undefined') {
-      VanillaTilt.init(document.querySelectorAll(".hero-3d-card"), {
-        max: 15,
-        speed: 400,
-        glare: false,
-        "max-glare": 0.2,
-      });
-    }
-  </script>
-<!-- thuật toán nội suy quán tính -->
-  <script>
- document.addEventListener("DOMContentLoaded", () => {
-  const video = document.getElementById("bg-video");
-
-  if (video) {
-    let targetTime = 0;
-    let currentTime = 0;
-    let isSeeking = false;
-    let animationFrameId = null;
-
-    video.addEventListener("loadedmetadata", () => {
-      
-      // 1. Lắng nghe vị trí cuộn chuột -> Chỉ cập nhật thời gian ĐÍCH (Target)
-      window.addEventListener("scroll", () => {
-        const scrollableDistance = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = Math.max(0, Math.min(1, window.scrollY / scrollableDistance));
-        
-        targetTime = video.duration * progress;
-
-        // Bắt đầu vòng lặp render mượt nếu chưa chạy
-        if (!isSeeking) {
-          isSeeking = true;
-          animationFrameId = requestAnimationFrame(updateVideoTime);
-        }
-      });
-
-      // 2. Vòng lặp cập nhật thời gian video
-      function updateVideoTime() {
-        const diff = targetTime - currentTime;
-
-        // NGƯỠNG DẬP TẮT (Chống trôi dừ & giật khựng khi dừng):
-        // Nếu khoảng cách < 0.03 giây (khoảng 1 frame), dừng trớn ngay lập tức!
-        if (Math.abs(diff) < 0.03) {
-          currentTime = targetTime;
-          video.currentTime = currentTime;
-          isSeeking = false; // Ngừng vòng lặp Seek
-          return; 
-        }
-
-        // Lerp làm mượt: Nhích 25% quãng đường còn lại ở mỗi frame (dừng nhanh và khớp tay hơn)
-        currentTime += diff * 0.25; 
-        video.currentTime = currentTime;
-
-        // Tiếp tục vòng lặp
-        animationFrameId = requestAnimationFrame(updateVideoTime);
-      }
-
-    });
-  }
-});
-</script>
+ 
+<!-- Nếu Route có truyền biến customJs, thì mới tải thêm file JS riêng của trang đó -->
+<% if (typeof customJs !== 'undefined') { %>
+  <script src="<%= customJs %>"></script>
+<% } %>
 </body>
 </html>
