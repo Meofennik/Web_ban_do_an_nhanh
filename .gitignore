@@ -1,2 +1,5 @@
 node_modules/
 .env
+playground-1.mongodb.js
+*.mongodb.js
+playground-*.js
