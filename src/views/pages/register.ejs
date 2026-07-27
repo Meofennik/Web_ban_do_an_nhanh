@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng ký - FoodEats</title>
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+  <!-- Video nền -->
+  <div class="fixed-video-background">
+    <video src="/videos/Animation Foodeats1.mp4" autoplay muted loop playsinline></video>
+  </div>
+
+  <a href="/" class="btn-back-home">
+    ❮ Trang chủ
+  </a>
+  
+  <!-- Hộp thông báo Pop-up (Toast) -->
+  <div id="toast" class="toast"></div>
+
+  <div class="auth-wrapper">
+    <div class="auth-box">
+      <h2 class="auth-title">Đăng ký tài khoản</h2>
+
+      <!-- Tab vai trò -->
+      <div class="role-tabs">
+        <button type="button" class="tab-btn active" id="btn-buyer" onclick="switchRole('buyer')">Người mua</button>
+        <button type="button" class="tab-btn" id="btn-seller" onclick="switchRole('seller')">Cửa hàng</button>
+      </div>
+
+      <form id="registerForm" action="/register" method="POST" enctype="multipart/form-data" onsubmit="handleRegister(event)">
+        <input type="hidden" name="role" id="roleInput" value="buyer">
+
+        <div class="form-group">
+          <label>Họ và tên</label>
+          <input type="text" name="fullName" placeholder="Nhập họ và tên" required>
+        </div>
+
+        <div class="form-group">
+          <label>Ngày tháng năm sinh</label>
+          <input type="date" name="dob" required>
+        </div>
+
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <div class="input-group">
+            <input type="tel" name="phone" pattern="^(0|\+84)[3|5|7|8|9][0-9]{8}$" title="Nhập đúng định dạng số điện thoại VN" placeholder="Ví dụ: 0912345678" required>
+            <button type="button" class="btn-otp" onclick="sendOTP()">Gửi OTP</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mã OTP</label>
+          <input type="text" name="otp" placeholder="Nhập 6 số OTP" maxlength="6">
+        </div>
+
+        <!-- Khối người mua -->
+        <div class="role-content active" id="content-buyer">
+          <div class="form-group">
+            <label>Tên tài khoản</label>
+            <input type="text" id="reg-username" name="username" placeholder="Nhập tên tài khoản">
+          </div>
+        </div>
+
+        <!-- Khối cửa hàng -->
+        <div class="role-content" id="content-seller">
+          <div class="form-group">
+            <label>Tên quán</label>
+            <input type="text" id="reg-storeName" name="storeName" placeholder="Ví dụ: Phở Bát Đàn" disabled>
+          </div>
+          
+          <div class="form-group">
+            <label>Giấy phép kinh doanh (Tùy chọn)</label>
+            <input type="file" id="reg-license" name="businessLicense" accept="image/*, .pdf" disabled>
+          </div>
+
+          <div class="form-group">
+            <label>Mã số thuế / CCCD</label>
+            <input type="text" id="reg-tax" name="taxId" placeholder="Mã số thuế hoặc CCCD chủ quán" disabled>
+          </div>
+        </div>
+
+        <!-- Ô Mật khẩu + Con mắt -->
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <div class="password-wrapper">
+            <input type="password" id="regPassword" name="password" placeholder="Tạo mật khẩu" required>
+            <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)">👁️</button>
+          </div>
+        </div>
+
+        <!-- Ô Nhập lại mật khẩu + Con mắt -->
+        <div class="form-group">
+          <label>Nhập lại mật khẩu</label>
+          <div class="password-wrapper">
+            <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+            <button type="button" class="eye-btn" onclick="togglePassword('confirmPassword', this)">👁️</button>
+          </div>
+        </div>
+
+        <!-- Nhóm nút bấm dưới chân -->
+        <div class="action-buttons">
+          <button type="submit" class="btn-submit">Đăng ký ngay</button>
+          <a href="/login" class="btn-secondary">Đã có tài khoản? Đăng nhập</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

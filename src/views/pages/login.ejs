@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập - FoodEats</title>
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+  <!-- Video nền -->
+  <div class="fixed-video-background">
+    <video src="/videos/Animation Foodeats1.mp4" autoplay muted loop playsinline></video>
+  </div>
+  <a href="/" class="btn-back-home">
+    ❮ Trang chủ
+  </a>
+  <!-- Hộp thông báo Pop-up (Toast) -->
+  <div id="toast" class="toast"></div>
+
+  <div class="auth-wrapper">
+    <div class="auth-box">
+      <h2 class="auth-title">Mời bạn đăng nhập</h2>
+
+      <form id="loginForm" action="/login" method="POST" onsubmit="handleLogin(event)">
+        
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <div class="input-group">
+            <input type="tel" name="phone" id="loginPhone" pattern="^(0|\+84)[3|5|7|8|9][0-9]{8}$" placeholder="Ví dụ: 0912345678" required>
+            <button type="button" class="btn-otp" onclick="sendOTP()">Gửi OTP</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mã OTP (Nếu đăng nhập không dùng mật khẩu)</label>
+          <input type="text" name="otp" placeholder="Nhập 6 số OTP" maxlength="6">
+        </div>
+
+        <div class="form-group">
+          <label>Mật khẩu</label>
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" name="password" placeholder="Nhập mật khẩu của bạn">
+            <button type="button" class="eye-btn" onclick="togglePassword('loginPassword', this)">👁️</button>
+          </div>
+        </div>
+
+        <div class="forgot-link-wrapper">
+          <a href="/forgot-password" class="forgot-link">Bạn đã quên mật khẩu?</a>
+        </div>
+
+        <div class="action-buttons">
+          <button type="submit" class="btn-submit">Đăng nhập</button>
+          <a href="/register" class="btn-secondary">Chưa có tài khoản? Đăng ký ngay</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

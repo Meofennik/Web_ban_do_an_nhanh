@@ -25,12 +25,41 @@
           <button class="btn-search">Tìm kiếm</button>
         </div>
 
-        <div class="header-actions">
-          <a href="/add-product" class="add-product-btn">➕ Thêm món ăn</a>
-          <a href="/cart" class="cart-btn">🛒 <span class="badge">3</span></a>
-          <a href="/login" class="btn-login">Đăng nhập</a>
+        <!-- KHU VỰC CÁC NÚT BÊN PHẢI HEADER -->
+<div class="header-actions">
+  
+  <!-- Nếu đã đăng nhập -->
+  <% if (user) { %>
+    
+    <!-- CHỈ CÓ CỬA HÀNG (seller) MỚI THẤY NÚT NÀY -->
+    <% if (user.role === 'seller') { %>
+      <a href="/add-product" class="btn-add-product">➕ Thêm món ăn</a>
+    <% } %>
+
+    <!-- Nút Giỏ hàng (Ai cũng thấy nếu cần) -->
+    <a href="/cart" class="btn-cart">🛒 3</a>
+
+    <!-- Menu Thông tin người dùng -->
+    <div class="user-dropdown">
+      <button class="btn-user-profile">👋 Xin chào, <%= user.name %></button>
+      <div class="dropdown-content">
+        <div class="user-info-box">
+          <p><strong><%= user.name %></strong></p>
+          <p class="role-badge"><%= user.role === 'seller' ? 'Cửa hàng' : 'Thành viên' %></p>
         </div>
+        <hr>
+        <a href="/profile">Hồ sơ cá nhân</a>
+        <a href="/orders">Đơn hàng của tôi</a>
+        <a href="/logout" class="text-danger">Đăng xuất</a>
       </div>
+    </div>
+
+  <!-- Nếu chưa đăng nhập -->
+  <% } else { %>
+    <a href="/login" class="btn-login">Đăng nhập</a>
+  <% } %>
+
+</div>
 
       <div class="nav-bottom">
         <div class="nav-location">

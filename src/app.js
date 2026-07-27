@@ -1,10 +1,12 @@
 const express = require('express');
 const path = require('path');
 const connectDB = require('./config/db');
-const productRoutes = require('./routes/productRoutes');
 require('dotenv').config();
-
+const session = require('express-session');
 const app = express();
+
+const productRoutes = require('./routes/productRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // 1. Khởi chạy kết nối Database
 connectDB();
@@ -19,6 +21,13 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(session({
+  secret: 'khoa_bao_mat_foodeats_123', // Khóa bí mật để mã hóa (bạn có thể đổi tùy ý)
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // Lưu đăng nhập trong 24 giờ
+}));
+
 // 4. Route trang chủ
 app.get('/', (req, res) => {
   res.redirect('/products');
@@ -29,13 +38,27 @@ app.get('/add-product', (req, res) => {
   res.render('pages/add-product');
 });
 
+app.get('/login', (req, res) => {
+  res.render('pages/login');
+});
+
+app.get('/register', (req, res) => {
+  res.render('pages/register');
+});
+
 // 6. Route chọn địa điểm
 app.get('/location', (req, res) => {
   res.render('pages/location');
 });
 
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null; 
+  next();
+});
+
 // 7. Sử dụng route sản phẩm
 app.use('/products', productRoutes);
+app.use('/', authRoutes);
 
 // 7. Xuất app để server.js sử dụng
 module.exports = app;

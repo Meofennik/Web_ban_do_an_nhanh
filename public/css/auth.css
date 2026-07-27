@@ -1,0 +1,298 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  min-height: 100vh; 
+  display: flex;
+  align-items: flex-start; 
+  justify-content: center;
+  padding: 40px 15px; 
+  box-sizing: border-box;
+  overflow-x: hidden; 
+}
+
+/* Background video */
+.fixed-video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; 
+  pointer-events: none; 
+}
+.fixed-video-background video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fixed-video-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45); 
+}
+
+.btn-back-home {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  
+  /* Nền trong suốt hoàn toàn, chỉ có viền mờ */
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  z-index: 100; /* Luôn nổi lên trên cùng */
+  
+  /* Hiệu ứng kính mờ nhẹ nhàng */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  
+  transition: all 0.3s ease;
+}
+
+/* Hiệu ứng khi trỏ chuột vào nút */
+.btn-back-home:hover {
+  background: rgba(255, 255, 255, 0.15); /* Hơi sáng lên một chút */
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateX(-4px); /* Lướt nhẹ sang trái báo hiệu hành động "Quay lại" */
+}
+
+/* Auth Glass Box */
+.auth-wrapper {
+  margin: auto; 
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-box {
+  background: rgba(255, 255, 255, 0.15); 
+  backdrop-filter: blur(16px);           
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  color: #fff; 
+  position: relative;
+}
+
+.auth-title {
+  text-align: center;
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* Role Tabs */
+.role-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3); 
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 4px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-weight: bold;
+  color: #bbb;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  background: #ee4d2d;
+  color: white;
+  box-shadow: 0 4px 10px rgba(238, 77, 45, 0.3);
+}
+
+.role-content {
+  max-height: 0;         
+  opacity: 0;            
+  overflow: hidden;      
+  transition: max-height 0.4s ease, opacity 0.4s ease, margin 0.4s ease;
+}
+
+.role-content.active {
+  max-height: 400px;     
+  opacity: 1;            
+  margin-bottom: 15px;
+}
+
+/* Form controls */
+.form-group {
+  margin-bottom: 15px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1); 
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 15px;
+  transition: border-color 0.3s;
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.5); 
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #ee4d2d;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* Ô Mật khẩu + Con mắt */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  padding-right: 45px; /* Để khoảng trống cho nút con mắt */
+}
+
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  user-select: none;
+}
+
+/* Link Quên mật khẩu */
+.forgot-link-wrapper {
+  text-align: right;
+  margin-bottom: 20px;
+}
+.forgot-link {
+  color: #ff9f43;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* Nút bấm Đăng ký / Đăng nhập */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-otp {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: #ee4d2d;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(238, 77, 45, 0.3);
+  transition: transform 0.2s, background 0.2s;
+}
+.btn-submit:hover {
+  transform: translateY(-2px);
+  background: #ff5e3d;
+}
+
+.btn-secondary {
+  text-align: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* =========================================
+   HỘP THÔNG BÁO POP-UP (TOAST)
+========================================= */
+.toast {
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 15px;
+  color: #fff;
+  z-index: 9999;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast.show {
+  top: 30px;
+}
+
+.toast.success {
+  background: #2ed573; /* Màu xanh lá thành công */
+}
+
+.toast.error {
+  background: #ff4757; /* Màu đỏ thông báo lỗi */
+}
