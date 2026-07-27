@@ -21,12 +21,12 @@
         <a href="/" class="logo">Food<span>Eats</span></a>
 
         <div class="search-box">
-          <input type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
+          <input id="global-search" type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
           <button class="btn-search">Tìm kiếm</button>
         </div>
 
         <!-- KHU VỰC CÁC NÚT BÊN PHẢI HEADER -->
-<div class="header-actions">
+        <div class="header-actions">
   
   <!-- Nếu đã đăng nhập -->
   <% if (user) { %>
@@ -61,13 +61,13 @@
 
 </div>
 
-      <div class="nav-bottom">
-        <div class="nav-location">
-          <a href="/location" class="location-display">
-            📍 <span id="navbar-address">Giao đến: Nhấn để chọn địa điểm</span>
-          </a>
-        </div>
-      </div>
+          <div class="nav-bottom">
+            <div class="nav-location">
+              <a href="/location" class="location-display">
+                📍 <span id="navbar-address">Giao đến: Nhấn để chọn địa điểm</span>
+              </a>
+            </div>
+          </div>
     </div>
   </header>
 

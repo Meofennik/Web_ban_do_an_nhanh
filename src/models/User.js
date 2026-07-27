@@ -40,8 +40,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  address: {
+    type: String,
+    trim: true
+  },
+
   businessLicense: { 
-    type: String // Sẽ lưu đường dẫn ảnh (giống như ảnh món ăn)
+    type: String 
   },
   taxId: { 
     type: String 

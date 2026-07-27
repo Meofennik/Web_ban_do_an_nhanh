@@ -7,13 +7,14 @@ const app = express();
 
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
+const mongoSanitize = require('express-mongo-sanitize');
 
 // 1. Khởi chạy kết nối Database
 connectDB();
 // Cho phép Express đọc dữ liệu từ Form (x-www-form-urlencoded) và JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use(mongoSanitize()); // Nó sẽ quét và xóa sạch mọi ký tự $ hoặc . đáng ngờ từ người dùng gửi lên
 // 2. Cấu hình middleware cho file tĩnh
 app.use(express.static(path.join(__dirname, '..', 'public')));
 

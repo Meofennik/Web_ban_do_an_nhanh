@@ -69,7 +69,7 @@ html {
 .nav-location {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 @media (max-width: 1024px) {

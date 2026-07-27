@@ -14,6 +14,121 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentLocationButton = document.getElementById('btn-current-location');
   const addressText = document.getElementById('address-text');
   const hintText = document.getElementById('hint-text');
+  const confirmBox = document.querySelector('.confirm-box');
+  const searchInput = document.getElementById('address-search');
+  const searchBtn = document.getElementById('search-btn');
+  const suggestionsBox = document.getElementById('search-suggestions');
+  let userLocation = null;
+
+  // Try to get device location to bias search suggestions
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((pos) => {
+      userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    }, () => { /* ignore errors */ }, { enableHighAccuracy: true, timeout: 5000 });
+  }
+
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener('click', () => {
+      const q = searchInput.value && searchInput.value.trim();
+      if (!q) return;
+      searchBtn.disabled = true;
+      searchBtn.textContent = 'Tìm...';
+      fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(q)}&limit=1&accept-language=vi`)
+        .then((res) => res.json())
+        .then((results) => {
+          if (results && results.length) {
+            const r = results[0];
+            const latlng = { lat: parseFloat(r.lat), lng: parseFloat(r.lon) };
+            marker.setLatLng(latlng);
+            map.setView(latlng, 17);
+            updateAddress(r.display_name || q);
+            if (confirmBox) confirmBox.classList.add('open');
+          } else {
+            alert('Không tìm thấy địa chỉ. Vui lòng thử từ khóa khác.');
+          }
+        })
+        .catch((err) => {
+          console.error('Search error', err);
+          alert('Lỗi tìm kiếm địa chỉ. Vui lòng thử lại.');
+        })
+        .finally(() => {
+          searchBtn.disabled = false;
+          searchBtn.textContent = 'Tìm';
+        });
+    });
+  }
+
+  // Debounced suggestions while typing
+  function debounce(fn, wait) {
+    let t;
+    return function(...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), wait);
+    };
+  }
+
+  function showSuggestions(items) {
+    if (!suggestionsBox) return;
+    suggestionsBox.innerHTML = '';
+    if (!items || !items.length) { suggestionsBox.style.display = 'none'; suggestionsBox.setAttribute('aria-hidden','true'); return; }
+    items.forEach(r => {
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.textContent = r.display_name || r.display || r.name || r.formatted;
+      el.dataset.lat = r.lat;
+      el.dataset.lon = r.lon;
+      el.addEventListener('click', () => {
+        const latlng = { lat: parseFloat(el.dataset.lat), lng: parseFloat(el.dataset.lon) };
+        marker.setLatLng(latlng);
+        map.setView(latlng, 17);
+        updateAddress(el.textContent);
+        if (confirmBox) confirmBox.classList.add('open');
+        suggestionsBox.style.display = 'none';
+        suggestionsBox.setAttribute('aria-hidden','true');
+      });
+      suggestionsBox.appendChild(el);
+    });
+    suggestionsBox.style.display = 'block';
+    suggestionsBox.setAttribute('aria-hidden','false');
+  }
+
+  const onInput = debounce(() => {
+    const q = searchInput.value && searchInput.value.trim();
+    if (!q) { showSuggestions([]); return; }
+    let url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(q)}&limit=6&addressdetails=1&accept-language=vi`;
+    if (userLocation) {
+      // Bias results by viewbox around user location (~5km)
+      const delta = 0.05;
+      const left = userLocation.lng - delta;
+      const right = userLocation.lng + delta;
+      const top = userLocation.lat + delta;
+      const bottom = userLocation.lat - delta;
+      url += `&viewbox=${left},${top},${right},${bottom}`;
+    } else if (map && map.getBounds) {
+      const b = map.getBounds();
+      const left = b.getWest();
+      const right = b.getEast();
+      const top = b.getNorth();
+      const bottom = b.getSouth();
+      url += `&viewbox=${left},${top},${right},${bottom}`;
+    }
+    fetch(url)
+      .then(r => r.json())
+      .then(results => showSuggestions(results))
+      .catch(err => { console.error('Suggest error', err); showSuggestions([]); });
+  }, 300);
+
+  if (searchInput) {
+    searchInput.addEventListener('input', onInput);
+    // hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!suggestionsBox) return;
+      if (!document.querySelector('.map-card').contains(e.target)) {
+        suggestionsBox.style.display = 'none';
+        suggestionsBox.setAttribute('aria-hidden','true');
+      }
+    });
+  }
 
   if (!mapElement) return;
 
@@ -38,6 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
     map.panTo(event.latlng, { animate: true, duration: 0.5 });
     reverseGeocodePosition(event.latlng);
     if (hintText) hintText.textContent = 'Đã chọn vị trí, bấm xác nhận để lưu.';
+    // Toggle confirm box visibility so user can see full map when needed
+    if (confirmBox) {
+      if (confirmBox.classList.contains('open')) {
+        confirmBox.classList.remove('open');
+      } else {
+        confirmBox.classList.add('open');
+      }
+    }
   });
 
   if (saveButton && addressText) {
@@ -69,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
           map.setView(userPos, 17);
           reverseGeocodePosition(userPos);
           if (hintText) hintText.textContent = 'Đã chọn vị trí hiện tại. Bấm xác nhận để lưu.';
+          if (confirmBox) confirmBox.classList.add('open');
         },
         (error) => {
           console.error('Lỗi định vị:', error);
@@ -94,6 +218,8 @@ function reverseGeocodePosition(pos) {
     .then((data) => {
       const address = data.display_name || 'Không thể tìm thấy tên đường tại vị trí này.';
       updateAddress(address);
+      const confirmBox = document.querySelector('.confirm-box');
+      if (confirmBox) confirmBox.classList.add('open');
     })
     .catch((error) => {
       console.error('Lỗi Geocode:', error);
