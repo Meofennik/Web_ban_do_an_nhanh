@@ -42,22 +42,16 @@ body {
   display: flex;
   align-items: center;
   padding: 8px 16px;
-  
-  /* Nền trong suốt hoàn toàn, chỉ có viền mờ */
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
-  
   color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-weight: bold;
   font-size: 14px;
-  z-index: 100; /* Luôn nổi lên trên cùng */
-  
-  /* Hiệu ứng kính mờ nhẹ nhàng */
+  z-index: 100; 
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  
   transition: all 0.3s ease;
 }
 

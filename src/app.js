@@ -60,6 +60,10 @@ app.get('/product-detail', (req, res) => {
   res.render('pages/product-detail');
 });
 
+app.get('/edit-product', (req, res) => {
+  res.render('pages/edit-product');
+});
+
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; 
   next();

@@ -59,6 +59,28 @@ router.get('/manage', async (req, res) => {
     res.status(500).send('Lỗi tải trang quản lý');
   }
 });
+// ==========================================
+// 1. GIAO DIỆN TRANG CHỈNH SỬA SẢN PHẨM (GET /products/edit/:id)
+// ==========================================
+router.get('/edit/:id', async (req, res) => {
+  try {
+    // Tìm món ăn đúng ID và bắt buộc phải do chính tài khoản này đăng
+    const product = await Product.findOne({ 
+      _id: req.params.id, 
+      ownerId: req.session.user.id 
+    });
+
+    if (!product) {
+      return res.status(403).send('Không tìm thấy sản phẩm hoặc bạn không có quyền sửa món này!');
+    }
+
+    // Mở trang chỉnh sửa và truyền dữ liệu món ăn cũ sang
+    res.render('pages/edit-product', { product: product });
+  } catch (error) {
+    console.error('Lỗi mở trang sửa:', error);
+    res.status(500).send('Lỗi máy chủ');
+  }
+});
 
 // ==========================================
 // 2. THÊM SẢN PHẨM (Kèm thuật toán Băm MD5 tối ưu Cloudinary)
@@ -161,7 +183,61 @@ router.post('/delete/:id', async (req, res) => {
     res.status(500).send('Lỗi xóa sản phẩm');
   }
 });
+// ==========================================
+// 2. XỬ LÝ LƯU THÔNG TIN MỚI (POST /products/edit/:id)
+// ==========================================
+router.post('/edit/:id', uploadTemp.single('productImage'), async (req, res) => {
+  try {
+    const product = await Product.findOne({ 
+      _id: req.params.id, 
+      ownerId: req.session.user.id 
+    });
 
+    if (!product) {
+      return res.status(403).send('Bạn không có quyền sửa món này!');
+    }
+
+    // 1. Cập nhật các thông tin chữ cơ bản
+    product.name = req.body.name;
+    product.price = req.body.price;
+    product.category = req.body.category;
+    product.description = req.body.description || '';
+
+    // 2. Xử lý nếu người dùng có tải lên ẢNH MỚI
+    if (req.file) {
+      // Tạo mã MD5 băm ảnh mới để kiểm tra trùng
+      const fileBuffer = fs.readFileSync(req.file.path);
+      const newImageHash = crypto.createHash('md5').update(fileBuffer).digest('hex');
+
+      // Kiểm tra xem ảnh mới này đã có trên hệ thống chưa
+      const existingProductImage = await Product.findOne({ imageHash: newImageHash });
+
+      if (existingProductImage && existingProductImage.imageUrl) {
+        product.imageUrl = existingProductImage.imageUrl;
+        product.imageHash = newImageHash;
+      } else {
+        // Up ảnh mới lên Cloudinary
+        const cloudRes = await cloudinary.uploader.upload(req.file.path, {
+          folder: 'FoodEats',
+          quality: 'auto'
+        });
+        product.imageUrl = cloudRes.secure_url;
+        product.imageHash = newImageHash;
+      }
+
+      // Xóa file tạm
+      fs.unlinkSync(req.file.path);
+    }
+
+    // 3. Lưu vào Database
+    await product.save();
+    res.redirect('/products/manage');
+
+  } catch (error) {
+    console.error('Lỗi cập nhật sản phẩm:', error);
+    res.status(500).send('Không thể cập nhật sản phẩm!');
+  }
+});
 // ==========================================
 // 5. HIỂN THỊ TRANG CHI TIẾT & ĐÁNH GIÁ (GET /:id)
 // ==========================================
