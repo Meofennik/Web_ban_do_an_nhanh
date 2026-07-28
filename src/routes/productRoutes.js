@@ -102,8 +102,9 @@ router.post('/add', uploadTemp.single('productImage'), async (req, res) => {
       name: req.body.name,
       price: req.body.price,
       category: req.body.category,
+      description: req.body.description || '',
       imageUrl: imageUrl,
-      imageHash: imageHash, // Lưu mã băm để mốt dùng lại
+      imageHash: imageHash,
       storeAddress: address,
       ownerId: req.session.user.id
     });

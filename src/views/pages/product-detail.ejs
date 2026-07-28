@@ -2,9 +2,9 @@
 
 <!-- Phần CSS làm đẹp cho trang chi tiết -->
 <style>
-  .detail-container { max-width: 900px; margin: 40px auto; font-family: sans-serif; }
+  .detail-container { max-width: auto; margin: 40px auto; font-family: sans-serif; }
   .product-header { display: flex; gap: 30px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-  .product-image { width: 400px; height: 400px; object-fit: cover; border-radius: 8px; }
+  .product-image { width: auto; height: auto; object-fit: cover; border-radius: 8px; }
   .product-info h1 { margin-top: 0; font-size: 28px; }
   .price { font-size: 26px; color: #ee4d2d; font-weight: bold; margin: 15px 0; }
   .address { color: #666; font-size: 15px; }
@@ -14,11 +14,12 @@
   .star-selector { font-size: 30px; cursor: pointer; color: #ccc; user-select: none; }
   .star-selector span:hover, .star-selector span.active { color: #ffce3d; }
   
-  .review-form textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; resize: vertical;}
+  .review-form textarea { width: 80%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; resize: vertical;}
   .btn-submit { background: #ee4d2d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold;}
   
   /* Danh sách bình luận */
   .review-list { margin-top: 30px; }
+  .review-text-tile {color: #ee4d2d; font-size: 24px; margin-bottom: 10px; }
   .review-item { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
   .reviewer-name { font-weight: bold; margin-bottom: 5px; }
   .review-stars { color: #ffce3d; font-size: 14px; margin-bottom: 10px; }
@@ -44,7 +45,7 @@
       </div>
 
       <div class="price"><%= product.price.toLocaleString('vi-VN') %> đ</div>
-      <p class="description"><strong>Mô tả:</strong> <br> <%= product.description %></p>
+      <p class="description"><strong>Mô tả:</strong> <br> <%- product.description %></p>
     </div>
   </div>
 
@@ -87,6 +88,7 @@
 
     <!-- DANH SÁCH CÁC BÌNH LUẬN ĐÃ CÓ -->
     <div class="review-list">
+        <div class="review-text-tile">Đánh giá</div>
       <% if (reviews.length > 0) { %>
         <% reviews.forEach(review => { %>
           <div class="review-item">
