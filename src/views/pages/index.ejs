@@ -28,7 +28,6 @@
     </div>
   </section>
 
-  <!-- Đã gỡ bỏ class fade-in-element gây tàng hình -->
   <section class="menu-section">
     <div class="transparent-container">
 
@@ -46,18 +45,22 @@
             <div class="food-carousel">
               <% const products = Array.isArray(categoriesData[categoryName]) ? categoriesData[categoryName] : []; %>
               <% for (let p = 0; p < products.length; p++) { %>
-                <% const product = products[p]; %>
+              <% const product = products[p]; %>
                 <div class="food-item">
-                  <img src="<%= product && product.imageUrl ? product.imageUrl : '/images/placeholder.png' %>" alt="<%= product && product.name ? product.name : 'Sản phẩm' %>">
-                  <h4><%= product && product.name ? product.name : 'Không tên' %></h4>
+                  <a href="/products/<%= product._id %>" style="text-decoration: none; color: inherit; display: block;">
+                    <img src="<%= product && product.imageUrl ? product.imageUrl : '/images/placeholder.png' %>" alt="<%= product && product.name ? product.name : 'Sản phẩm' %>">
+                    <h4><%= product && product.name ? product.name : 'Không tên' %></h4>
+                    <span class="address">📍 <%= product.storeAddress %></span>
+                  </a>
 
                   <div class="food-bottom">
                     <p><%= (Number(product && product.price) || 0).toLocaleString('vi-VN') %>đ</p>
+                    
+                    <!-- Nút giỏ hàng để nằm ngoài thẻ <a> để khi bấm vào nó không bị nhảy sang trang chi tiết -->
                     <button class="btn-add-cart">+</button>
                   </div>
                 </div>
               <% } %>
-            </div>
 
             <button class="slide-btn right-btn">&#10095;</button>
           </div>

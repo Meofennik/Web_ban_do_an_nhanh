@@ -33,7 +33,7 @@ router.post('/register', registerLimiter, upload.single('businessLicense'), asyn
     if (!phone || !password || !fullName) {
       return res.status(400).json({ message: 'vui lòng điền đầy đủ thông tin bắt buộc!' });
     }
-    if (password.length < 6) {
+    if (password.length <= 6) {
       return res.status(400).json({ message: 'mật khẩu phải dài hơn 6 ký tự!' });
     }
     if (role === 'seller' && !address) {

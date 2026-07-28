@@ -52,6 +52,14 @@ app.get('/location', (req, res) => {
   res.render('pages/location');
 });
 
+app.get('/manage', (req, res) => {
+  res.render('pages/manage');
+});
+
+app.get('/product-detail', (req, res) => {
+  res.render('pages/product-detail');
+});
+
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null; 
   next();

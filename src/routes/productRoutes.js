@@ -1,13 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
+const User = require('../models/User');
+const Review = require('../models/Review');
+const cloudinary = require('cloudinary').v2; // Đảm bảo bạn đã require cloudinary
+const crypto = require('crypto');
+const fs = require('fs');
 
-// BƯỚC 1: Gọi middleware xử lý upload ảnh 
-const upload = require('../middlewares/uploadMiddleware'); 
+// Cấu hình Multer LƯU TẠM vào thư mục gốc để băm MD5 (Thay thế uploadMiddleware cũ)
+const multer = require('multer');
+const uploadTemp = multer({ dest: 'uploads/' });
+const upload = multer({ dest: 'uploads/' });
 
+// ==========================================
+// 1. TRANG CHÍNH /products
+// ==========================================
 router.get('/', async (req, res) => {
   try {
-    const allProducts = await Product.find({}).sort({ createdAt: -1 });
+    const allProducts = await Product.find({ isAvailable: true }).sort({ createdAt: -1 });
 
     const groupedCategories = {
       'Cơm Văn Phòng': [],
@@ -32,37 +42,205 @@ router.get('/', async (req, res) => {
       customJs: '/js/home.js'
     });
   } catch (error) {
-    console.error('Lỗi tải trang chủ:', error);
-    res.status(500).send('Lỗi máy chủ');
+    console.error('Lỗi tải trang sản phẩm:', error);
+    res.status(500).send('Lỗi tải trang sản phẩm');
   }
 });
 
-// BƯỚC 2: Thêm upload.single('productImage') vào giữa đường dẫn và function xử lý
-router.post('/add', upload.single('productImage'), async (req, res) => {
+// ==========================================
+// 2. GIAO DIỆN QUẢN LÝ SẢN PHẨM CỦA CỬA HÀNG
+// ==========================================
+router.get('/manage', async (req, res) => {
   try {
-    // 1. Kiểm tra xem quá trình upload ảnh có thành công không
-    let uploadedImageUrl = '/images/default-product.jpg';
-    if (req.file && req.file.path) {
-      uploadedImageUrl = req.file.path; // Lấy link ảnh từ Cloudinary trả về
+    // Chỉ lấy những món ăn do chính người này đăng
+    const myProducts = await Product.find({ ownerId: req.session.user.id }).sort({ createdAt: -1 });
+    res.render('pages/manage', { products: myProducts });
+  } catch (error) {
+    res.status(500).send('Lỗi tải trang quản lý');
+  }
+});
+
+// ==========================================
+// 2. THÊM SẢN PHẨM (Kèm thuật toán Băm MD5 tối ưu Cloudinary)
+// ==========================================
+router.post('/add', uploadTemp.single('productImage'), async (req, res) => {
+  try {
+    let imageUrl = '/images/default-product.jpg';
+    let imageHash = '';
+
+    if (req.file) {
+      // BƯỚC A: Đọc file và tạo mã Băm MD5
+      const fileBuffer = fs.readFileSync(req.file.path);
+      imageHash = crypto.createHash('md5').update(fileBuffer).digest('hex');
+
+      // BƯỚC B: Tìm xem có ảnh nào trên Server trùng mã MD5 này không
+      const existingProductImage = await Product.findOne({ imageHash: imageHash });
+
+      if (existingProductImage && existingProductImage.imageUrl) {
+        // NẾU TRÙNG: Lấy luôn link ảnh cũ dùng lại (Tiết kiệm bộ nhớ)
+        imageUrl = existingProductImage.imageUrl;
+      } else {
+        // NẾU CHƯA CÓ: Bắt đầu up lên Cloudinary
+        const cloudRes = await cloudinary.uploader.upload(req.file.path, {
+          folder: 'FoodEats',
+          quality: 'auto'
+        });
+        imageUrl = cloudRes.secure_url;
+      }
+
+      // BƯỚC C: Xóa file tạm trong máy chủ nội bộ cho nhẹ máy
+      fs.unlinkSync(req.file.path);
     }
 
-    // 2. Lưu dữ liệu vào Database
+    // Lấy địa chỉ của chủ quán
+    let address = 'Đang cập nhật';
+    const storeOwner = await User.findById(req.session.user.id);
+    if (storeOwner) address = storeOwner.address;
+
+    // Lưu vào Database
     const newProduct = new Product({
       name: req.body.name,
       price: req.body.price,
-      imageUrl: uploadedImageUrl, // Dùng link ảnh vừa lấy được
-      category: req.body.category || 'Khác',
-      description: req.body.description || ''
+      category: req.body.category,
+      imageUrl: imageUrl,
+      imageHash: imageHash, // Lưu mã băm để mốt dùng lại
+      storeAddress: address,
+      ownerId: req.session.user.id
     });
 
     await newProduct.save();
-    
-    // Đã lưu thành công! Chuyển hướng người dùng về trang chủ thay vì trả về JSON
-    res.redirect('/');
-    
+    res.redirect('/products/manage');
   } catch (error) {
-    console.error('Lỗi thêm sản phẩm:', error);
-    res.status(500).send('Có lỗi xảy ra khi thêm sản phẩm!');
+    console.error(error);
+    res.status(500).send('Lỗi thêm sản phẩm!');
+  }
+});
+
+// ==========================================
+// 3. ẨN / HIỆN SẢN PHẨM
+// ==========================================
+router.post('/toggle/:id', async (req, res) => {
+  try {
+    const product = await Product.findOne({ _id: req.params.id, ownerId: req.session.user.id });
+    if (!product) return res.status(403).send('Không có quyền!');
+
+    product.isAvailable = !product.isAvailable; // Đảo ngược trạng thái
+    await product.save();
+    res.redirect('/products/manage');
+  } catch (error) {
+    res.status(500).send('Lỗi xử lý');
+  }
+});
+
+// ==========================================
+// 4. XÓA SẢN PHẨM (Kèm tiêu hủy ảnh trên Cloudinary)
+// ==========================================
+router.post('/delete/:id', async (req, res) => {
+  try {
+    // Phải kiểm tra đúng ownerId mới cho xóa
+    const product = await Product.findOne({ _id: req.params.id, ownerId: req.session.user.id });
+    
+    if (!product) {
+      return res.status(403).send('Bạn không có quyền xóa món này!');
+    }
+
+    // Nếu món ăn có link ảnh và không phải ảnh mặc định, ra lệnh xóa trên Cloud
+    if (product.imageUrl && product.imageUrl.includes('cloudinary')) {
+      // Tách mã ID của ảnh từ đường link URL của Cloudinary
+      const urlParts = product.imageUrl.split('/');
+      const fileName = urlParts[urlParts.length - 1];
+      const publicId = fileName.split('.')[0]; 
+      
+      await cloudinary.uploader.destroy(`FoodEats/${publicId}`);
+    }
+
+    await Product.findByIdAndDelete(req.params.id);
+    res.redirect('/products/manage');
+  } catch (error) {
+    res.status(500).send('Lỗi xóa sản phẩm');
+  }
+});
+
+// ==========================================
+// 5. HIỂN THỊ TRANG CHI TIẾT & ĐÁNH GIÁ (GET /:id)
+// ==========================================
+router.get('/:id', async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    // 1. Tìm thông tin món ăn trong Database
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).send('Không tìm thấy sản phẩm!');
+    }
+
+    // 2. Lấy tất cả đánh giá của món ăn này
+    // Dùng .populate('userId', 'fullName') để kéo theo Họ Tên của người viết đánh giá từ bảng User
+    const reviews = await Review.find({ productId: productId })
+                                .populate('userId', 'fullName')
+                                .sort({ createdAt: -1 }); // Sắp xếp mới nhất lên đầu
+
+    // 3. Thuật toán tính điểm trung bình (Ví dụ: 4.5 sao)
+    let totalRating = 0;
+    let avgRating = 0;
+    if (reviews.length > 0) {
+      reviews.forEach(review => { 
+        totalRating += review.rating; 
+      });
+      avgRating = (totalRating / reviews.length).toFixed(1); // Làm tròn 1 chữ số thập phân
+    }
+
+    // 4. Đóng gói dữ liệu và gửi sang file giao diện product-detail.ejs
+    res.render('pages/product-detail', { 
+      product: product, 
+      reviews: reviews, 
+      avgRating: avgRating, 
+      totalReviews: reviews.length 
+    });
+  } catch (error) {
+    console.error('Lỗi tải trang chi tiết:', error);
+    res.status(500).send('Lỗi hệ thống khi tải trang chi tiết sản phẩm');
+  }
+});
+
+// ==========================================
+// 6. XỬ LÝ GỬI ĐÁNH GIÁ KÈM ẢNH (POST /:id/review)
+// ==========================================
+router.post('/:id/review', upload.array('reviewImages', 5), async (req, res) => {
+  try {
+    // Chặn ngay lập tức nếu chưa đăng nhập
+    if (!req.session || !req.session.user) {
+      return res.status(401).send('Bạn cần đăng nhập để đánh giá món ăn này!');
+    }
+
+    const productId = req.params.id;
+    const { rating, comment } = req.body;
+
+    // Lọc mảng các đường link ảnh đã được đẩy lên Cloudinary
+    let imageUrls = [];
+    if (req.files && req.files.length > 0) {
+      // req.files là một mảng, ta dùng hàm map() để nhặt ra đúng đường link (path) của từng ảnh
+      imageUrls = req.files.map(file => file.path); 
+    }
+
+    // Tạo bản ghi Đánh giá mới
+    const newReview = new Review({
+      productId: productId,
+      userId: req.session.user.id, // Lưu ID của khách hàng đang đăng nhập
+      rating: Number(rating),
+      comment: comment,
+      images: imageUrls
+    });
+
+    // Lưu vào Database
+    await newReview.save();
+
+    // Lưu xong thì tự động load lại đúng trang chi tiết của món ăn đó để khách thấy bình luận của mình
+    res.redirect(`/products/${productId}`);
+
+  } catch (error) {
+    console.error('Lỗi gửi đánh giá:', error);
+    res.status(500).send('Có lỗi xảy ra khi gửi đánh giá của bạn!');
   }
 });
 

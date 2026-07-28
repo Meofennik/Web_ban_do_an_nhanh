@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<div class="container" style="max-width: 1000px; margin: 40px auto; padding: 20px;">
+  <h2>📦 Quản Lý Sản Phẩm Của Tôi</h2>
+  
+  <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+    <thead>
+      <tr style="background: #f4f4f4; text-align: left;">
+        <th style="padding: 12px; border: 1px solid #ddd;">Hình ảnh</th>
+        <th style="padding: 12px; border: 1px solid #ddd;">Tên món</th>
+        <th style="padding: 12px; border: 1px solid #ddd;">Giá bán</th>
+        <th style="padding: 12px; border: 1px solid #ddd;">Trạng thái</th>
+        <th style="padding: 12px; border: 1px solid #ddd;">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(product => { %>
+        <tr>
+          <td style="padding: 12px; border: 1px solid #ddd;">
+            <img src="<%= product.imageUrl %>" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+          </td>
+          <td style="padding: 12px; border: 1px solid #ddd;"><strong><%= product.name %></strong></td>
+          <td style="padding: 12px; border: 1px solid #ddd;"><%= product.price.toLocaleString('vi-VN') %> đ</td>
+          
+          <td style="padding: 12px; border: 1px solid #ddd;">
+            <span style="color: <%= product.isAvailable ? 'green' : 'red' %>; font-weight: bold;">
+              <%= product.isAvailable ? 'Đang bán' : 'Tạm ẩn' %>
+            </span>
+          </td>
+          
+          <td style="padding: 12px; border: 1px solid #ddd;">
+            <!-- Nút Ẩn/Hiện -->
+            <form action="/products/toggle/<%= product._id %>" method="POST" style="display:inline;">
+              <button type="submit" style="padding: 6px 12px; cursor: pointer; background: #ffcc00; border: none; border-radius: 4px;">
+                <%= product.isAvailable ? '👁️ Ẩn' : '✅ Hiện' %>
+              </button>
+            </form>
+
+            <!-- Nút Xóa -->
+            <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hẳn món này và ảnh của nó khỏi hệ thống không?');">
+              <button type="submit" style="padding: 6px 12px; cursor: pointer; background: #ff4d4d; color: white; border: none; border-radius: 4px;">
+                🗑️ Xóa
+              </button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

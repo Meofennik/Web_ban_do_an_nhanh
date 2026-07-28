@@ -243,6 +243,18 @@
   transform: scale(1.1); 
 }
 
+.address {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Hiện dấu ... ở cuối */
+  word-break: break-word;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+}
+
 /* =========================================
    5. CÁC CLASS DỰ PHÒNG CŨ
 ========================================= */

@@ -1,0 +1,154 @@
+<%- include('../partials/header') %>
+
+<!-- Phần CSS làm đẹp cho trang chi tiết -->
+<style>
+  .detail-container { max-width: 900px; margin: 40px auto; font-family: sans-serif; }
+  .product-header { display: flex; gap: 30px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .product-image { width: 400px; height: 400px; object-fit: cover; border-radius: 8px; }
+  .product-info h1 { margin-top: 0; font-size: 28px; }
+  .price { font-size: 26px; color: #ee4d2d; font-weight: bold; margin: 15px 0; }
+  .address { color: #666; font-size: 15px; }
+  
+  /* Khu vực Review */
+  .review-section { margin-top: 30px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .star-selector { font-size: 30px; cursor: pointer; color: #ccc; user-select: none; }
+  .star-selector span:hover, .star-selector span.active { color: #ffce3d; }
+  
+  .review-form textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px; resize: vertical;}
+  .btn-submit { background: #ee4d2d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold;}
+  
+  /* Danh sách bình luận */
+  .review-list { margin-top: 30px; }
+  .review-item { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; }
+  .reviewer-name { font-weight: bold; margin-bottom: 5px; }
+  .review-stars { color: #ffce3d; font-size: 14px; margin-bottom: 10px; }
+  .review-images img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; margin-right: 10px; margin-top: 10px; border: 1px solid #ddd; }
+  .review-date { font-size: 12px; color: #999; margin-top: 10px; }
+</style>
+
+<div class="detail-container">
+  
+  <!-- ========================================== -->
+  <!-- 1. KHU VỰC THÔNG TIN SẢN PHẨM (NỬA TRÊN) -->
+  <!-- ========================================== -->
+  <div class="product-header">
+    <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="product-image">
+    
+    <div class="product-info">
+      <h1><%= product.name %></h1>
+      <p class="address">📍 <%= product.storeAddress %></p>
+      
+      <div class="rating-overview">
+        <span style="color: #ffce3d; font-size: 20px;">⭐ <%= avgRating %></span> 
+        <span style="color: #666; margin-left: 10px;">(<%= totalReviews %> Đánh giá)</span>
+      </div>
+
+      <div class="price"><%= product.price.toLocaleString('vi-VN') %> đ</div>
+      <p class="description"><strong>Mô tả:</strong> <br> <%= product.description %></p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. KHU VỰC ĐÁNH GIÁ VÀ BÌNH LUẬN (NỬA DƯỚI) -->
+  <!-- ========================================== -->
+  <div class="review-section">
+    <h2>Đánh giá sản phẩm</h2>
+
+    <!-- FORM GỬI ĐÁNH GIÁ (Chỉ hiện nếu đã đăng nhập) -->
+    <!-- CHÚ Ý: Bắt buộc phải có enctype="multipart/form-data" mới gửi được ảnh -->
+    <% if (user) { %>
+      <form action="/products/<%= product._id %>/review" method="POST" enctype="multipart/form-data" class="review-form">
+        
+        <label>Bạn chấm món này mấy sao?</label>
+        <div class="star-selector" id="star-rating">
+          <span data-value="1" class="active">★</span>
+          <span data-value="2" class="active">★</span>
+          <span data-value="3" class="active">★</span>
+          <span data-value="4" class="active">★</span>
+          <span data-value="5" class="active">★</span>
+        </div>
+        <!-- Ô Input ẩn để hứng số sao (Mặc định là 5 sao) -->
+        <input type="hidden" name="rating" id="rating-input" value="5" required>
+
+        <textarea name="comment" placeholder="Chia sẻ cảm nhận của bạn về món ăn này nhé..."></textarea>
+        
+        <div style="margin-top: 10px;">
+          <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px;">Thêm ảnh thực tế (Tối đa 5 ảnh):</label>
+          <input type="file" name="reviewImages" accept="image/*" multiple>
+        </div>
+
+        <button type="submit" class="btn-submit">Gửi Đánh Giá</button>
+      </form>
+    <% } else { %>
+      <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        🛒 Bạn cần <a href="/login" style="font-weight: bold; color: #856404; text-decoration: underline;">Đăng nhập</a> để có thể viết đánh giá cho món ăn này.
+      </div>
+    <% } %>
+
+    <!-- DANH SÁCH CÁC BÌNH LUẬN ĐÃ CÓ -->
+    <div class="review-list">
+      <% if (reviews.length > 0) { %>
+        <% reviews.forEach(review => { %>
+          <div class="review-item">
+            <!-- Hiển thị tên người mua -->
+            <div class="reviewer-name"><%= review.userId ? review.userId.fullName : 'Khách hàng Ẩn danh' %></div>
+            
+            <!-- In ra số ngôi sao dựa trên điểm rating -->
+            <div class="review-stars">
+              <% for(let i = 0; i < review.rating; i++) { %>★<% } %>
+              <span style="color: #ccc;"><% for(let i = 0; i < (5 - review.rating); i++) { %>★<% } %></span>
+            </div>
+            
+            <!-- Bình luận -->
+            <div class="review-text"><%= review.comment %></div>
+            
+            <!-- Hình ảnh khách hàng tải lên (Nếu có) -->
+            <% if (review.images && review.images.length > 0) { %>
+              <div class="review-images">
+                <% review.images.forEach(imgUrl => { %>
+                  <img src="<%= imgUrl %>" alt="Ảnh đánh giá">
+                <% }) %>
+              </div>
+            <% } %>
+
+            <!-- Ngày giờ đăng -->
+            <div class="review-date">
+              Đăng ngày <%= review.createdAt.toLocaleDateString('vi-VN') %> lúc <%= review.createdAt.toLocaleTimeString('vi-VN') %>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p style="color: #888; text-align: center; margin-top: 40px;">Chưa có đánh giá nào. Hãy là người đầu tiên trải nghiệm và đánh giá món này nhé!</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. JAVASCRIPT HIỆU ỨNG CHỌN NGÔI SAO -->
+<!-- ========================================== -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const stars = document.querySelectorAll('#star-rating span');
+    const ratingInput = document.getElementById('rating-input');
+
+    stars.forEach(star => {
+      // Khi click vào ngôi sao
+      star.addEventListener('click', function() {
+        const value = this.getAttribute('data-value');
+        ratingInput.value = value; // Gắn giá trị vào input ẩn để gửi lên Server
+        
+        // Cập nhật màu sắc: Sáng các sao từ 1 đến vị trí vừa click
+        stars.forEach(s => {
+          if (parseInt(s.getAttribute('data-value')) <= parseInt(value)) {
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active');
+          }
+        });
+      });
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>
