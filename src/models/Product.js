@@ -6,6 +6,10 @@ const productSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  storeName: { 
+    type: String, default: 'Không có thông tin cửa hàng'
+  },
+
   price: {
     type: Number,
     required: true,
@@ -28,7 +32,7 @@ const productSchema = new mongoose.Schema({
   storeAddress: {
     type: String,
     default: 'Địa chỉ chưa cập nhật' // Giá trị mặc định đề phòng bị trống
-  }, 
+  },
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // Liên kết với bảng User

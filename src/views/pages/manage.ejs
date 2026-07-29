@@ -28,23 +28,28 @@
             </span>
           </td>
           
-          <td style="padding: 12px; border: 1px solid #ddd;">
-            <a href="/products/edit/<%= product._id %>" style="padding: 6px 12px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; display: inline-block; margin-right: 5px;">
-  ✏️ Sửa
+          <td style=" padding: 12px; border: 1px solid #ddd;">
+            <div style="display: flex; justify-content: space-around;">
+            <a href="/products/edit/<%= product._id %>" style="padding: 7px 14px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; display: inline-block; margin-right: 5px;">
+  <img src="/images/iconsImages/pen.png" alt="pen" class="custom-icon-lg"> Sửa
 </a>
             <!-- Nút Ẩn/Hiện -->
             <form action="/products/toggle/<%= product._id %>" method="POST" style="display:inline;">
-              <button type="submit" style="padding: 6px 12px; cursor: pointer; background: #ffcc00; border: none; border-radius: 4px;">
-                <%= product.isAvailable ? '👁️ Ẩn' : '✅ Hiện' %>
+              <button type="submit" style="padding: 9px 20px; cursor: pointer; background: #ffcc00; border: none; border-radius: 4px;">
+                <%- product.isAvailable 
+  ? '<img src="/images/iconsImages/hide.png" alt="Hide" class="custom-icon"> Ẩn' 
+  : '<img src="/images/iconsImages/view.png" alt="Show" class="custom-icon"> Hiện' 
+%>
               </button>
             </form>
 
             <!-- Nút Xóa -->
             <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hẳn món này và ảnh của nó khỏi hệ thống không?');">
-              <button type="submit" style="padding: 6px 12px; cursor: pointer; background: #ff4d4d; color: white; border: none; border-radius: 4px;">
-                🗑️ Xóa
+              <button type="submit" style="padding: 7px 14px; cursor: pointer; background: #ff4d4d; color: white; border: none; border-radius: 4px;">
+                <img src="/images/iconsImages/bin.png" alt="bin" class="custom-icon-lg"> Xóa
               </button>
             </form>
+            </div>
           </td>
         </tr>
       <% }) %>

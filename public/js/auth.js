@@ -23,10 +23,10 @@ function togglePassword(inputId, iconBtn) {
   const passwordInput = document.getElementById(inputId);
   if (passwordInput.type === 'password') {
     passwordInput.type = 'text';
-    iconBtn.textContent = '🙈';
+    iconBtn.innerHTML = '<img src="/images/iconsImages/hide.png" alt="hide" class="custom-icon-lg">';
   } else {
     passwordInput.type = 'password';
-    iconBtn.textContent = '👁️';
+    iconBtn.innerHTML = '<img src="/images/iconsImages/view.png" alt="view" class="custom-icon-lg">';
   }
 }
 

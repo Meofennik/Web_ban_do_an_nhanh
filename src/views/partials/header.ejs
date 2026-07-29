@@ -13,6 +13,23 @@
   <!-- Thư viện hỗ trợ hiệu ứng nghiêng 3D -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
 </head>
+
+<style>
+  .custom-icon {
+  width: 20px;      
+  height: 20px;   
+  object-fit: contain; 
+  vertical-align: middle; 
+  margin-right: 5px; 
+}
+
+.custom-icon-lg {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+</style>
 <body>
 
   <header class="navbar">
@@ -26,7 +43,7 @@
 
         <div class="search-box">
           <input id="global-search" type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
-          <button class="btn-search">Tìm kiếm</button>
+          <button class="btn-search"><img src="/images/iconsImages/search-interface-symbol.png" alt="search-interface-symbol" class="custom-icon-lg"></button>
         </div>
 
         <!-- KHU VỰC CÁC NÚT BÊN PHẢI HEADER -->
@@ -72,8 +89,8 @@
                 <hr>
                 <a href="/profile">Hồ sơ cá nhân</a>
                 <% if (user.role === 'seller') { %>
-                  <a href="/products/manage">📦 Quản lý sản phẩm</a>
-                  <a href="/orders/manage">📋 Quản lý đơn đặt hàng</a>
+                  <a href="/products/manage">Quản lý sản phẩm</a>
+                  <a href="/orders/manage">Quản lý đơn đặt hàng</a>
                 <% } else { %>
                   <a href="/cart">🛒 Đơn hàng của tôi</a>
                 <% } %>
@@ -95,7 +112,7 @@
       <div class="nav-bottom">
         <div class="nav-location">
           <a href="/location" class="location-display">
-            📍 <span id="navbar-address">Giao đến: Nhấn để chọn địa điểm</span>
+            <img src="/images/iconsImages/placeholder.png" alt="placeholder" class="custom-icon-lg"> <span id="navbar-address">Giao đến: Nhấn để chọn địa điểm</span>
           </a>
         </div>
       </div>

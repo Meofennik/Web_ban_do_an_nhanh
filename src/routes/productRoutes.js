@@ -113,15 +113,17 @@ router.post('/add', uploadTemp.single('productImage'), async (req, res) => {
       // BƯỚC C: Xóa file tạm trong máy chủ nội bộ cho nhẹ máy
       fs.unlinkSync(req.file.path);
     }
-
+    const userId = req.session.user._id || req.session.user.id;
     // Lấy địa chỉ của chủ quán
     let address = 'Đang cập nhật';
-    const storeOwner = await User.findById(req.session.user.id);
+    const storeOwner = await User.findById(userId);
+    const currentStoreName = req.session.user.storeName || req.session.user.fullName || req.session.user.name || 'Tên cửa hàng chưa rõ';
     if (storeOwner) address = storeOwner.address;
 
     // Lưu vào Database
     const newProduct = new Product({
       name: req.body.name,
+      storeName: currentStoreName,
       price: req.body.price,
       category: req.body.category,
       description: req.body.description || '',

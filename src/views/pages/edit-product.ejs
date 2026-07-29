@@ -1,7 +1,23 @@
 <%- include('../partials/header') %>
+<style> 
+  .custom-icon {
+  width: 20px;      
+  height: 20px;   
+  object-fit: contain; 
+  vertical-align: middle; 
+  margin-right: 5px; 
+}
+
+.custom-icon-lg {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+</style>
 
 <div style="max-width: 600px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-  <h2>✏️ Chỉnh Sửa Sản Phẩm</h2>
+  <h2><img src="/images/iconsImages/pen.png" alt="pen" class="custom-icon-lg"> Chỉnh Sửa Sản Phẩm</h2>
 
   <form action="/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data">
     

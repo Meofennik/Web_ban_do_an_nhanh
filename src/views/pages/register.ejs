@@ -5,6 +5,22 @@
   <title>Đăng ký - FoodEats</title>
   <link rel="stylesheet" href="/css/auth.css">
 </head>
+<style>
+  .custom-icon {
+  width: 20px;      
+  height: 20px;   
+  object-fit: contain; 
+  vertical-align: middle; 
+  margin-right: 5px; 
+}
+
+.custom-icon-lg {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+</style>
 <body>
 
   <!-- Video nền -->
@@ -91,7 +107,7 @@
           <label>Mật khẩu</label>
           <div class="password-wrapper">
             <input type="password" id="regPassword" name="password" placeholder="Tạo mật khẩu" required>
-            <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)">👁️</button>
+            <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)"><img src="/images/iconsImages/view.png" alt="view" class="custom-icon-lg"></button>
           </div>
         </div>
 
@@ -100,7 +116,7 @@
           <label>Nhập lại mật khẩu</label>
           <div class="password-wrapper">
             <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
-            <button type="button" class="eye-btn" onclick="togglePassword('confirmPassword', this)">👁️</button>
+            <button type="button" class="eye-btn" onclick="togglePassword('confirmPassword', this)"><img src="/images/iconsImages/view.png" alt="view" class="custom-icon-lg"></button>
           </div>
         </div>
 

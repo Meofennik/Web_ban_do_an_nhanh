@@ -1,21 +1,15 @@
 <%- include('../partials/header') %>
   <style>
-    /* 1. Class dành cho bức ảnh đang bay */
+
     .flying-img {
       position: fixed;
-      /* Nổi lên trên tất cả */
       z-index: 99999;
       border-radius: 50%;
-      /* Bo tròn ảnh khi bay */
       object-fit: cover;
       pointer-events: none;
-      /* Không cho click nhầm vào ảnh lúc đang bay */
-
-      /* Hiệu ứng chuyển động mượt mà (bay theo đường cong nhẹ) */
       transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    /* 2. Hiệu ứng giật giật (bump) cho giỏ hàng khi ảnh bay tới nơi */
     .cart-bump {
       animation: bump 0.3s ease-out;
     }
@@ -93,7 +87,7 @@
                                 <h4>
                                   <%= product && product.name ? product.name : 'Không tên' %>
                                 </h4>
-                                <span class="address">📍 <%= product.storeAddress %></span>
+                                <span class="address"><%= product.storeAddress %></span>
                               </a>
 
                               <div class="food-bottom">
@@ -200,9 +194,15 @@
                 cartBadge.style.display = 'inline-block';
               }
             } else {
-              alert(result.message || 'Chưa thể thêm món!');
+              showToast(result.message || 'Chưa thể thêm món!', 'error')
+              if (response.status === 401) {
+                setTimeout(() => {
+                  window.location.href = '/login';
+                }, 1500);
+              }
             }
-          } catch (err) {
+          }
+          catch (err) {
             console.error(err);
           }
         }

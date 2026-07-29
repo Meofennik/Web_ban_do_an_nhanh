@@ -1,3 +1,111 @@
+<!-- KHUNG CHỨA THÔNG BÁO TRƯỢT (TOAST) -->
+<div id="toast-container"></div>
+
+<style>
+  #toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none; 
+  }
+
+  .custom-toast {
+    min-width: 250px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: auto; /* Cho phép click vào nút đóng */
+    
+    /* Hiệu ứng trượt từ phải sang */
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.35); /* Hiệu ứng nảy nhẹ */
+  }
+
+  .custom-toast.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  .custom-icon {
+  width: 20px;      
+  height: 20px;   
+  object-fit: contain; 
+  vertical-align: middle; 
+  margin-right: 5px; 
+}
+
+.custom-icon-lg {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+  /* Các màu sắc tùy theo trạng thái */
+  .custom-toast.success { background-color: #28a745; }
+  .custom-toast.error { background-color: #ff0000; }
+  .custom-toast.warning { background-color: #ffc107; color: #333; }
+
+  .toast-close {
+    cursor: pointer;
+    margin-left: 15px;
+    font-weight: bold;
+    opacity: 0.8;
+  }
+  .toast-close:hover { opacity: 1; }
+</style>
+
+<script>
+  // HÀM HIỂN THỊ THÔNG BÁO TOAST TOÀN CỤC
+  // type có thể là: 'success', 'error', 'warning'
+  function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    // Tạo phần tử thông báo mới
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${type}`;
+    
+    // Icon tùy theo loại
+    let icon = '✅';
+    if (type === 'error') icon = '❌';
+    if (type === 'warning') icon = '⚠️';
+
+    toast.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span>${icon}</span>
+        <span>${message}</span>
+      </div>
+      <span class="toast-close" onclick="this.parentElement.remove()">✕</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Kích hoạt hiệu ứng trượt vào (dùng setTimeout để DOM kịp render)
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 10);
+
+    // Tự động xóa sau 3 giây
+    setTimeout(() => {
+      toast.classList.remove('show');
+      // Đợi hiệu ứng trượt ra xong thì xóa hẳn HTML
+      setTimeout(() => {
+        if (toast.parentElement) toast.remove();
+      }, 400); 
+    }, 3000);
+  }
+</script>
+
 <!-- Footer Section -->
   <footer class="footer">
     <div class="footer-container">
@@ -17,7 +125,7 @@
 
       <div class="footer-col">
         <h4>Liên hệ</h4>
-        <p>📍 Hà Nội, Việt Nam</p>
+        <p><img src="/images/iconsImages/placeholder.png" alt="placeholder" class="custom-icon-lg"> Hà Nội, Việt Nam</p>
         <p>📧 support@foodeats.vn</p>
         <p>📞 1900 1234</p>
       </div>

@@ -13,6 +13,20 @@
             -moz-appearance: textfield;
         }
 
+        .custom-icon {
+  width: 20px;      
+  height: 20px;   
+  object-fit: contain; 
+  vertical-align: middle; 
+  margin-right: 5px; 
+}
+
+.custom-icon-lg {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
         .qty-btn {
             width: 28px;
             height: 28px;
@@ -45,7 +59,7 @@
 
     <div
         style="max-width: 900px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h2>🛒 Giỏ Hàng Của Bạn</h2>
+        <h2><img src="/images/iconsImages/shopping-cart.png" alt="shopping-cart" class="custom-icon-lg"> Giỏ Hàng Của Bạn</h2>
 
         <% if (cart && cart.items && cart.items.length> 0) { %>
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
@@ -97,7 +111,7 @@
 
                                             <!-- NÚT XÓA SẢN PHẨM -->
                                             <td style="padding: 12px;">
-                                                <button class="btn-delete" data-id="<%= item.productId._id %>">🗑️
+                                                <button class="btn-delete" data-id="<%= item.productId._id %>"><img src="/images/iconsImages/bin.png" alt="bin" class="custom-icon-lg">
                                                     Xóa</button>
                                             </td>
                                         </tr>
