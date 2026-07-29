@@ -147,12 +147,12 @@
 
 .category-title {
   font-size: 24px;
-  color: #fff; /* Tùy chỉnh màu theo ý bạn */
+  color: #fff;
   margin-bottom: 20px;
 }
 
 .empty-state {
-  color: #fff; /* Đổi sang màu trắng cho dễ đọc trên nền tối */
+  color: #fff;
   padding: 20px 0;
 }
 
@@ -255,6 +255,45 @@
   cursor: pointer;
 }
 
+/* Style mới cho nút bấm băng chuyền */
+.slide-btn {
+  /* --- CĂN GIỮA CHIỀU DỌC --- */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); /* Căn chuẩn xác tâm của nút vào giữa */
+  z-index: 10; /* Nổi lên trên món ăn */
+  
+  /* --- KIỂU DÁNG BO TRÒN & TRONG SUỐT --- */
+  width: 45px;
+  height: 45px;
+  border-radius: 50%; /* Bo tròn hoàn toàn */
+  background-color: rgba(255, 255, 255, 0.2); /* Nền trắng trong suốt 20% */
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Viền mỏng mờ */
+  color: white; /* Màu mũi tên */
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+/* Hiệu ứng khi di chuột (Hover) */
+.slide-btn:hover {
+  background-color: rgba(255, 255, 255, 0.5); 
+  transform: translateY(-50%) scale(1.1); 
+}
+
+/* Vị trí của nút trái và phải */
+.left-btn {
+  left: 5px; 
+}
+
+.right-btn {
+  right: 5px; 
+}
 /* =========================================
    5. CÁC CLASS DỰ PHÒNG CŨ
 ========================================= */

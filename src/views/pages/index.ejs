@@ -1,75 +1,213 @@
 <%- include('../partials/header') %>
+  <style>
+    /* 1. Class dành cho bức ảnh đang bay */
+    .flying-img {
+      position: fixed;
+      /* Nổi lên trên tất cả */
+      z-index: 99999;
+      border-radius: 50%;
+      /* Bo tròn ảnh khi bay */
+      object-fit: cover;
+      pointer-events: none;
+      /* Không cho click nhầm vào ảnh lúc đang bay */
 
-<div class="fixed-video-background">
-  <video id="bg-video" src="/videos/Animation Foodeats1.mp4" muted playsinline preload="auto"></video>
-</div>
+      /* Hiệu ứng chuyển động mượt mà (bay theo đường cong nhẹ) */
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
 
-<main class="main-content transparent-content">
-  <div class="scroll-ambient" aria-hidden="true">
-    <span class="ambient-orb orb-1"></span>
-    <span class="ambient-orb orb-2"></span>
-    <span class="ambient-orb orb-3"></span>
-    <span class="ambient-wave wave-1"></span>
-    <span class="ambient-wave wave-2"></span>
+    /* 2. Hiệu ứng giật giật (bump) cho giỏ hàng khi ảnh bay tới nơi */
+    .cart-bump {
+      animation: bump 0.3s ease-out;
+    }
+
+    @keyframes bump {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.3);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+
+  <div class="fixed-video-background">
+    <video id="bg-video" src="/videos/Animation Foodeats1.mp4" muted playsinline preload="auto"></video>
   </div>
 
-  <section class="hero-3d-section">
-    <div class="hero-text">
-      <span class="tag">🔥 Ưu đãi cực hot hôm nay</span>
-      <h1>Đặt Đồ Ăn Ngon <br>Giao Hàng Trong 20 Phút</h1>
-      <p>Hàng ngàn món ngon từ các thương hiệu yêu thích đang giảm giá đến 50%.</p>
-      <button class="btn-cta">Khám phá ngay</button>
+  <main class="main-content transparent-content">
+    <div class="scroll-ambient" aria-hidden="true">
+      <span class="ambient-orb orb-1"></span>
+      <span class="ambient-orb orb-2"></span>
+      <span class="ambient-orb orb-3"></span>
+      <span class="ambient-wave wave-1"></span>
+      <span class="ambient-wave wave-2"></span>
     </div>
 
-    <div class="hero-3d-card" data-tilt data-tilt-max="15">
-      <div class="card-background"></div>
-      <img src="/images/indexPhoto/do_an_nhanh.png" alt="Đồ ăn nhanh">
-      <div class="card-badge">Giảm 50%</div>
-    </div>
-  </section>
+    <section class="hero-3d-section">
+      <div class="hero-text">
+        <span class="tag">🔥 Ưu đãi cực hot hôm nay</span>
+        <h1>Đặt Đồ Ăn Ngon <br>Giao Hàng Trong 20 Phút</h1>
+        <p>Hàng ngàn món ngon từ các thương hiệu yêu thích đang giảm giá đến 50%.</p>
+        <button class="btn-cta">Khám phá ngay</button>
+      </div>
 
-  <section class="menu-section">
-    <div class="transparent-container">
+      <div class="hero-3d-card" data-tilt data-tilt-max="15">
+        <div class="card-background"></div>
+        <img src="/images/indexPhoto/do_an_nhanh.png" alt="Đồ ăn nhanh">
+        <div class="card-badge">Giảm 50%</div>
+      </div>
+    </section>
 
-      <% if (categoriesData && Object.keys(categoriesData).length) { %>
-        <% const categoryKeys = Object.keys(categoriesData); %>
-        <% for (let index = 0; index < categoryKeys.length; index++) { %>
-          <% const categoryName = categoryKeys[index]; %>
-          <div class="category-wrapper">
-            
-            <!-- Danh mục sẽ hiển thị trực tiếp mà không bị ẩn -->
-            <h3 class="category-title"><%= categoryName %></h3>
+    <section class="menu-section">
+      <div class="transparent-container">
 
-            <button class="slide-btn left-btn" style="display: none;">&#10094;</button>
+        <% if (categoriesData && Object.keys(categoriesData).length) { %>
+          <% const categoryKeys=Object.keys(categoriesData); %>
+            <% for (let index=0; index < categoryKeys.length; index++) { %>
+              <% const categoryName=categoryKeys[index]; %>
+                <div class="category-wrapper">
+                  <h3 class="category-title">
+                    <%= categoryName %>
+                  </h3>
 
-            <div class="food-carousel">
-              <% const products = Array.isArray(categoriesData[categoryName]) ? categoriesData[categoryName] : []; %>
-              <% for (let p = 0; p < products.length; p++) { %>
-              <% const product = products[p]; %>
-                <div class="food-item">
-                  <a href="/products/<%= product._id %>" style="text-decoration: none; color: inherit; display: block;">
-                    <img src="<%= product && product.imageUrl ? product.imageUrl : '/images/placeholder.png' %>" alt="<%= product && product.name ? product.name : 'Sản phẩm' %>">
-                    <h4><%= product && product.name ? product.name : 'Không tên' %></h4>
-                    <span class="address">📍 <%= product.storeAddress %></span>
-                  </a>
+                  <div class="carousel-container" style="position: relative;">
 
-                  <div class="food-bottom">
-                    <p><%= (Number(product && product.price) || 0).toLocaleString('vi-VN') %>đ</p>
-                    
-                    <!-- Nút giỏ hàng để nằm ngoài thẻ <a> để khi bấm vào nó không bị nhảy sang trang chi tiết -->
-                    <button class="btn-add-cart" data-id="<%= product._id %>">+</button>
+                    <button class="slide-btn left-btn" style="display: none;">&#10094;</button>
+
+                    <div class="food-carousel">
+                      <% const products=Array.isArray(categoriesData[categoryName]) ? categoriesData[categoryName] : [];
+                        %>
+                        <% for (let p=0; p < products.length; p++) { %>
+                          <% const product=products[p]; %>
+                            <div class="food-item">
+                              <a href="/products/<%= product._id %>"
+                                style="text-decoration: none; color: inherit; display: block;">
+                                <img
+                                  src="<%= product && product.imageUrl ? product.imageUrl : '/images/placeholder.png' %>"
+                                  alt="<%= product && product.name ? product.name : 'Sản phẩm' %>">
+                                <h4>
+                                  <%= product && product.name ? product.name : 'Không tên' %>
+                                </h4>
+                                <span class="address">📍 <%= product.storeAddress %></span>
+                              </a>
+
+                              <div class="food-bottom">
+                                <p>
+                                  <%= (Number(product && product.price) || 0).toLocaleString('vi-VN') %>đ
+                                </p>
+
+                                <button class="btn-add-cart" data-id="<%= product._id %>">+</button>
+                              </div>
+                            </div>
+                            <% } %>
+                    </div>
+
+                    <button class="slide-btn right-btn">&#10095;</button>
+
                   </div>
+
                 </div>
-              <% } %>
+                <% } %>
+                  <% } else { %>
+                    <p class="empty-state">Chưa có dữ liệu món ăn để hiển thị.</p>
+                    <% } %>
+      </div>
+    </section>
+  </main>
 
-            <button class="slide-btn right-btn">&#10095;</button>
-          </div>
-        <% } %>
-      <% } else { %>
-        <p class="empty-state">Chưa có dữ liệu món ăn để hiển thị.</p>
-      <% } %>
-    </div>
-  </section>
-</main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
 
-<%- include('../partials/footer') %>
+      // HÀM TẠO HIỆU ỨNG BAY VÀO GIỎ HÀNG
+      function flyToCart(buttonElement) {
+        const cartIcon = document.getElementById('cart-icon');
+        if (!cartIcon) return; // Nếu không tìm thấy giỏ hàng thì bỏ qua hiệu ứng
+
+        // 1. Tìm bức ảnh của món ăn ngay gần nút bấm +
+        const foodItem = buttonElement.closest('.food-item'); // Tìm khung bọc ngoài cùng
+        const productImg = foodItem ? foodItem.querySelector('img') : null;
+        if (!productImg) return;
+
+        // 2. Lấy tọa độ (vị trí x, y) của ảnh gốc và của giỏ hàng
+        const startRect = productImg.getBoundingClientRect();
+        const endRect = cartIcon.getBoundingClientRect();
+
+        // 3. Nhân bản bức ảnh ra làm một bản copy (clone)
+        const flyingImg = productImg.cloneNode();
+        flyingImg.classList.add('flying-img');
+
+        // Đặt ảnh copy đè đúng lên vị trí ảnh gốc
+        flyingImg.style.left = `${startRect.left}px`;
+        flyingImg.style.top = `${startRect.top}px`;
+        flyingImg.style.width = `${startRect.width}px`;
+        flyingImg.style.height = `${startRect.height}px`;
+
+        document.body.appendChild(flyingImg);
+
+        // Bắt buộc trình duyệt nhận diện ảnh copy vừa tạo (Force reflow)
+        void flyingImg.offsetWidth;
+
+        // 4. Bắt đầu kích hoạt hiệu ứng bay về phía giỏ hàng
+        // Đưa tọa độ về vị trí trung tâm của biểu tượng giỏ hàng, thu nhỏ dần ảnh còn 40px, làm mờ đi
+        flyingImg.style.left = `${endRect.left + (endRect.width / 2) - 20}px`;
+        flyingImg.style.top = `${endRect.top + (endRect.height / 2) - 20}px`;
+        flyingImg.style.width = '40px';
+        flyingImg.style.height = '40px';
+        flyingImg.style.opacity = '0.4';
+
+        // 5. Dọn dẹp sau khi bay xong (0.8s = 800ms)
+        setTimeout(() => {
+          flyingImg.remove(); // Xóa ảnh copy rác đi
+
+          // Làm rung biểu tượng giỏ hàng một cái cho sinh động
+          cartIcon.classList.add('cart-bump');
+          setTimeout(() => cartIcon.classList.remove('cart-bump'), 300);
+        }, 800);
+      }
+
+
+      // LẮNG NGHE SỰ KIỆN CLICK NÚT THÊM GIỎ HÀNG (AJAX)
+      document.addEventListener('click', async (e) => {
+        if (e.target && e.target.classList.contains('btn-add-cart')) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const btn = e.target;
+          const productId = btn.getAttribute('data-id');
+
+          try {
+            const response = await fetch('/cart/add', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ productId, quantity: 1 })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+
+              flyToCart(btn);
+
+              // Cập nhật số trên badge giỏ hàng
+              const cartBadge = document.getElementById('cart-badge');
+              if (cartBadge) {
+                cartBadge.innerText = result.totalItems;
+                cartBadge.style.display = 'inline-block';
+              }
+            } else {
+              alert(result.message || 'Chưa thể thêm món!');
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      });
+
+    });
+  </script>
+  <%- include('../partials/footer') %>

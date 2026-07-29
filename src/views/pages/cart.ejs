@@ -1,4 +1,4 @@
-<%- include('../partials/header') %>
+﻿<%- include('../partials/header') %>
 
     <style>
         /* Xóa mũi tên lên xuống ở ô input trên Chrome, Safari, Edge, Opera */
@@ -149,38 +149,33 @@
             document.getElementById('grand-total').innerText = total.toLocaleString('vi-VN') + 'đ';
         }
 
-        // 2. HÀM CẬP NHẬT SỐ LƯỢNG MƯỢT MÀ (Không reload)
-        async function updateCartQuantity(productId, newQty, price) {
-            if (newQty < 1) newQty = 1;
-            if (newQty > 999) newQty = 999;
+       // 1. HÀM TÍNH TOÁN LẠI TỔNG TIỀN & CẬP NHẬT CHẤM ĐỎ HEADER
+  function updateGrandTotal() {
+    let totalMoney = 0;
+    let totalItems = 0; // Thêm biến đếm số lượng
 
-            // A. Đổi số trên giao diện ngay lập tức cho người dùng thấy mượt
-            const input = document.querySelector(`.qty-input[data-id="${productId}"]`);
-            input.value = newQty;
+    // Quét qua tất cả các ô số lượng trên màn hình
+    document.querySelectorAll('.qty-input').forEach(input => {
+      const qty = parseInt(input.value) || 1;
+      const price = parseInt(input.getAttribute('data-price')) || 0;
+      
+      totalMoney += (qty * price);
+      totalItems += qty; // Cộng dồn số lượng
+    });
 
-            const itemTotalEl = document.getElementById(`item-total-${productId}`);
-            const newItemTotal = price * newQty;
-            itemTotalEl.innerText = newItemTotal.toLocaleString('vi-VN') + 'đ';
+    // Hiển thị ra màn hình tổng tiền mới
+    const grandTotalEl = document.getElementById('grand-total');
+    if (grandTotalEl) {
+      grandTotalEl.innerText = totalMoney.toLocaleString('vi-VN') + 'đ';
+    }
 
-            updateGrandTotal();
-
-            // B. Âm thầm gửi dữ liệu lên Server lưu vào Database
-            try {
-                const res = await fetch('/cart/update', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ productId, quantity: newQty })
-                });
-                const data = await res.json();
-                if (!data.success) {
-                    alert(data.message || 'Lỗi cập nhật số lượng');
-                    window.location.reload(); // Chỉ load lại nếu bị lỗi rớt mạng
-                }
-            } catch (err) {
-                console.error('Lỗi gửi request:', err);
-            }
-        }
-
+    // Tự động cập nhật số chấm đỏ trên Header
+    const cartBadge = document.getElementById('cart-badge');
+    if (cartBadge) {
+      cartBadge.innerText = totalItems;
+      cartBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+    }
+  }
         // 3. HÀM XÓA SẢN PHẨM KHÔNG RELOAD TRANG
         async function removeCartItem(productId, btnElement) {
             if (!confirm('Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?')) return;

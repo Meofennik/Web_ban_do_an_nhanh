@@ -14,7 +14,7 @@ const requireAuth = (req, res, next) => {
 // 1. API THÊM VÀO GIỎ HÀNG (Dùng AJAX từ Trang chủ hoặc Trang Chi tiết)
 router.post('/add', requireAuth, async (req, res) => {
   try {
-    const userId = req.session.user.id;
+    const userId = req.session.user._id || req.session.user.id;
     const { productId, quantity } = req.body;
     const qty = parseInt(quantity) || 1;
 
@@ -72,7 +72,7 @@ router.get('/', async (req, res) => {
 // ==========================================
 router.post('/update', requireAuth, async (req, res) => {
   try {
-    const userId = req.session.user.id;
+    const userId = req.session.user._id || req.session.user.id;
     const { productId, quantity } = req.body;
     let qty = parseInt(quantity);
 
@@ -101,7 +101,7 @@ router.post('/update', requireAuth, async (req, res) => {
 // ==========================================
 router.post('/remove', requireAuth, async (req, res) => {
   try {
-    const userId = req.session.user.id;
+    const userId = req.session.user._id || req.session.user.id;
     const { productId } = req.body;
 
     const cart = await Cart.findOne({ userId });
