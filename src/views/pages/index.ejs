@@ -57,7 +57,7 @@
                     <p><%= (Number(product && product.price) || 0).toLocaleString('vi-VN') %>đ</p>
                     
                     <!-- Nút giỏ hàng để nằm ngoài thẻ <a> để khi bấm vào nó không bị nhảy sang trang chi tiết -->
-                    <button class="btn-add-cart">+</button>
+                    <button class="btn-add-cart" data-id="<%= product._id %>">+</button>
                   </div>
                 </div>
               <% } %>

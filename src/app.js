@@ -8,6 +8,7 @@ const app = express();
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const mongoSanitize = require('express-mongo-sanitize');
+const cartRoutes = require('./routes/cartRoutes');
 
 // 1. Khởi chạy kết nối Database
 connectDB();
@@ -72,6 +73,6 @@ app.use((req, res, next) => {
 // 7. Sử dụng route sản phẩm
 app.use('/products', productRoutes);
 app.use('/', authRoutes);
-
+app.use('/cart', cartRoutes);
 // 7. Xuất app để server.js sử dụng
 module.exports = app;
