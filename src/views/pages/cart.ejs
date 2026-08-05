@@ -14,19 +14,20 @@
         }
 
         .custom-icon {
-  width: 20px;      
-  height: 20px;   
-  object-fit: contain; 
-  vertical-align: middle; 
-  margin-right: 5px; 
-}
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
 
-.custom-icon-lg {
-  width: 24px;
-  height: 24px;
-  vertical-align: middle;
-  margin-right: 8px;
-}
+        .custom-icon-lg {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
         .qty-btn {
             width: 28px;
             height: 28px;
@@ -44,7 +45,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             margin: 0 4px;
-
         }
 
         .btn-delete {
@@ -54,14 +54,15 @@
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
         }
     </style>
 
-    <div
-        style="max-width: 900px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <div style="max-width: 900px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
         <h2><img src="/images/iconsImages/shopping-cart.png" alt="shopping-cart" class="custom-icon-lg"> Giỏ Hàng Của Bạn</h2>
 
-        <% if (cart && cart.items && cart.items.length> 0) { %>
+        <% if (cart && cart.items && cart.items.length > 0) { %>
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <thead>
                     <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6; text-align: left;">
@@ -90,29 +91,30 @@
                                                 <%= item.productId.price.toLocaleString('vi-VN') %>đ
                                             </td>
 
-                                            <!-- NÚT CỘNG TRỪ VÀ Ô NHẬP SỐ LƯỢNG -->
+                                            <!-- ĐÃ SỬA: Thêm type="button", sửa lỗi data-id và thêm id cho input -->
                                             <td style="padding: 12px;">
                                                 <div style="display: flex; align-items: center;">
-                                                    <button class="qty-btn btn-minus"
-                                                        data-id="<%= item.productId._id %>">-</button>
-                                                    <input type="number" class="qty-input"
+                                                    <button type="button" class="qty-btn btn-minus" data-id="<%= item.productId._id %>">-</button>
+                                                    
+                                                    <input type="number" class="qty-input" 
+                                                        id="qty-<%= item.productId._id %>"
                                                         data-id="<%= item.productId._id %>"
-                                                        data-price="<%= item.productId.price %>"
+                                                        data-price="<%= item.productId.price %>" 
                                                         value="<%= item.quantity %>" min="1" max="999">
-                                                    <button class="qty-btn btn-plus"
-                                                        data-id="<%= item.productId._id %>">+</button>
+                                                    
+                                                    <button type="button" class="qty-btn btn-plus" data-id="<%= item.productId._id %>">+</button>
                                                 </div>
                                             </td>
 
-                                            <td style="padding: 12px; color: #ee4d2d; font-weight: bold;"
-                                                id="item-total-<%= item.productId._id %>">
+                                            <td style="padding: 12px; color: #ee4d2d; font-weight: bold;" id="item-total-<%= item.productId._id %>">
                                                 <%= itemTotal.toLocaleString('vi-VN') %>đ
                                             </td>
 
-                                            <!-- NÚT XÓA SẢN PHẨM -->
+                                            <!-- ĐÃ SỬA: Thêm type="button" cho nút Xóa -->
                                             <td style="padding: 12px;">
-                                                <button class="btn-delete" data-id="<%= item.productId._id %>"><img src="/images/iconsImages/bin.png" alt="bin" class="custom-icon-lg">
-                                                    Xóa</button>
+                                                <button type="button" class="btn-delete" data-id="<%= item.productId._id %>">
+                                                    <img src="/images/iconsImages/bin.png" alt="bin" class="custom-icon"> Xóa
+                                                </button>
                                             </td>
                                         </tr>
                                         <% } %>
@@ -120,21 +122,18 @@
                 </tbody>
             </table>
 
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
                 <a href="/" style="color: #ee4d2d; text-decoration: none; font-weight: bold; font-size: 15px;">
                     ← Tiếp tục khám phá món ngon
                 </a>
                 <div style="text-align: right;">
                     <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #333;">
                         Tổng thanh toán:
-                        <span id="grand-total"
-                            style="color: #ee4d2d; font-size: 24px; font-weight: bold; margin-left: 8px;">
+                        <span id="grand-total" style="color: #ee4d2d; font-size: 24px; font-weight: bold; margin-left: 8px;">
                             <%= grandTotal.toLocaleString('vi-VN') %>đ
                         </span>
                     </h3>
-                    <button
-                        style="background: #ee4d2d; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s;">
+                    <button style="background: #ee4d2d; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s;">
                         Tiến Hành Đặt Hàng
                     </button>
                 </div>
@@ -142,59 +141,41 @@
             <% } else { %>
                 <div style="text-align: center; padding: 40px 0;">
                     <p style="color: #777; font-size: 16px;">Giỏ hàng của bạn đang trống.</p>
-                    <a href="/"
-                        style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; font-weight: bold;">←
-                        Tiếp tục khám phá món ngon</a>
+                    <a href="/" style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; font-weight: bold;">← Tiếp tục khám phá món ngon</a>
                 </div>
-                <% } %>
+            <% } %>
     </div>
 
     <script>
-        // 1. HÀM TÍNH TOÁN LẠI TỔNG TIỀN TOÀN GIỎ HÀNG
+        // 1. HÀM TÍNH TOÁN LẠI TỔNG TIỀN & CẬP NHẬT CHẤM ĐỎ HEADER
         function updateGrandTotal() {
-            let total = 0;
-            // Quét qua tất cả các ô số lượng trên màn hình
+            let totalMoney = 0;
+            let totalItems = 0;
+
             document.querySelectorAll('.qty-input').forEach(input => {
                 const qty = parseInt(input.value) || 1;
                 const price = parseInt(input.getAttribute('data-price')) || 0;
-                total += (qty * price);
+
+                totalMoney += (qty * price);
+                totalItems += qty; 
             });
-            // Hiển thị ra màn hình tổng mới
-            document.getElementById('grand-total').innerText = total.toLocaleString('vi-VN') + 'đ';
+
+            const grandTotalEl = document.getElementById('grand-total');
+            if (grandTotalEl) {
+                grandTotalEl.innerText = totalMoney.toLocaleString('vi-VN') + 'đ';
+            }
+
+            const cartBadge = document.getElementById('cart-badge');
+            if (cartBadge) {
+                cartBadge.innerText = totalItems;
+                cartBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+            }
         }
 
-       // 1. HÀM TÍNH TOÁN LẠI TỔNG TIỀN & CẬP NHẬT CHẤM ĐỎ HEADER
-  function updateGrandTotal() {
-    let totalMoney = 0;
-    let totalItems = 0; // Thêm biến đếm số lượng
-
-    // Quét qua tất cả các ô số lượng trên màn hình
-    document.querySelectorAll('.qty-input').forEach(input => {
-      const qty = parseInt(input.value) || 1;
-      const price = parseInt(input.getAttribute('data-price')) || 0;
-      
-      totalMoney += (qty * price);
-      totalItems += qty; // Cộng dồn số lượng
-    });
-
-    // Hiển thị ra màn hình tổng tiền mới
-    const grandTotalEl = document.getElementById('grand-total');
-    if (grandTotalEl) {
-      grandTotalEl.innerText = totalMoney.toLocaleString('vi-VN') + 'đ';
-    }
-
-    // Tự động cập nhật số chấm đỏ trên Header
-    const cartBadge = document.getElementById('cart-badge');
-    if (cartBadge) {
-      cartBadge.innerText = totalItems;
-      cartBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
-    }
-  }
-        // 3. HÀM XÓA SẢN PHẨM KHÔNG RELOAD TRANG
+        // 2. HÀM XÓA SẢN PHẨM KHÔNG RELOAD TRANG
         async function removeCartItem(productId, btnElement) {
-            if (!confirm('Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?')) return;
+            // if (!confirm('Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?')) return;
 
-            // Hiệu ứng mờ đi để báo hiệu đang xóa
             const row = btnElement.closest('tr');
             row.style.opacity = '0.4';
 
@@ -207,23 +188,68 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    row.remove(); // Xóa hẳn dòng HTML đi
-                    updateGrandTotal(); // Tính lại tổng tiền
+                    row.remove(); 
+                    updateGrandTotal(); 
                 } else {
-                    alert(data.message || 'Lỗi xóa sản phẩm');
+                    if (typeof showToast === 'function') {
+                        showToast(data.message || 'Lỗi xóa sản phẩm', 'error');
+                    } else {
+                        alert(data.message || 'Lỗi xóa sản phẩm');
+                    }
                     row.style.opacity = '1';
                 }
             } catch (err) {
                 console.error('Lỗi xóa sản phẩm:', err);
+                row.style.opacity = '1';
             }
         }
 
-        // 4. LẮNG NGHE SỰ KIỆN CLICKS
+        // 3. HÀM CẬP NHẬT SỐ LƯỢNG LÊN SERVER VÀ TÍNH TOÁN LẠI TIỀN
+        async function updateCartQuantity(productId, newQuantity, price) {
+            try {
+                const response = await fetch('/cart/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId, quantity: newQuantity })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    const inputEl = document.getElementById(`qty-${productId}`);
+                    if (inputEl) {
+                        inputEl.value = newQuantity; 
+                    }
+                    
+                    // Cập nhật lại cột "Thành tiền" của riêng món đó
+                    const itemTotalEl = document.getElementById(`item-total-${productId}`);
+                    if (itemTotalEl) {
+                        const newTotal = newQuantity * price;
+                        itemTotalEl.innerText = newTotal.toLocaleString('vi-VN') + 'đ';
+                    }
+
+                    updateGrandTotal();
+                } else {
+                    if (typeof showToast === 'function') {
+                        showToast(result.message || 'Lỗi cập nhật số lượng', 'error');
+                    } else {
+                        alert(result.message || 'Lỗi cập nhật số lượng');
+                    }
+                }
+            } catch (error) {
+                console.error('Lỗi khi gọi API update cart:', error);
+            }
+        }
+
+        // 4. LẮNG NGHE SỰ KIỆN CLICKS (Sử dụng .closest để bắt click chuẩn xác)
         document.addEventListener('click', function (e) {
-            // Nút Trừ (-)
-            if (e.target.classList.contains('btn-minus')) {
-                const id = e.target.getAttribute('data-id');
-                const input = document.querySelector(`.qty-input[data-id="${id}"]`);
+            
+            // Bắt nút Trừ
+            const minusBtn = e.target.closest('.btn-minus');
+            if (minusBtn) {
+                e.preventDefault();
+                const id = minusBtn.getAttribute('data-id');
+                const input = document.getElementById(`qty-${id}`);
                 if (input) {
                     let currentVal = parseInt(input.value) || 1;
                     let price = parseInt(input.getAttribute('data-price')) || 0;
@@ -231,23 +257,25 @@
                 }
             }
 
-            // Nút Cộng (+)
-            if (e.target.classList.contains('btn-plus')) {
-                const id = e.target.getAttribute('data-id');
-                const input = document.querySelector(`.qty-input[data-id="${id}"]`);
+            // Bắt nút Cộng
+            const plusBtn = e.target.closest('.btn-plus');
+            if (plusBtn) {
+                e.preventDefault();
+                const id = plusBtn.getAttribute('data-id');
+                const input = document.getElementById(`qty-${id}`);
                 if (input) {
                     let currentVal = parseInt(input.value) || 1;
                     let price = parseInt(input.getAttribute('data-price')) || 0;
-                    if (currentVal < 999) {
-                        updateCartQuantity(id, currentVal + 1, price);
-                    }
+                    if (currentVal < 999) updateCartQuantity(id, currentVal + 1, price);
                 }
             }
 
-            // Nút Xóa
-            if (e.target.classList.contains('btn-delete')) {
-                const id = e.target.getAttribute('data-id');
-                if (id) removeCartItem(id, e.target);
+            // Bắt nút Xóa
+            const deleteBtn = e.target.closest('.btn-delete');
+            if (deleteBtn) {
+                e.preventDefault();
+                const id = deleteBtn.getAttribute('data-id');
+                if (id) removeCartItem(id, deleteBtn);
             }
         });
 
@@ -261,12 +289,16 @@
                 if (isNaN(val) || val < 1) val = 1;
                 if (val > 999) {
                     val = 999;
-                    alert('Số lượng tối đa cho mỗi món là 999!');
+                    if (typeof showToast === 'function') {
+                        showToast('Số lượng tối đa cho mỗi món là 999!', 'warning');
+                    } else {
+                        alert('Số lượng tối đa cho mỗi món là 999!');
+                    }
                 }
-
                 updateCartQuantity(id, val, price);
             }
         });
+
     </script>
 
-    <%- include('../partials/footer') %>
+<%- include('../partials/footer') %>
