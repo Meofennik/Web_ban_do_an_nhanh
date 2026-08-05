@@ -251,7 +251,7 @@
   text-overflow: ellipsis; /* Hiện dấu ... ở cuối */
   word-break: break-word;
   font-size: 13px;
-  color: #666;
+  color: #e8e2e2;
   cursor: pointer;
 }
 

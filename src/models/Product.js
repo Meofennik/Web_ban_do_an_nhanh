@@ -16,9 +16,22 @@ const productSchema = new mongoose.Schema({
     min: 0
   },
 
-  category: {
+category: {
     type: String,
-    required: true
+    required: true,
+    enum: [
+      'Đồ ăn nhanh',
+      'Đồ uống',
+      'Combo Tiết kiệm',
+      'Ăn vặt & Tráng miệng',
+      'Cơm văn phòng',
+      'Cơm gia đình',
+      'Món nước',
+      'Đồ chay & Healthy',
+      'Ăn đêm',
+      'Thuốc & Tiện lợi'
+    ],
+    message: '{VALUE} không hợp lệ!'
   },
 
   imageUrl: {

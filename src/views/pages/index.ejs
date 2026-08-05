@@ -1,6 +1,5 @@
 <%- include('../partials/header') %>
   <style>
-
     .flying-img {
       position: fixed;
       z-index: 99999;
@@ -87,7 +86,9 @@
                                 <h4>
                                   <%= product && product.name ? product.name : 'Không tên' %>
                                 </h4>
-                                <span class="address"><%= product.storeAddress %></span>
+                                <span class="address">
+                                  <%= product.storeAddress %>
+                                </span>
                               </a>
 
                               <div class="food-bottom">
