@@ -59,10 +59,12 @@
         }
     </style>
 
-    <div style="max-width: 900px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h2><img src="/images/iconsImages/shopping-cart.png" alt="shopping-cart" class="custom-icon-lg"> Giỏ Hàng Của Bạn</h2>
+    <div
+        style="max-width: 900px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h2><img src="/images/iconsImages/shopping-cart.png" alt="shopping-cart" class="custom-icon-lg"> Giỏ Hàng Của
+            Bạn</h2>
 
-        <% if (cart && cart.items && cart.items.length > 0) { %>
+        <% if (cart && cart.items && cart.items.length> 0) { %>
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <thead>
                     <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6; text-align: left;">
@@ -80,12 +82,21 @@
                                 <% const itemTotal=item.productId.price * item.quantity; %>
                                     <% grandTotal +=itemTotal; %>
                                         <tr style="border-bottom: 1px solid #eee;">
-                                            <td style="padding: 12px; display: flex; align-items: center; gap: 12px;">
+                                            <td
+                                                style="padding: 12px; display: flex; align-items: flex-start; gap: 12px;">
                                                 <img src="<%= item.productId.imageUrl %>"
                                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
-                                                <strong>
-                                                    <%= item.productId.name %>
-                                                </strong>
+                                                <div style="flex: 1;">
+                                                    <strong style="display: block; margin-bottom: 5px;">
+                                                        <%= item.productId.name %>
+                                                    </strong>
+                                                    <!-- Ô nhập ghi chú mới -->
+                                                    <input type="text" class="note-input"
+                                                        data-id="<%= item.productId._id %>"
+                                                        value="<%= item.note || '' %>"
+                                                        placeholder="Ghi chú (VD: Không hành, ít cay...)"
+                                                        style="width: 100%; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box; outline: none;">
+                                                </div>
                                             </td>
                                             <td style="padding: 12px;">
                                                 <%= item.productId.price.toLocaleString('vi-VN') %>đ
@@ -94,26 +105,31 @@
                                             <!-- ĐÃ SỬA: Thêm type="button", sửa lỗi data-id và thêm id cho input -->
                                             <td style="padding: 12px;">
                                                 <div style="display: flex; align-items: center;">
-                                                    <button type="button" class="qty-btn btn-minus" data-id="<%= item.productId._id %>">-</button>
-                                                    
-                                                    <input type="number" class="qty-input" 
+                                                    <button type="button" class="qty-btn btn-minus"
+                                                        data-id="<%= item.productId._id %>">-</button>
+
+                                                    <input type="number" class="qty-input"
                                                         id="qty-<%= item.productId._id %>"
                                                         data-id="<%= item.productId._id %>"
-                                                        data-price="<%= item.productId.price %>" 
+                                                        data-price="<%= item.productId.price %>"
                                                         value="<%= item.quantity %>" min="1" max="999">
-                                                    
-                                                    <button type="button" class="qty-btn btn-plus" data-id="<%= item.productId._id %>">+</button>
+
+                                                    <button type="button" class="qty-btn btn-plus"
+                                                        data-id="<%= item.productId._id %>">+</button>
                                                 </div>
                                             </td>
 
-                                            <td style="padding: 12px; color: #ee4d2d; font-weight: bold;" id="item-total-<%= item.productId._id %>">
+                                            <td style="padding: 12px; color: #ee4d2d; font-weight: bold;"
+                                                id="item-total-<%= item.productId._id %>">
                                                 <%= itemTotal.toLocaleString('vi-VN') %>đ
                                             </td>
 
                                             <!-- ĐÃ SỬA: Thêm type="button" cho nút Xóa -->
                                             <td style="padding: 12px;">
-                                                <button type="button" class="btn-delete" data-id="<%= item.productId._id %>">
-                                                    <img src="/images/iconsImages/bin.png" alt="bin" class="custom-icon"> Xóa
+                                                <button type="button" class="btn-delete"
+                                                    data-id="<%= item.productId._id %>">
+                                                    <img src="/images/iconsImages/bin.png" alt="bin"
+                                                        class="custom-icon"> Xóa
                                                 </button>
                                             </td>
                                         </tr>
@@ -122,28 +138,33 @@
                 </tbody>
             </table>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
                 <a href="/" style="color: #ee4d2d; text-decoration: none; font-weight: bold; font-size: 15px;">
                     ← Tiếp tục khám phá món ngon
                 </a>
                 <div style="text-align: right;">
                     <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #333;">
                         Tổng thanh toán:
-                        <span id="grand-total" style="color: #ee4d2d; font-size: 24px; font-weight: bold; margin-left: 8px;">
+                        <span id="grand-total"
+                            style="color: #ee4d2d; font-size: 24px; font-weight: bold; margin-left: 8px;">
                             <%= grandTotal.toLocaleString('vi-VN') %>đ
                         </span>
                     </h3>
-                    <button style="background: #ee4d2d; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s;">
+                    <a href="/order/checkout"
+                        style="background: #ee4d2d; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-block;">
                         Tiến Hành Đặt Hàng
-                    </button>
+                    </a>
                 </div>
             </div>
             <% } else { %>
                 <div style="text-align: center; padding: 40px 0;">
                     <p style="color: #777; font-size: 16px;">Giỏ hàng của bạn đang trống.</p>
-                    <a href="/" style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; font-weight: bold;">← Tiếp tục khám phá món ngon</a>
+                    <a href="/"
+                        style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; font-weight: bold;">←
+                        Tiếp tục khám phá món ngon</a>
                 </div>
-            <% } %>
+                <% } %>
     </div>
 
     <script>
@@ -157,7 +178,7 @@
                 const price = parseInt(input.getAttribute('data-price')) || 0;
 
                 totalMoney += (qty * price);
-                totalItems += qty; 
+                totalItems += qty;
             });
 
             const grandTotalEl = document.getElementById('grand-total');
@@ -188,8 +209,8 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    row.remove(); 
-                    updateGrandTotal(); 
+                    row.remove();
+                    updateGrandTotal();
                 } else {
                     if (typeof showToast === 'function') {
                         showToast(data.message || 'Lỗi xóa sản phẩm', 'error');
@@ -218,9 +239,9 @@
                 if (response.ok && result.success) {
                     const inputEl = document.getElementById(`qty-${productId}`);
                     if (inputEl) {
-                        inputEl.value = newQuantity; 
+                        inputEl.value = newQuantity;
                     }
-                    
+
                     // Cập nhật lại cột "Thành tiền" của riêng món đó
                     const itemTotalEl = document.getElementById(`item-total-${productId}`);
                     if (itemTotalEl) {
@@ -243,7 +264,7 @@
 
         // 4. LẮNG NGHE SỰ KIỆN CLICKS (Sử dụng .closest để bắt click chuẩn xác)
         document.addEventListener('click', function (e) {
-            
+
             // Bắt nút Trừ
             const minusBtn = e.target.closest('.btn-minus');
             if (minusBtn) {
@@ -299,6 +320,29 @@
             }
         });
 
+        // 6. LẮNG NGHE SỰ KIỆN KHI NGƯỜI DÙNG NHẬP GHI CHÚ
+document.addEventListener('change', async function (e) {
+    if (e.target.classList.contains('note-input')) {
+        const productId = e.target.getAttribute('data-id');
+        const note = e.target.value;
+
+        try {
+            const response = await fetch('/cart/update-note', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, note })
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                alert(result.message || 'Lỗi cập nhật ghi chú');
+            }
+        } catch (error) {
+            console.error('Lỗi khi gọi API update note:', error);
+        }
+    }
+});
+
     </script>
 
-<%- include('../partials/footer') %>
+    <%- include('../partials/footer') %>

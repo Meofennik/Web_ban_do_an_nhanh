@@ -153,6 +153,26 @@ html {
 .btn-user-profile:hover {
   background: #444;
 }
+.back-home {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(238,77,45,0.12);
+      color: #ee4d2d;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+.back-home:hover {
+  background: rgba(253, 154, 154, 0.15); /* Hơi sáng lên một chút */
+  color: #ee4d2d;
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateX(-4px); /* Lướt nhẹ sang trái báo hiệu hành động "Quay lại" */
+}
+ 
 
 /* Khung menu bị ẩn mặc định */
 .dropdown-content {

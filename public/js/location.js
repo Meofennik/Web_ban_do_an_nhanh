@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Debounced suggestions while typing
   function debounce(fn, wait) {
     let t;
-    return function(...args) {
+    return function (...args) {
       clearTimeout(t);
       t = setTimeout(() => fn.apply(this, args), wait);
     };
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function showSuggestions(items) {
     if (!suggestionsBox) return;
     suggestionsBox.innerHTML = '';
-    if (!items || !items.length) { suggestionsBox.style.display = 'none'; suggestionsBox.setAttribute('aria-hidden','true'); return; }
+    if (!items || !items.length) { suggestionsBox.style.display = 'none'; suggestionsBox.setAttribute('aria-hidden', 'true'); return; }
     items.forEach(r => {
       const el = document.createElement('div');
       el.className = 'item';
@@ -84,12 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAddress(el.textContent);
         if (confirmBox) confirmBox.classList.add('open');
         suggestionsBox.style.display = 'none';
-        suggestionsBox.setAttribute('aria-hidden','true');
+        suggestionsBox.setAttribute('aria-hidden', 'true');
       });
       suggestionsBox.appendChild(el);
     });
     suggestionsBox.style.display = 'block';
-    suggestionsBox.setAttribute('aria-hidden','false');
+    suggestionsBox.setAttribute('aria-hidden', 'false');
   }
 
   const onInput = debounce(() => {
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!suggestionsBox) return;
       if (!document.querySelector('.map-card').contains(e.target)) {
         suggestionsBox.style.display = 'none';
-        suggestionsBox.setAttribute('aria-hidden','true');
+        suggestionsBox.setAttribute('aria-hidden', 'true');
       }
     });
   }
@@ -163,11 +163,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // 👇 ĐÃ SỬA: Tích hợp logic quay về trang trước đó vào Nút Xác Nhận
   if (saveButton && addressText) {
     saveButton.onclick = () => {
       const address = addressText.textContent || 'Không có địa chỉ';
       localStorage.setItem('userAddress', address);
-      window.location.href = '/';
+      
+      // Kiểm tra và quay lại đúng trang khách hàng vừa đứng
+      if (document.referrer) {
+        window.location.href = document.referrer;
+      } else {
+        window.location.href = '/'; 
+      }
     };
   }
 

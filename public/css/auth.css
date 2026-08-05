@@ -71,7 +71,6 @@ body {
   position: relative;
   z-index: 1;
 }
-
 .auth-box {
   background: rgba(255, 255, 255, 0.15); 
   backdrop-filter: blur(16px);           

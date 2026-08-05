@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán đơn hàng</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div style="max-width: 1000px; margin: 40px auto; display: flex; gap: 30px;">
+
+        <!-- CỘT TRÁI: FORM THÔNG TIN NGƯỜI NHẬN -->
+        <div
+            style="flex: 2; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <a href="/cart" class="back-home">❮ Quay lại giỏ hàng</a>
+            <h2 style="margin-top: 0; text-align: center;"> Địa chỉ giao hàng</h2>
+
+            <!-- Form này sẽ gửi lên route POST /order/create ở bước sau -->
+            <form action="/order/create" method="POST" id="checkout-form">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Họ và tên người nhận</label>
+                    <input type="text" name="name" value="<%= user.fullName || user.name || '' %>" required
+                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Số điện thoại</label>
+                    <input type="text" name="phone" value="<%= user.phone || '' %>" required
+                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <label style="font-weight: bold; margin: 0;">Địa chỉ nhận hàng</label>
+                        <a href="/location"
+                            style="color: #ee4d2d; text-decoration: none; font-weight: bold; font-size: 14px; cursor: pointer;">
+                            Thay đổi
+                        </a>
+                    </div>
+                    <input type="text" id="address-input" name="address"
+                        value="<%= user && user.address ? user.address : '' %>" required readonly
+                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: #f0f0f0; color: #555; outline: none; transition: 0.3s;">
+                </div>
+
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Ghi chú cho người giao hàng (Tùy
+                        chọn)</label>
+                    <textarea name="notes" placeholder="VD: Bún chả không hành, nhiều nước chấm..." rows="3"
+                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: none; box-sizing: border-box;"></textarea>
+                </div>
+
+                <h3 style="border-top: 1px solid #eee; padding-top: 20px;">Phương thức thanh toán</h3>
+                <div style="margin-bottom: 10px;">
+                    <label style="cursor: pointer;">
+                        <input type="radio" name="paymentMethod" value="COD" checked>
+                        💵 Thanh toán khi nhận hàng (COD)
+                    </label>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="cursor: pointer;">
+                        <input type="radio" name="paymentMethod" value="BANK_TRANSFER">
+                        💳 Chuyển khoản ngân hàng
+                    </label>
+                </div>
+
+                <button type="submit"
+                    style="width: 100%; background: #ee4d2d; color: white; border: none; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer;">
+                    ĐẶT HÀNG NGAY
+                </button>
+            </form>
+        </div>
+
+        <!-- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG -->
+        <div
+            style="flex: 1; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); height: fit-content;">
+            <h3 style="margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">Tóm tắt đơn hàng</h3>
+
+            <% let grandTotal=0; %>
+                <% cart.items.forEach(item=> { %>
+                    <% if (item.productId) { %>
+                        <% const itemTotal=item.productId.price * item.quantity; %>
+                            <% grandTotal +=itemTotal; %>
+
+                                <div
+                                    style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dashed #eee; padding-bottom: 10px;">
+                                    <div>
+                                        <div style="font-weight: bold;">
+                                            <%= item.productId.name %>
+                                        </div>
+                                        <div style="color: #777; font-size: 13px;">SL: <%= item.quantity %> x <%=
+                                                    item.productId.price.toLocaleString('vi-VN') %>đ</div>
+                                    </div>
+                                    <div style="font-weight: bold;">
+                                        <%= itemTotal.toLocaleString('vi-VN') %>đ
+                                    </div>
+                                </div>
+                                <% } %>
+                                    <% }) %>
+
+                                        <div
+                                            style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 18px;">
+                                            <strong>TỔNG CỘNG:</strong>
+                                            <strong style="color: #ee4d2d;">
+                                                <%= grandTotal.toLocaleString('vi-VN') %>đ
+                                            </strong>
+                                        </div>
+        </div>
+
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedAddress = localStorage.getItem('userAddress');     
+        const addressInput = document.getElementById('address-input');
+        if (savedAddress && addressInput) {
+            addressInput.value = savedAddress;
+        }
+    });
+</script>
+</body>
+
+</html>

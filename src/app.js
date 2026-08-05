@@ -13,6 +13,7 @@ const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const Cart = require('./models/Cart');
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 
@@ -83,6 +84,7 @@ app.use(async (req, res, next) => {
 app.use('/products', productRoutes);
 app.use('/', authRoutes);
 app.use('/cart', cartRoutes);
+app.use('/order', orderRoutes);
 
 // Routes render các trang tĩnh
 app.get('/', (req, res) => {
