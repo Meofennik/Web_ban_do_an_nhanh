@@ -1,0 +1,204 @@
+<%- include('../partials/header') %>
+<style>
+  body { background-color: #f5f5f5; }
+  .store-orders-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+  .page-title { margin-bottom: 25px; color: #333; font-size: 24px; }
+  
+  /* Tabs */
+  .tabs-header { display: flex; background: #fff; border-radius: 8px 8px 0 0; border-bottom: 1px solid #ddd; }
+  .tab-btn { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; color: #555; transition: 0.2s; border-bottom: 3px solid transparent; }
+  .tab-btn:hover { background: #fafafa; color: #ee4d2d; }
+  .tab-btn.active { color: #ee4d2d; border-bottom-color: #ee4d2d; background: #fff0ed; }
+  
+  .tab-content { display: none; background: #fff; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); min-height: 400px; }
+  .tab-content.active { display: block; }
+
+  /* Order Card */
+  .order-card { border: 1px solid #eee; border-radius: 8px; padding: 20px; margin-bottom: 20px; transition: 0.2s; }
+  .order-card:hover { border-color: #ee4d2d; box-shadow: 0 4px 12px rgba(238,77,45,0.08); }
+  .order-header { display: flex; justify-content: space-between; border-bottom: 1px dashed #eee; padding-bottom: 15px; margin-bottom: 15px; }
+  .customer-info p { margin: 5px 0; font-size: 14px; color: #555; }
+  .order-items { background: #f9f9f9; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+  .order-item-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+  .order-item-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .note-text { color: #d9534f; font-size: 12px; font-style: italic; display: block; margin-top: 4px; }
+  
+  .action-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+  .btn-action { padding: 10px 20px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; }
+  .btn-accept { background: #ee4d2d; color: white; }
+  .btn-accept:hover { background: #d73d22; }
+  .btn-reject { background: #fff; border: 1px solid #d9534f; color: #d9534f; }
+  .btn-reject:hover { background: #fdf5f5; }
+  .btn-ship { background: #007bff; color: white; }
+  .btn-complete { background: #28a745; color: white; }
+
+  /* Modal CSS (Tái sử dụng) */
+  .custom-modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 99999; opacity: 0; visibility: hidden; transition: 0.3s ease; }
+  .custom-modal-overlay.show { opacity: 1; visibility: visible; }
+  .custom-modal-box { background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; transform: translateY(-20px) scale(0.95); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  .custom-modal-overlay.show .custom-modal-box { transform: translateY(0) scale(1); }
+  .custom-modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
+  .btn-modal-cancel { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #f0f0f0; color: #333; font-weight: bold; }
+  .btn-modal-ok { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #ee4d2d; color: #fff; font-weight: bold; }
+</style>
+
+<div class="store-orders-container">
+  <h2 class="page-title">Quản lý đơn đặt hàng</h2>
+
+  <!-- Thanh Tabs -->
+  <div class="tabs-header">
+    <div class="tab-btn active" onclick="switchStoreTab('tab-pending', this)">Đơn Mới (Chờ xác nhận)</div>
+    <div class="tab-btn" onclick="switchStoreTab('tab-preparing', this)">Đang chuẩn bị</div>
+    <div class="tab-btn" onclick="switchStoreTab('tab-shipping', this)">Đang giao hàng</div>
+    <div class="tab-btn" onclick="switchStoreTab('tab-history', this)">Lịch sử đơn</div>
+  </div>
+
+  <!-- BỘ LỌC ĐƠN HÀNG (Macro để tránh lặp code) -->
+  <% function renderOrders(filterStatus, emptyMsg) { %>
+    <% const filteredOrders = orders.filter(o => {
+         if (filterStatus === 'History') return o.status === 'Delivered' || o.status === 'Cancelled';
+         return o.status === filterStatus;
+       }); %>
+    
+    <% if (filteredOrders.length > 0) { %>
+      <% filteredOrders.forEach(order => { %>
+        <div class="order-card">
+          <!-- Thông tin khách hàng & Thời gian -->
+          <div class="order-header">
+            <div class="customer-info">
+              <strong style="font-size: 16px;">👤 <%= order.customerInfo.name %></strong>
+              <p>📞 <strong>SĐT:</strong> <%= order.customerInfo.phone %></p>
+              <p>📍 <strong>Giao đến:</strong> <%= order.customerInfo.address %></p>
+              <% if (order.customerInfo.deliveryNote) { %>
+                <p>📝 <strong>Ghi chú giao hàng:</strong> <span style="color: #d9534f; font-weight: bold;"><%= order.customerInfo.deliveryNote %></span></p>
+              <% } %>
+            </div>
+            <div style="text-align: right;">
+              <span style="display: block; font-weight: bold; font-size: 14px; color: #333;">Mã đơn: #<%= order._id.toString().substring(0, 8).toUpperCase() %></span>
+              <span style="color: #888; font-size: 13px;"><%= new Date(order.createdAt).toLocaleString('vi-VN') %></span>
+            </div>
+          </div>
+
+          <!-- Danh sách món ăn -->
+          <div class="order-items">
+            <% order.items.forEach(item => { %>
+              <div class="order-item-row">
+                <div>
+                  <strong><%= item.quantity %>x</strong> <%= item.name %>
+                  <% if (item.note) { %>
+                    <span class="note-text">Ghi chú bếp: <%= item.note %></span>
+                  <% } %>
+                </div>
+                <div><%= (item.price * item.quantity).toLocaleString('vi-VN') %>đ</div>
+              </div>
+            <% }) %>
+          </div>
+
+          <!-- Tổng tiền & Nút Hành động -->
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 18px; font-weight: bold; color: #ee4d2d;">
+              Tổng cộng: <%= order.totalAmount.toLocaleString('vi-VN') %>đ
+            </div>
+            
+            <div class="action-buttons">
+              <!-- Nút cho đơn MỚI -->
+              <% if (order.status === 'Pending') { %>
+                <form action="/order/update-status/<%= order._id %>" method="POST" onsubmit="showCustomConfirm(event, this, 'Hủy đơn hàng này sẽ thông báo tới khách hàng. Xác nhận từ chối?');">
+                  <input type="hidden" name="action" value="reject">
+                  <button type="submit" class="btn-action btn-reject">Từ chối</button>
+                </form>
+                <form action="/order/update-status/<%= order._id %>" method="POST">
+                  <input type="hidden" name="action" value="accept">
+                  <button type="submit" class="btn-action btn-accept">Bấm Nhận đơn</button>
+                </form>
+              <% } %>
+
+              <!-- Nút cho đơn ĐANG CHUẨN BỊ -->
+              <% if (order.status === 'Preparing') { %>
+                <form action="/order/update-status/<%= order._id %>" method="POST">
+                  <input type="hidden" name="action" value="ship">
+                  <button type="submit" class="btn-action btn-ship">Giao cho Shipper</button>
+                </form>
+              <% } %>
+
+              <!-- Nút cho đơn ĐANG GIAO -->
+              <% if (order.status === 'Shipping') { %>
+                <form action="/order/update-status/<%= order._id %>" method="POST" onsubmit="showCustomConfirm(event, this, 'Xác nhận đơn hàng đã được giao thành công tới khách?');">
+                  <input type="hidden" name="action" value="complete">
+                  <button type="submit" class="btn-action btn-complete">Hoàn thành đơn</button>
+                </form>
+              <% } %>
+
+              <!-- Lịch sử trạng thái -->
+              <% if (order.status === 'Delivered') { %>
+                <span style="color: #28a745; font-weight: bold;">✔ Đã giao thành công</span>
+              <% } else if (order.status === 'Cancelled') { %>
+                <span style="color: #d9534f; font-weight: bold;">✖ Đã hủy</span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div style="text-align: center; padding: 50px 0; color: #777;">
+        <p><%= emptyMsg %></p>
+      </div>
+    <% } %>
+  <% } %>
+
+  <!-- NỘI DUNG TỪNG TAB -->
+  <div id="tab-pending" class="tab-content active">
+    <% renderOrders('Pending', 'Hiện không có đơn hàng mới nào chờ xác nhận.') %>
+  </div>
+  <div id="tab-preparing" class="tab-content">
+    <% renderOrders('Preparing', 'Không có đơn hàng nào đang trong quá trình chuẩn bị.') %>
+  </div>
+  <div id="tab-shipping" class="tab-content">
+    <% renderOrders('Shipping', 'Không có đơn hàng nào đang giao.') %>
+  </div>
+  <div id="tab-history" class="tab-content">
+    <% renderOrders('History', 'Lịch sử giao dịch trống.') %>
+  </div>
+
+</div>
+
+<!-- Modal Xác Nhận -->
+<div id="customConfirmModal" class="custom-modal-overlay">
+  <div class="custom-modal-box">
+    <h3 style="margin-top: 0;">Xác nhận thao tác</h3>
+    <p id="customConfirmMessage">Bạn có chắc chắn?</p>
+    <div class="custom-modal-actions">
+      <button onclick="closeCustomConfirm()" class="btn-modal-cancel">Đóng</button>
+      <button id="customConfirmOk" class="btn-modal-ok">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Chuyển Tab
+  function switchStoreTab(tabId, element) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    element.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  // Hộp thoại Modal
+  let formToSubmit = null;
+  function showCustomConfirm(event, formElement, message) {
+    event.preventDefault();
+    formToSubmit = formElement;
+    document.getElementById('customConfirmMessage').innerText = message;
+    document.getElementById('customConfirmModal').classList.add('show');
+  }
+  function closeCustomConfirm() {
+    document.getElementById('customConfirmModal').classList.remove('show');
+    formToSubmit = null;
+  }
+  document.getElementById('customConfirmOk').addEventListener('click', function() {
+    if (formToSubmit) formToSubmit.submit();
+    closeCustomConfirm();
+  });
+</script>
+
+<%- include('../partials/footer') %>

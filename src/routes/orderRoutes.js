@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart'); 
 const Order = require('../models/Order'); 
+const Product = require('../models/Product'); 
 
 // GET: Hiển thị trang Thanh toán (Đường dẫn thực tế sẽ là /order/checkout)
 router.get('/checkout', async (req, res) => {
@@ -108,5 +109,81 @@ router.post('/create', async (req, res) => {
   }
 });
 
+
+
+// GET: Trang quản lý đơn hàng của Cửa hàng
+router.get('/store-orders', async (req, res) => {
+    try {
+        if (!req.session || !req.session.user) {
+            return res.redirect('/login');
+        }
+
+        const userId = req.session.user._id || req.session.user.id;
+
+        // 1. Tìm tất cả các món ăn do tài khoản này đăng bán
+        const myProducts = await Product.find({ ownerId: userId }).select('_id');
+        const myProductIds = myProducts.map(p => p._id);
+
+        // 2. Tìm tất cả các Đơn hàng có chứa ít nhất 1 món ăn thuộc cửa hàng này
+        const storeOrders = await Order.find({
+            'items.productId': { $in: myProductIds }
+        }).sort({ createdAt: -1 });
+
+        // 3. Render ra giao diện
+        res.render('pages/store-orders', { orders: storeOrders });
+
+    } catch (error) {
+        console.error('Lỗi tải trang quản lý đơn hàng:', error);
+        res.status(500).send('Lỗi máy chủ');
+    }
+});
+
+// POST: Chủ cửa hàng cập nhật trạng thái đơn
+router.post('/update-status/:id', async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const { action } = req.body; // action: 'accept', 'reject', 'ship', 'complete'
+
+        let currentStatusCondition = '';
+        let newStatus = '';
+
+        // Phân loại hành động và khóa trạng thái cũ
+        if (action === 'accept') {
+            currentStatusCondition = 'Pending';
+            newStatus = 'Preparing';
+        } else if (action === 'reject') {
+            currentStatusCondition = 'Pending';
+            newStatus = 'Cancelled';
+        } else if (action === 'ship') {
+            currentStatusCondition = 'Preparing';
+            newStatus = 'Shipping';
+        } else if (action === 'complete') {
+            currentStatusCondition = 'Shipping';
+            newStatus = 'Delivered';
+        }
+
+        // TÌM VÀ CẬP NHẬT KÈM ĐIỀU KIỆN TRẠNG THÁI CŨ
+        const updatedOrder = await Order.findOneAndUpdate(
+            { _id: orderId, status: currentStatusCondition },
+            { status: newStatus },
+            { new: after }
+        );
+
+        // Nếu updatedOrder = null nghĩa là trạng thái đã bị đổi trước đó (ví dụ khách vừa bấm hủy)
+        if (!updatedOrder) {
+            return res.status(400).send(`
+                <script>
+                    alert('Thao tác thất bại! Đơn hàng này đã bị khách hủy hoặc đã được xử lý bởi thiết bị khác.');
+                    window.location.href = '/order/store-orders';
+                </script>
+            `);
+        }
+
+        res.redirect('/order/store-orders');
+    } catch (error) {
+        console.error('Lỗi cập nhật trạng thái đơn:', error);
+        res.status(500).send('Lỗi hệ thống');
+    }
+});
 
 module.exports = router;
