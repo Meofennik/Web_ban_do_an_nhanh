@@ -1,0 +1,528 @@
+<%- include('../partials/header') %>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .profile-layout {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        /* ===============================
+     CỘT TRÁI - MENU (SIDEBAR)
+     =============================== */
+        .sidebar-menu {
+            width: 250px;
+            flex-shrink: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item {
+            padding: 16px 20px;
+            cursor: pointer;
+            color: #333;
+            font-weight: 500;
+            font-size: 15px;
+            transition: 0.2s;
+            border-left: 3px solid transparent;
+            text-decoration: none;
+            display: block;
+        }
+
+        .menu-item:hover {
+            color: #ee4d2d;
+            background: #fafafa;
+        }
+
+        .menu-item.active {
+            color: #ee4d2d;
+            border-left-color: #ee4d2d;
+            background: #fff0ed;
+        }
+
+        /* ===============================
+     CỘT PHẢI - NỘI DUNG (TABS)
+     =============================== */
+        .content-area {
+            flex-grow: 1;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        /* Ẩn mặc định */
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Hiện khi được gắn class active */
+
+        /* Định dạng Form */
+        .content-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        .content-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .content-header p {
+            margin: 6px 0 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            width: 180px;
+            color: #555;
+            text-align: right;
+            padding-right: 25px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            flex: 1;
+            max-width: 400px;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            border-color: #ee4d2d;
+        }
+
+        .form-text {
+            flex: 1;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .btn-save {
+            background: #ee4d2d;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 205px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #d73d22;
+        }
+
+        /* Giao diện Đơn hàng */
+        .order-item {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-Pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-Shipping {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-Delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* ===============================
+     CSS CHO HỘP THOẠI XÁC NHẬN (MODAL)
+     =============================== */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            /* Hiệu ứng ẩn mặc định */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .custom-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-modal-box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            /* Hiệu ứng trượt và phóng to mượt mà */
+            transform: translateY(-20px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .custom-modal-overlay.show .custom-modal-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .custom-modal-box h3 {
+            margin: 0 0 10px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .custom-modal-box p {
+            color: #555;
+            margin: 0 0 25px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .custom-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .custom-modal-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .btn-modal-cancel {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-modal-cancel:hover {
+            background: #e4e4e4;
+        }
+
+        .btn-modal-ok {
+            background: #ee4d2d;
+            color: #fff;
+        }
+
+        .btn-modal-ok:hover {
+            background: #d73d22;
+            box-shadow: 0 4px 10px rgba(238, 77, 45, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .profile-layout {
+                flex-direction: column;
+            }
+
+            .sidebar-menu {
+                width: 100%;
+            }
+
+            .form-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-group label {
+                text-align: left;
+                margin-bottom: 8px;
+            }
+
+            .btn-save {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+
+    <div class="profile-layout">
+
+        <!-- BÊN TRÁI: SIDEBAR MENU -->
+        <div class="sidebar-menu">
+            <div class="sidebar-header">
+                <div class="avatar-placeholder">
+                    <%= (userInfo.storeName || userInfo.fullName || userInfo.name || 'U' ).charAt(0).toUpperCase() %>
+                </div>
+                <div>
+                    <div style="font-weight: bold; color: #333; font-size: 15px;">
+                        <%= userInfo.storeName || userInfo.fullName || userInfo.name || 'Người dùng' %>
+                    </div>
+                    <div style="font-size: 13px; color: #777;">Sửa hồ sơ</div>
+                </div>
+            </div>
+            <div class="menu-list">
+                <div class="menu-item active" onclick="switchTab('tab-orders', this)">Đơn mua</div>
+                <div class="menu-item " onclick="switchTab('tab-profile', this)">Tài khoản của tôi</div>
+                <div class="menu-item" onclick="switchTab('tab-password', this)">Đổi mật khẩu</div>
+                <a href="/profile/logout" class="menu-item" style="color: #d9534f;">Đăng xuất</a>
+            </div>
+        </div>
+
+        <!-- BÊN PHẢI: NỘI DUNG TƯƠNG ỨNG -->
+        <div class="content-area">
+            <!-- MÀN HÌNH 1: LỊCH SỬ ĐƠN MUA -->
+            <div id="tab-orders" class="tab-content active">
+                <div class="content-header">
+                    <h2>Đơn hàng của tôi</h2>
+                    <p>Danh sách các giao dịch mua hàng bạn đã thực hiện</p>
+                </div>
+                <% if (orders && orders.length> 0) { %>
+                    <% orders.forEach(order=> { %>
+                        <div class="order-item">
+                            <div>
+                                <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px; color: #333;">
+                                    Mã đơn: #<%= order._id.toString().substring(0, 8).toUpperCase() %>
+                                </div>
+                                <div style="color: #777; font-size: 13px; margin-bottom: 8px;">
+                                    Ngày đặt: <%= new Date(order.createdAt).toLocaleString('vi-VN') %>
+                                </div>
+                                <div style="color: #ee4d2d; font-weight: bold; font-size: 16px;">
+                                    <%= order.totalAmount.toLocaleString('vi-VN') %>đ
+                                </div>
+                            </div>
+
+                            <!-- Cột bên phải: Trạng thái và Nút Hủy -->
+                            <div
+                                style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+                                <span class="order-status status-<%= order.status %>">
+                                    <% let st=order.status; if (st==='Pending' ) st='Chờ xác nhận' ; if
+                                        (st==='Preparing' ) st='Đang chuẩn bị' ; if (st==='Shipping' ) st='Đang giao' ;
+                                        if (st==='Delivered' ) st='Hoàn thành' ; if (st==='Cancelled' ) st='Đã hủy' ; %>
+                                        <%= st %>
+                                </span>
+
+                                <!-- CHỈ HIỂN THỊ NÚT HỦY KHI ĐƠN HÀNG Ở TRẠNG THÁI "PENDING" -->
+                                <% if (order.status==='Pending' ) { %>
+                                    <form action="/profile/cancel-order/<%= order._id %>" method="POST"
+                                        onsubmit="showCustomConfirm(event, this, 'Bạn có chắc chắn muốn hủy đơn hàng này không? Không thể khôi phục sau khi hủy.');"
+                                        style="margin: 0;">
+                                        <button type="submit"
+                                            style="background: #f8d7da; color: #721c24; border: none; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(220,53,69,0.15);">
+                                            Hủy đơn
+                                        </button>
+                                    </form>
+                                    <% } %>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } else { %>
+                                <div style="text-align: center; padding: 50px 0; color: #777;">
+                                    <p>Chưa có đơn hàng nào.</p>
+                                </div>
+                                <% } %>
+            </div>
+
+            <!-- MÀN HÌNH 2: SỬA HỒ SƠ -->
+            <div id="tab-profile" class="tab-content">
+                <div class="content-header">
+                    <h2>Hồ sơ của tôi</h2>
+                    <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+                </div>
+                <form action="/profile/update-info" method="POST">
+                    <div class="form-group">
+                        <label>Tên đăng nhập</label>
+                        <div class="form-text">
+                            <%= userInfo.username || userInfo.email || 'Chưa cập nhật' %>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên hiển thị / Cửa hàng</label>
+                        <input type="text" name="name" value="<%= userInfo.storeName || userInfo.name || '' %>"
+                            placeholder="Biệt danh hoặc Tên quán...">
+                    </div>
+                    <div class="form-group">
+                        <label>Họ và tên thực</label>
+                        <input type="text" name="fullName" value="<%= userInfo.fullName || '' %>"
+                            placeholder="Ví dụ: Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" name="phone" value="<%= userInfo.phone || '' %>" placeholder="09xxxxxxxx">
+                    </div>
+                    <button type="submit" class="btn-save">Lưu</button>
+                </form>
+            </div>
+
+            <!-- MÀN HÌNH 3: ĐỔI MẬT KHẨU -->
+            <div id="tab-password" class="tab-content">
+                <div class="content-header">
+                    <h2>Đổi mật khẩu</h2>
+                    <p>Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người khác</p>
+                </div>
+                <form id="passwordForm" action="/profile/change-password" method="POST">
+                    <div class="form-group">
+                        <label>Mật khẩu hiện tại</label>
+                        <input type="password" name="oldPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" id="newPassword" name="newPassword" placeholder="Từ 6 ký tự trở lên..."
+                            required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu</label>
+                        <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu mới..." required
+                            minlength="6">
+                    </div>
+                    <div class="form-group" style="margin-top: -20px; margin-bottom: 10px;">
+                        <label></label>
+                        <span id="passError" style="color: red; font-size: 13px; display: none; font-weight: 500;">Mật
+                            khẩu xác nhận không khớp! Vui lòng nhập lại.</span>
+                    </div>
+                    <button type="submit" class="btn-save">Xác nhận</button>
+                </form>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <!-- KHUNG HỘP THOẠI XÁC NHẬN (Ẩn mặc định) -->
+    <div id="customConfirmModal" class="custom-modal-overlay">
+        <div class="custom-modal-box">
+            <h3 id="customConfirmTitle">Xác nhận</h3>
+            <p id="customConfirmMessage">Bạn có chắc chắn muốn thực hiện hành động này không?</p>
+            <div class="custom-modal-actions">
+                <button id="customConfirmCancel" class="btn-modal-cancel">Hủy bỏ</button>
+                <button id="customConfirmOk" class="btn-modal-ok">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+        // ==========================================
+        // Tính năng 1: Chuyển Tabs mượt mà
+        // ==========================================
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // ==========================================
+        // Tính năng 2: Kiểm tra bắt lỗi "Xác nhận mật khẩu"
+        // ==========================================
+        document.getElementById('passwordForm').addEventListener('submit', function (e) {
+            const pass = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmPassword').value;
+
+            if (pass !== confirm) {
+                e.preventDefault(); 
+                document.getElementById('passError').style.display = 'block'; 
+                document.getElementById('confirmPassword').focus(); 
+            } else {
+                document.getElementById('passError').style.display = 'none'; 
+            }
+        }); // <-- LƯU Ý: Sự kiện của passwordForm đã ĐÓNG LẠI tại đây!
+
+        // ==========================================
+        // Tính năng 3: HỆ THỐNG HỘP THOẠI XÁC NHẬN TÙY CHỈNH
+        // ==========================================
+        let formToSubmit = null; 
+
+        function showCustomConfirm(event, formElement, message) {
+            event.preventDefault(); 
+            formToSubmit = formElement; 
+
+            document.getElementById('customConfirmMessage').innerText = message;
+            document.getElementById('customConfirmModal').classList.add('show');
+        }
+
+        function closeCustomConfirm() {
+            document.getElementById('customConfirmModal').classList.remove('show');
+            formToSubmit = null; 
+        }
+
+        document.getElementById('customConfirmCancel').addEventListener('click', closeCustomConfirm);
+
+        document.getElementById('customConfirmOk').addEventListener('click', function () {
+            if (formToSubmit) {
+                formToSubmit.submit(); 
+            }
+            closeCustomConfirm();
+        });
+    </script>
+    <%- include('../partials/footer') %>
