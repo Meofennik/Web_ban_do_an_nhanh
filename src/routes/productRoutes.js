@@ -17,25 +17,26 @@ const upload = multer({ dest: 'uploads/' });
 // ==========================================
 router.get('/', async (req, res) => {
   try {
+    // 1. Lấy tất cả sản phẩm đang bật bán từ Database
     const allProducts = await Product.find({ isAvailable: true }).sort({ createdAt: -1 });
 
-    const groupedCategories = {
-      'Cơm Văn Phòng': [],
-      'Đồ Ăn Nhanh': [],
-      'Trà Sữa': [],
-      'Bún/Phở': [],
-      'Pizza': [],
-      'Món Ngon': []
-    };
+    const groupedCategories = {};
 
+    // 2. Tự động phân loại dựa trên dữ liệu THỰC TẾ
     allProducts.forEach((product) => {
-      const category = product.category || 'Món Ngon';
-      if (!groupedCategories[category]) {
-        groupedCategories[category] = [];
+      // Lấy tên danh mục của sản phẩm, nếu trống thì gán là 'Chưa phân loại'
+      const categoryName = product.category || 'Chưa phân loại';
+
+      // Nếu danh mục này chưa từng xuất hiện trong object, khởi tạo nó là 1 mảng rỗng
+      if (!groupedCategories[categoryName]) {
+        groupedCategories[categoryName] = [];
       }
-      groupedCategories[category].push(product);
+
+      // Đẩy sản phẩm vào đúng mảng danh mục của nó
+      groupedCategories[categoryName].push(product);
     });
 
+    // 3. Render ra giao diện
     res.render('pages/index', {
       categoriesData: groupedCategories,
       customCss: '/css/home.css',
