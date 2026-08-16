@@ -364,12 +364,12 @@ html {
   padding: 0 20px;
 }
 
-.footer-logo {
+.logo {
   font-size: 24px;
   color: var(--primary-color);
   margin-bottom: 15px;
 }
-.footer-logo span { color: #fff; }
+.logo span { color: #fff; }
 
 .footer-col h4 {
   color: #fff;
