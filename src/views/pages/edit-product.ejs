@@ -1,67 +1,86 @@
 <%- include('../partials/header') %>
-<style> 
-  .custom-icon {
-  width: 20px;      
-  height: 20px;   
-  object-fit: contain; 
-  vertical-align: middle; 
-  margin-right: 5px; 
-}
+  <style>
+    .custom-icon {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
 
-.custom-icon-lg {
-  width: 24px;
-  height: 24px;
-  vertical-align: middle;
-  margin-right: 8px;
-}
-</style>
+    .custom-icon-lg {
+      width: 24px;
+      height: 24px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+  </style>
 
-<div style="max-width: 600px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-  <h2><img src="/images/iconsImages/pen.png" alt="pen" class="custom-icon-lg"> Chỉnh Sửa Sản Phẩm</h2>
+  <div
+    style="max-width: 600px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h2><img src="/images/iconsImages/pen.png" alt="pen" class="custom-icon-lg"> Chỉnh Sửa Sản Phẩm</h2>
 
-  <form action="/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data">
-    
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; font-weight: bold; margin-bottom: 5px;">Tên món ăn:</label>
-      <input type="text" name="name" value="<%= product.name %>" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-    </div>
+    <form action="/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data">
 
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; font-weight: bold; margin-bottom: 5px;">Giá bán (VNĐ):</label>
-      <input type="number" name="price" value="<%= product.price %>" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-    </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Tên món ăn:</label>
+        <input type="text" name="name" value="<%= product.name %>" required
+          style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
 
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; font-weight: bold; margin-bottom: 5px;">Danh mục:</label>
-      <select name="category" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-        <option value="Cơm Văn Phòng" <%= product.category === 'Cơm Văn Phòng' ? 'selected' : '' %>>Cơm Văn Phòng</option>
-        <option value="Đồ Ăn Nhanh" <%= product.category === 'Đồ Ăn Nhanh' ? 'selected' : '' %>>Đồ Ăn Nhanh</option>
-        <option value="Trà Sữa" <%= product.category === 'Trà Sữa' ? 'selected' : '' %>>Trà Sữa</option>
-        <option value="Bún/Phở" <%= product.category === 'Bún/Phở' ? 'selected' : '' %>>Bún/Phở</option>
-        <option value="Pizza" <%= product.category === 'Pizza' ? 'selected' : '' %>>Pizza</option>
-        <option value="Món Ngon" <%= product.category === 'Món Ngon' ? 'selected' : '' %>>Món Ngon</option>
-      </select>
-    </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Giá bán (VNĐ):</label>
+        <input type="number" name="price" value="<%= product.price %>" required
+          style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+      </div>
 
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; font-weight: bold; margin-bottom: 5px;">Mô tả sản phẩm:</label>
-      <textarea name="description" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"><%= product.description %></textarea>
-    </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Danh mục:</label>
+        <select name="category" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+          <option value="Đồ ăn nhanh" <%=product.category==='Đồ ăn nhanh' ? 'selected' : '' %>>Đồ ăn nhanh</option>
+          <option value="Đồ uống" <%=product.category==='Đồ uống' ? 'selected' : '' %>>Đồ uống</option>
+          <option value="Combo Tiết kiệm" <%=product.category==='Combo Tiết kiệm' ? 'selected' : '' %>>Combo Tiết kiệm
+          </option>
+          <option value="Ăn vặt & Tráng miệng" <%=product.category==='Ăn vặt & Tráng miệng' ? 'selected' : '' %>>Ăn vặt
+            & Tráng miệng</option>
+          <option value="Cơm văn phòng" <%=product.category==='Cơm văn phòng' ? 'selected' : '' %>>Cơm văn phòng
+          </option>
+          <option value="Cơm gia đình" <%=product.category==='Cơm gia đình' ? 'selected' : '' %>>Cơm gia đình</option>
+          <option value="Món nước" <%=product.category==='Món nước' ? 'selected' : '' %>>Món nước</option>
+          <option value="Đồ chay & Healthy" <%=product.category==='Đồ chay & Healthy' ? 'selected' : '' %>>Đồ chay &
+            Healthy</option>
+          <option value="Ăn đêm" <%=product.category==='Ăn đêm' ? 'selected' : '' %>>Ăn đêm</option>
+          <option value="Thuốc & Tiện lợi" <%=product.category==='Thuốc & Tiện lợi' ? 'selected' : '' %>>Thuốc & Tiện
+            lợi</option>
+        </select>
+      </div>
 
-    <div style="margin-bottom: 15px;">
-      <label style="display: block; font-weight: bold; margin-bottom: 5px;">Hình ảnh hiện tại:</label>
-      <img src="<%= product.imageUrl %>" style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; display: block;">
-      
-      <label style="display: block; font-size: 13px; color: #666;">Đổi ảnh mới (Nếu không chọn, ảnh cũ sẽ được giữ nguyên):</label>
-      <input type="file" name="productImage" accept="image/*">
-    </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Mô tả sản phẩm:</label>
+        <textarea name="description" rows="4"
+          style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"><%= product.description %></textarea>
+      </div>
 
-    <div style="margin-top: 20px; display: flex; gap: 10px;">
-      <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Cập nhật</button>
-      <a href="/products/manage" style="background: #6c757d; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; display: inline-block;">Hủy bỏ</a>
-    </div>
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Hình ảnh hiện tại:</label>
+        <img src="<%= product.imageUrl %>"
+          style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; display: block;">
 
-  </form>
-</div>
+        <label style="display: block; font-size: 13px; color: #666;">Đổi ảnh mới (Nếu không chọn, ảnh cũ sẽ được giữ
+          nguyên):</label>
+        <input type="file" name="productImage" accept="image/*">
+      </div>
 
-<%- include('../partials/footer') %>
+      <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button type="submit"
+          style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Cập
+          nhật</button>
+        <a href="/products/manage"
+          style="background: #6c757d; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; display: inline-block;">Hủy
+          bỏ</a>
+      </div>
+
+    </form>
+  </div>
+
+  <%- include('../partials/footer') %>

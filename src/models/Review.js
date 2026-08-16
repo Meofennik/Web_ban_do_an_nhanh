@@ -37,5 +37,5 @@ const reviewSchema = new mongoose.Schema({
   // Tự động sinh ra ngày giờ đánh giá (createdAt)
   timestamps: true 
 });
-
+reviewSchema.index({ productId: 1, userId: 1 }, { unique: true });
 module.exports = mongoose.model('Review', reviewSchema);

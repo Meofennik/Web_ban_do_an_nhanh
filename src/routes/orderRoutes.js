@@ -166,7 +166,7 @@ router.post('/update-status/:id', async (req, res) => {
         const updatedOrder = await Order.findOneAndUpdate(
             { _id: orderId, status: currentStatusCondition },
             { status: newStatus },
-            { new: after }
+            { returnDocument: 'after' }
         );
 
         // Nếu updatedOrder = null nghĩa là trạng thái đã bị đổi trước đó (ví dụ khách vừa bấm hủy)

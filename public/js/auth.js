@@ -1,4 +1,3 @@
-const { default: rateLimit } = require("express-rate-limit");
 
 // 1. Chuyển đổi giữa Người mua và Cửa hàng
 function switchRole(role) {
