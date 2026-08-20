@@ -10,7 +10,6 @@ body {
   overflow-x: hidden; 
 }
 
-/* Background video */
 .fixed-video-background {
   position: fixed;
   top: 0;
@@ -55,15 +54,13 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Hiệu ứng khi trỏ chuột vào nút */
 .btn-back-home:hover {
-  background: rgba(255, 255, 255, 0.15); /* Hơi sáng lên một chút */
+  background: rgba(255, 255, 255, 0.15); 
   color: #fff;
   border-color: rgba(255, 255, 255, 0.6);
-  transform: translateX(-4px); /* Lướt nhẹ sang trái báo hiệu hành động "Quay lại" */
+  transform: translateX(-4px); 
 }
 
-/* Auth Glass Box */
 .auth-wrapper {
   margin: auto; 
   width: 100%;
@@ -90,7 +87,6 @@ body {
   margin-bottom: 20px;
 }
 
-/* Role Tabs */
 .role-tabs {
   display: flex;
   background: rgba(0, 0, 0, 0.3); 
@@ -131,7 +127,6 @@ body {
   margin-bottom: 15px;
 }
 
-/* Form controls */
 .form-group {
   margin-bottom: 15px;
 }
@@ -170,7 +165,6 @@ body {
   gap: 10px;
 }
 
-/* Ô Mật khẩu + Con mắt */
 .password-wrapper {
   position: relative;
   display: flex;
@@ -178,7 +172,7 @@ body {
 }
 
 .password-wrapper input {
-  padding-right: 45px; /* Để khoảng trống cho nút con mắt */
+  padding-right: 45px; 
 }
 
 .eye-btn {
@@ -192,7 +186,6 @@ body {
   user-select: none;
 }
 
-/* Link Quên mật khẩu */
 .forgot-link-wrapper {
   text-align: right;
   margin-bottom: 20px;
@@ -207,7 +200,6 @@ body {
   text-decoration: underline;
 }
 
-/* Nút bấm Đăng ký / Đăng nhập */
 .action-buttons {
   display: flex;
   flex-direction: column;
@@ -260,9 +252,6 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* =========================================
-   HỘP THÔNG BÁO POP-UP (TOAST)
-========================================= */
 .toast {
   position: fixed;
   top: -100px;
@@ -283,9 +272,9 @@ body {
 }
 
 .toast.success {
-  background: #2ed573; /* Màu xanh lá thành công */
+  background: #2ed573; 
 }
 
 .toast.error {
-  background: #ff4757; /* Màu đỏ thông báo lỗi */
+  background: #ff4757; 
 }

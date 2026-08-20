@@ -118,25 +118,20 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-      // HÀM TẠO HIỆU ỨNG BAY VÀO GIỎ HÀNG
       function flyToCart(buttonElement) {
         const cartIcon = document.getElementById('cart-icon');
-        if (!cartIcon) return; // Nếu không tìm thấy giỏ hàng thì bỏ qua hiệu ứng
+        if (!cartIcon) return;
 
-        // 1. Tìm bức ảnh của món ăn ngay gần nút bấm +
-        const foodItem = buttonElement.closest('.food-item'); // Tìm khung bọc ngoài cùng
+        const foodItem = buttonElement.closest('.food-item'); 
         const productImg = foodItem ? foodItem.querySelector('img') : null;
         if (!productImg) return;
 
-        // 2. Lấy tọa độ (vị trí x, y) của ảnh gốc và của giỏ hàng
         const startRect = productImg.getBoundingClientRect();
         const endRect = cartIcon.getBoundingClientRect();
 
-        // 3. Nhân bản bức ảnh ra làm một bản copy (clone)
         const flyingImg = productImg.cloneNode();
         flyingImg.classList.add('flying-img');
 
-        // Đặt ảnh copy đè đúng lên vị trí ảnh gốc
         flyingImg.style.left = `${startRect.left}px`;
         flyingImg.style.top = `${startRect.top}px`;
         flyingImg.style.width = `${startRect.width}px`;
@@ -144,29 +139,23 @@
 
         document.body.appendChild(flyingImg);
 
-        // Bắt buộc trình duyệt nhận diện ảnh copy vừa tạo (Force reflow)
         void flyingImg.offsetWidth;
 
-        // 4. Bắt đầu kích hoạt hiệu ứng bay về phía giỏ hàng
-        // Đưa tọa độ về vị trí trung tâm của biểu tượng giỏ hàng, thu nhỏ dần ảnh còn 40px, làm mờ đi
         flyingImg.style.left = `${endRect.left + (endRect.width / 2) - 20}px`;
         flyingImg.style.top = `${endRect.top + (endRect.height / 2) - 20}px`;
         flyingImg.style.width = '40px';
         flyingImg.style.height = '40px';
         flyingImg.style.opacity = '0.4';
 
-        // 5. Dọn dẹp sau khi bay xong (0.8s = 800ms)
         setTimeout(() => {
-          flyingImg.remove(); // Xóa ảnh copy rác đi
+          flyingImg.remove(); 
 
-          // Làm rung biểu tượng giỏ hàng một cái cho sinh động
           cartIcon.classList.add('cart-bump');
           setTimeout(() => cartIcon.classList.remove('cart-bump'), 300);
         }, 800);
       }
 
 
-      // LẮNG NGHE SỰ KIỆN CLICK NÚT THÊM GIỎ HÀNG (AJAX)
       document.addEventListener('click', async (e) => {
         if (e.target && e.target.classList.contains('btn-add-cart')) {
           e.preventDefault();
@@ -188,7 +177,6 @@
 
               flyToCart(btn);
 
-              // Cập nhật số trên badge giỏ hàng
               const cartBadge = document.getElementById('cart-badge');
               if (cartBadge) {
                 cartBadge.innerText = result.totalItems;

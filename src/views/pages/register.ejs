@@ -23,7 +23,6 @@
 </style>
 <body>
 
-  <!-- Video nền -->
   <div class="fixed-video-background">
     <video src="/videos/Animation Foodeats1.mp4" autoplay muted loop playsinline></video>
   </div>
@@ -32,14 +31,12 @@
     ❮ Trang chủ
   </a>
 
-  <!-- Hộp thông báo Pop-up (Toast) -->
   <div id="toast" class="toast"></div>
 
   <div class="auth-wrapper">
     <div class="auth-box">
       <h2 class="auth-title">Đăng ký tài khoản</h2>
 
-      <!-- Tab vai trò -->
       <div class="role-tabs">
         <button type="button" class="tab-btn active" id="btn-buyer" onclick="switchRole('buyer')">Người mua</button>
         <button type="button" class="tab-btn" id="btn-seller" onclick="switchRole('seller')">Cửa hàng</button>
@@ -71,7 +68,6 @@
           <input type="text" name="otp" placeholder="Nhập 6 số OTP" maxlength="6">
         </div>
 
-        <!-- Khối người mua -->
         <div class="role-content active" id="content-buyer">
           <div class="form-group">
             <label>Tên tài khoản</label>
@@ -79,7 +75,6 @@
           </div>
         </div>
 
-        <!-- Khối cửa hàng -->
         <div class="role-content" id="content-seller">
           <div class="form-group">
             <label>Tên quán</label>
@@ -102,7 +97,6 @@
           </div>
         </div>
 
-        <!-- Ô Mật khẩu + Con mắt -->
         <div class="form-group">
           <label>Mật khẩu</label>
           <div class="password-wrapper">
@@ -111,7 +105,6 @@
           </div>
         </div>
 
-        <!-- Ô Nhập lại mật khẩu + Con mắt -->
         <div class="form-group">
           <label>Nhập lại mật khẩu</label>
           <div class="password-wrapper">
@@ -120,7 +113,6 @@
           </div>
         </div>
 
-        <!-- Nhóm nút bấm dưới chân -->
         <div class="action-buttons">
           <button type="submit" class="btn-submit">Đăng ký ngay</button>
           <a href="/login" class="btn-secondary">Đã có tài khoản? Đăng nhập</a>

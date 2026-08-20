@@ -1,14 +1,12 @@
-﻿<%- include('../partials/header') %>
+<%- include('../partials/header') %>
 
     <style>
-        /* Xóa mũi tên lên xuống ở ô input trên Chrome, Safari, Edge, Opera */
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Xóa mũi tên trên Firefox */
         input[type=number] {
             -moz-appearance: textfield;
         }
@@ -61,15 +59,15 @@
 
     <div
         style="max-width: 900px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h2><img src="/images/iconsImages/shopping-cart.png" alt="shopping-cart" class="custom-icon-lg"> Giỏ Hàng Của
-            Bạn</h2>
+        <h2><img src="/images/iconsImages/shopping-cart.png" alt="shopping-cart" class="custom-icon-lg"> Gi? H�ng C?a
+            B?n</h2>
 
         <% if (cart && cart.items && cart.items.length> 0) { %>
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <thead>
                     <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6; text-align: left;">
-                        <th style="padding: 12px;">Món ăn</th>
-                        <th style="padding: 12px;">Đơn giá</th>
+                        <th style="padding: 12px;">Món an</th>
+                        <th style="padding: 12px;">đơn giá</th>
                         <th style="padding: 12px;">Số lượng</th>
                         <th style="padding: 12px;">Thành tiền</th>
                         <th style="padding: 12px;">Hành động</th>
@@ -90,19 +88,17 @@
                                                     <strong style="display: block; margin-bottom: 5px;">
                                                         <%= item.productId.name %>
                                                     </strong>
-                                                    <!-- Ô nhập ghi chú mới -->
                                                     <input type="text" class="note-input"
                                                         data-id="<%= item.productId._id %>"
                                                         value="<%= item.note || '' %>"
-                                                        placeholder="Ghi chú (VD: Không hành, ít cay...)"
+                                                        placeholder="Ghi ch� (VD: Kh�ng h�nh, �t cay...)"
                                                         style="width: 100%; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box; outline: none;">
                                                 </div>
                                             </td>
                                             <td style="padding: 12px;">
-                                                <%= item.productId.price.toLocaleString('vi-VN') %>đ
+                                                <%= item.productId.price.toLocaleString('vi-VN') %>d
                                             </td>
 
-                                            <!-- ĐÃ SỬA: Thêm type="button", sửa lỗi data-id và thêm id cho input -->
                                             <td style="padding: 12px;">
                                                 <div style="display: flex; align-items: center;">
                                                     <button type="button" class="qty-btn btn-minus"
@@ -121,10 +117,9 @@
 
                                             <td style="padding: 12px; color: #ee4d2d; font-weight: bold;"
                                                 id="item-total-<%= item.productId._id %>">
-                                                <%= itemTotal.toLocaleString('vi-VN') %>đ
+                                                <%= itemTotal.toLocaleString('vi-VN') %>d
                                             </td>
 
-                                            <!-- ĐÃ SỬA: Thêm type="button" cho nút Xóa -->
                                             <td style="padding: 12px;">
                                                 <button type="button" class="btn-delete"
                                                     data-id="<%= item.productId._id %>">
@@ -141,34 +136,33 @@
             <div
                 style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
                 <a href="/" style="color: #ee4d2d; text-decoration: none; font-weight: bold; font-size: 15px;">
-                    ← Tiếp tục khám phá món ngon
+                    ? Ti?p t?c kh�m ph� m�n ngon
                 </a>
                 <div style="text-align: right;">
                     <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #333;">
-                        Tổng thanh toán:
+                        T?ng thanh to�n:
                         <span id="grand-total"
                             style="color: #ee4d2d; font-size: 24px; font-weight: bold; margin-left: 8px;">
-                            <%= grandTotal.toLocaleString('vi-VN') %>đ
+                            <%= grandTotal.toLocaleString('vi-VN') %>d
                         </span>
                     </h3>
                     <a href="/order/checkout"
                         style="background: #ee4d2d; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-block;">
-                        Tiến Hành Đặt Hàng
+                        Ti?n H�nh �?t H�ng
                     </a>
                 </div>
             </div>
             <% } else { %>
                 <div style="text-align: center; padding: 40px 0;">
-                    <p style="color: #777; font-size: 16px;">Giỏ hàng của bạn đang trống.</p>
+                    <p style="color: #777; font-size: 16px;">Gi? h�ng c?a b?n dang tr?ng.</p>
                     <a href="/"
-                        style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; font-weight: bold;">←
-                        Tiếp tục khám phá món ngon</a>
+                        style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; font-weight: bold;">?
+                        Ti?p t?c kh�m ph� m�n ngon</a>
                 </div>
                 <% } %>
     </div>
 
     <script>
-        // 1. HÀM TÍNH TOÁN LẠI TỔNG TIỀN & CẬP NHẬT CHẤM ĐỎ HEADER
         function updateGrandTotal() {
             let totalMoney = 0;
             let totalItems = 0;
@@ -183,7 +177,7 @@
 
             const grandTotalEl = document.getElementById('grand-total');
             if (grandTotalEl) {
-                grandTotalEl.innerText = totalMoney.toLocaleString('vi-VN') + 'đ';
+                grandTotalEl.innerText = totalMoney.toLocaleString('vi-VN') + 'd';
             }
 
             const cartBadge = document.getElementById('cart-badge');
@@ -193,9 +187,7 @@
             }
         }
 
-        // 2. HÀM XÓA SẢN PHẨM KHÔNG RELOAD TRANG
         async function removeCartItem(productId, btnElement) {
-            // if (!confirm('Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?')) return;
 
             const row = btnElement.closest('tr');
             row.style.opacity = '0.4';
@@ -213,19 +205,18 @@
                     updateGrandTotal();
                 } else {
                     if (typeof showToast === 'function') {
-                        showToast(data.message || 'Lỗi xóa sản phẩm', 'error');
+                        showToast(data.message || 'L?i x�a s?n ph?m', 'error');
                     } else {
-                        alert(data.message || 'Lỗi xóa sản phẩm');
+                        alert(data.message || 'L?i x�a s?n ph?m');
                     }
                     row.style.opacity = '1';
                 }
             } catch (err) {
-                console.error('Lỗi xóa sản phẩm:', err);
+                console.error('L?i x�a s?n ph?m:', err);
                 row.style.opacity = '1';
             }
         }
 
-        // 3. HÀM CẬP NHẬT SỐ LƯỢNG LÊN SERVER VÀ TÍNH TOÁN LẠI TIỀN
         async function updateCartQuantity(productId, newQuantity, price) {
             try {
                 const response = await fetch('/cart/update', {
@@ -242,30 +233,27 @@
                         inputEl.value = newQuantity;
                     }
 
-                    // Cập nhật lại cột "Thành tiền" của riêng món đó
                     const itemTotalEl = document.getElementById(`item-total-${productId}`);
                     if (itemTotalEl) {
                         const newTotal = newQuantity * price;
-                        itemTotalEl.innerText = newTotal.toLocaleString('vi-VN') + 'đ';
+                        itemTotalEl.innerText = newTotal.toLocaleString('vi-VN') + 'd';
                     }
 
                     updateGrandTotal();
                 } else {
                     if (typeof showToast === 'function') {
-                        showToast(result.message || 'Lỗi cập nhật số lượng', 'error');
+                        showToast(result.message || 'L?i c?p nh?t s? lu?ng', 'error');
                     } else {
-                        alert(result.message || 'Lỗi cập nhật số lượng');
+                        alert(result.message || 'L?i c?p nh?t s? lu?ng');
                     }
                 }
             } catch (error) {
-                console.error('Lỗi khi gọi API update cart:', error);
+                console.error('L?i khi g?i API update cart:', error);
             }
         }
 
-        // 4. LẮNG NGHE SỰ KIỆN CLICKS (Sử dụng .closest để bắt click chuẩn xác)
         document.addEventListener('click', function (e) {
 
-            // Bắt nút Trừ
             const minusBtn = e.target.closest('.btn-minus');
             if (minusBtn) {
                 e.preventDefault();
@@ -278,7 +266,6 @@
                 }
             }
 
-            // Bắt nút Cộng
             const plusBtn = e.target.closest('.btn-plus');
             if (plusBtn) {
                 e.preventDefault();
@@ -291,7 +278,6 @@
                 }
             }
 
-            // Bắt nút Xóa
             const deleteBtn = e.target.closest('.btn-delete');
             if (deleteBtn) {
                 e.preventDefault();
@@ -300,7 +286,6 @@
             }
         });
 
-        // 5. KHI NGƯỜI DÙNG GÕ SỐ TRỰC TIẾP VÀO Ô
         document.addEventListener('change', function (e) {
             if (e.target.classList.contains('qty-input')) {
                 const id = e.target.getAttribute('data-id');
@@ -311,16 +296,15 @@
                 if (val > 999) {
                     val = 999;
                     if (typeof showToast === 'function') {
-                        showToast('Số lượng tối đa cho mỗi món là 999!', 'warning');
+                        showToast('S? lu?ng t?i da cho m?i m�n l� 999!', 'warning');
                     } else {
-                        alert('Số lượng tối đa cho mỗi món là 999!');
+                        alert('S? lu?ng t?i da cho m?i m�n l� 999!');
                     }
                 }
                 updateCartQuantity(id, val, price);
             }
         });
 
-        // 6. LẮNG NGHE SỰ KIỆN KHI NGƯỜI DÙNG NHẬP GHI CHÚ
 document.addEventListener('change', async function (e) {
     if (e.target.classList.contains('note-input')) {
         const productId = e.target.getAttribute('data-id');
@@ -335,10 +319,10 @@ document.addEventListener('change', async function (e) {
 
             const result = await response.json();
             if (!result.success) {
-                alert(result.message || 'Lỗi cập nhật ghi chú');
+                alert(result.message || 'L?i c?p nh?t ghi ch�');
             }
         } catch (error) {
-            console.error('Lỗi khi gọi API update note:', error);
+            console.error('L?i khi g?i API update note:', error);
         }
     }
 });

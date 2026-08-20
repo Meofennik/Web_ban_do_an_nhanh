@@ -11,13 +11,11 @@
 <body>
     <div style="max-width: 1000px; margin: 40px auto; display: flex; gap: 30px;">
 
-        <!-- CỘT TRÁI: FORM THÔNG TIN NGƯỜI NHẬN -->
         <div
             style="flex: 2; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
             <a href="/cart" class="back-home">❮ Quay lại giỏ hàng</a>
             <h2 style="margin-top: 0; text-align: center;"> Địa chỉ giao hàng</h2>
 
-            <!-- Form này sẽ gửi lên route POST /order/create ở bước sau -->
             <form action="/order/create" method="POST" id="checkout-form">
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-weight: bold; margin-bottom: 5px;">Họ và tên người nhận</label>
@@ -74,7 +72,6 @@
             </form>
         </div>
 
-        <!-- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG -->
         <div
             style="flex: 1; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); height: fit-content;">
             <h3 style="margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">Tóm tắt đơn hàng</h3>

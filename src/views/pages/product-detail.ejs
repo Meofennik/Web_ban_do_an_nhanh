@@ -1,6 +1,5 @@
 <%- include('../partials/header') %>
 
-  <!-- Phần CSS làm đẹp cho trang chi tiết -->
   <style>
     .detail-container {
       max-width: auto;
@@ -42,7 +41,6 @@
       font-size: 20px;
     }
 
-    /* Khu vực Review */
     .review-section {
       margin-top: 30px;
       background: #fff;
@@ -84,7 +82,6 @@
       font-weight: bold;
     }
 
-    /* Danh sách bình luận */
     .review-list {
       margin-top: 30px;
     }
@@ -131,9 +128,6 @@
 
   <div class="detail-container">
 
-    <!-- ========================================== -->
-    <!-- 1. KHU VỰC THÔNG TIN SẢN PHẨM (NỬA TRÊN) -->
-    <!-- ========================================== -->
     <div class="product-header">
       <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="product-image">
       <div class="product-info">
@@ -156,14 +150,9 @@
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 2. KHU VỰC ĐÁNH GIÁ VÀ BÌNH LUẬN (NỬA DƯỚI) -->
-    <!-- ========================================== -->
     <div class="review-section">
       <h2>Đánh giá sản phẩm</h2>
 
-      <!-- FORM GỬI ĐÁNH GIÁ (Chỉ hiện nếu đã đăng nhập) -->
-      <!-- CHÚ Ý: Bắt buộc phải có enctype="multipart/form-data" mới gửi được ảnh -->
       <% if (user) { %>
         <form action="/products/<%= product._id %>/review" method="POST" enctype="multipart/form-data"
           class="review-form">
@@ -176,7 +165,6 @@
             <span data-value="4" class="active">★</span>
             <span data-value="5" class="active">★</span>
           </div>
-          <!-- Ô Input ẩn để hứng số sao (Mặc định là 5 sao) -->
           <input type="hidden" name="rating" id="rating-input" value="5" required>
 
           <textarea name="comment" placeholder="Chia sẻ cảm nhận của bạn về món ăn này nhé..."></textarea>
@@ -196,18 +184,15 @@
           </div>
           <% } %>
 
-            <!-- DANH SÁCH CÁC BÌNH LUẬN ĐÃ CÓ -->
             <div class="review-list">
               <div class="review-text-tile">Đánh giá</div>
               <% if (reviews.length> 0) { %>
                 <% reviews.forEach(review=> { %>
                   <div class="review-item">
-                    <!-- Hiển thị tên người mua -->
                     <div class="reviewer-name">
                       <%= review.userId ? review.userId.fullName : 'Khách hàng Ẩn danh' %>
                     </div>
 
-                    <!-- In ra số ngôi sao dựa trên điểm rating -->
                     <div class="review-stars">
                       <% for(let i=0; i < review.rating; i++) { %>★<% } %>
                           <span style="color: #ccc;">
@@ -215,12 +200,10 @@
                           </span>
                     </div>
 
-                    <!-- Bình luận -->
                     <div class="review-text">
                       <%= review.comment %>
                     </div>
 
-                    <!-- Hình ảnh khách hàng tải lên (Nếu có) -->
                     <% if (review.images && review.images.length> 0) { %>
                       <div class="review-images">
                         <% review.images.forEach(imgUrl=> { %>
@@ -229,7 +212,6 @@
                       </div>
                       <% } %>
 
-                        <!-- Ngày giờ đăng -->
                         <div class="review-date">
                           Đăng ngày <%= review.createdAt.toLocaleDateString('vi-VN') %> lúc <%=
                               review.createdAt.toLocaleTimeString('vi-VN') %>
@@ -244,21 +226,16 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- 3. JAVASCRIPT HIỆU ỨNG CHỌN NGÔI SAO -->
-  <!-- ========================================== -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const stars = document.querySelectorAll('#star-rating span');
       const ratingInput = document.getElementById('rating-input');
 
       stars.forEach(star => {
-        // Khi click vào ngôi sao
         star.addEventListener('click', function () {
           const value = this.getAttribute('data-value');
-          ratingInput.value = value; // Gắn giá trị vào input ẩn để gửi lên Server
+          ratingInput.value = value; 
 
-          // Cập nhật màu sắc: Sáng các sao từ 1 đến vị trí vừa click
           stars.forEach(s => {
             if (parseInt(s.getAttribute('data-value')) <= parseInt(value)) {
               s.classList.add('active');

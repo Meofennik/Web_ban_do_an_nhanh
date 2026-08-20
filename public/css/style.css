@@ -1,6 +1,6 @@
-/* Styling Tổng thể */
+
 :root {
-  --primary-color: #ee4d2d; /* Màu cam đặc trưng kiểu ShopeeFood */
+  --primary-color: #ee4d2d; 
   --bg-color: #f5f5f5;
   --text-color: #333;
 }
@@ -17,7 +17,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Navbar */
 .location-display {
   display: flex;
   align-items: center;
@@ -133,14 +132,14 @@ html {
   gap: 10px;
   flex-wrap: wrap;
 }
-/* --- MENU NGƯỜI DÙNG THẢ XUỐNG --- */
+
 .user-dropdown {
   position: relative;
   display: inline-block;
 }
 
 .btn-user-profile {
-  background: #333; /* Màu nền nút */
+  background: #333; 
   color: white;
   padding: 10px 18px;
   border-radius: 20px;
@@ -167,14 +166,12 @@ html {
     }
 
 .back-home:hover {
-  background: rgba(253, 154, 154, 0.15); /* Hơi sáng lên một chút */
+  background: rgba(253, 154, 154, 0.15); 
   color: #ee4d2d;
   border-color: rgba(255, 255, 255, 0.6);
-  transform: translateX(-4px); /* Lướt nhẹ sang trái báo hiệu hành động "Quay lại" */
+  transform: translateX(-4px); 
 }
- 
 
-/* Khung menu bị ẩn mặc định */
 .dropdown-content {
   visibility: hidden;
   opacity: 0;
@@ -191,7 +188,6 @@ html {
   transition: all 0.3s ease;
 }
 
-/* Hiển thị khi trỏ chuột vào */
 .user-dropdown:hover .dropdown-content {
   visibility: visible;
   opacity: 1;
@@ -233,7 +229,7 @@ html {
 }
 
 .dropdown-content a.text-danger {
-  color: #ff4757; /* Màu đỏ cho nút Đăng xuất */
+  color: #ff4757;
 }
 
 .btn-add-product,
@@ -313,7 +309,6 @@ html {
   font-weight: 700;
 }
 
-/* Small circular badge for the numeric count when the markup includes a separate span */
 .btn-cart .badge {
   background: #fff;
   color: var(--primary-color);
@@ -347,7 +342,6 @@ html {
 }
 
 
-/* Footer Styling */
 .footer {
   background-color: #1e2029;
   color: #a0aec0;

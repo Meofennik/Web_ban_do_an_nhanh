@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const suggestionsBox = document.getElementById('search-suggestions');
   let userLocation = null;
 
-  // Try to get device location to bias search suggestions
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition((pos) => {
       userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -58,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Debounced suggestions while typing
   function debounce(fn, wait) {
     let t;
     return function (...args) {
@@ -97,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!q) { showSuggestions([]); return; }
     let url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(q)}&limit=6&addressdetails=1&accept-language=vi`;
     if (userLocation) {
-      // Bias results by viewbox around user location (~5km)
       const delta = 0.05;
       const left = userLocation.lng - delta;
       const right = userLocation.lng + delta;
@@ -120,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (searchInput) {
     searchInput.addEventListener('input', onInput);
-    // hide suggestions when clicking outside
     document.addEventListener('click', (e) => {
       if (!suggestionsBox) return;
       if (!document.querySelector('.map-card').contains(e.target)) {
@@ -153,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
     map.panTo(event.latlng, { animate: true, duration: 0.5 });
     reverseGeocodePosition(event.latlng);
     if (hintText) hintText.textContent = 'Đã chọn vị trí, bấm xác nhận để lưu.';
-    // Toggle confirm box visibility so user can see full map when needed
     if (confirmBox) {
       if (confirmBox.classList.contains('open')) {
         confirmBox.classList.remove('open');
@@ -163,13 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 👇 ĐÃ SỬA: Tích hợp logic quay về trang trước đó vào Nút Xác Nhận
   if (saveButton && addressText) {
     saveButton.onclick = () => {
       const address = addressText.textContent || 'Không có địa chỉ';
       localStorage.setItem('userAddress', address);
       
-      // Kiểm tra và quay lại đúng trang khách hàng vừa đứng
       if (document.referrer) {
         window.location.href = document.referrer;
       } else {

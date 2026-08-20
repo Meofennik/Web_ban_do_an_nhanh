@@ -7,10 +7,8 @@ const cloudinary = require('cloudinary').v2;
 const crypto = require('crypto');
 const fs = require('fs');
 
-// FIX: Lấy middleware Cloudinary đã viết sẵn để dùng cho chức năng Đánh giá
 const upload = require('../middlewares/uploadMiddleware'); 
 
-// FIX: Giới hạn dung lượng thư mục tạm (Chống tràn ổ cứng)
 const multer = require('multer');
 const uploadTemp = multer({ 
   dest: 'uploads/',
@@ -21,16 +19,12 @@ const uploadTemp = multer({
   }
 });
 
-// Middleware bảo vệ các route của Cửa hàng
 const requireSeller = (req, res, next) => {
     if (!req.session || !req.session.user) return res.redirect('/login');
     if (req.session.user.role !== 'seller') return res.status(403).send('Chỉ cửa hàng mới có quyền!');
     next();
 };
 
-// ==========================================
-// 1. TRANG CHỦ SẢN PHẨM (Public)
-// ==========================================
 router.get('/', async (req, res) => {
   try {
     const allProducts = await Product.find({ isAvailable: true }).sort({ createdAt: -1 });
@@ -52,10 +46,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// ==========================================
-// 2. QUẢN LÝ SẢN PHẨM (Chỉ Cửa Hàng)
-// FIX: Thêm requireSeller
-// ==========================================
 router.get('/manage', requireSeller, async (req, res) => {
   try {
     const myProducts = await Product.find({ ownerId: req.session.user.id }).sort({ createdAt: -1 });
@@ -65,10 +55,6 @@ router.get('/manage', requireSeller, async (req, res) => {
   }
 });
 
-// ==========================================
-// 3. GIAO DIỆN SỬA SẢN PHẨM (Chỉ Cửa Hàng)
-// FIX: Thêm requireSeller
-// ==========================================
 router.get('/edit/:id', requireSeller, async (req, res) => {
   try {
     const product = await Product.findOne({ _id: req.params.id, ownerId: req.session.user.id });
@@ -80,10 +66,6 @@ router.get('/edit/:id', requireSeller, async (req, res) => {
   }
 });
 
-// ==========================================
-// 4. THÊM MỚI SẢN PHẨM (Chỉ Cửa Hàng)
-// FIX: Thêm requireSeller
-// ==========================================
 router.post('/add', requireSeller, uploadTemp.single('productImage'), async (req, res) => {
   try {
     let imageUrl = '/images/default-product.jpg';
@@ -95,12 +77,12 @@ router.post('/add', requireSeller, uploadTemp.single('productImage'), async (req
       const existingProductImage = await Product.findOne({ imageHash: imageHash });
 
       if (existingProductImage && existingProductImage.imageUrl) {
-        imageUrl = existingProductImage.imageUrl; // Tái sử dụng ảnh
+        imageUrl = existingProductImage.imageUrl; 
       } else {
         const cloudRes = await cloudinary.uploader.upload(req.file.path, { folder: 'FoodEats', quality: 'auto' });
         imageUrl = cloudRes.secure_url;
       }
-      fs.unlinkSync(req.file.path); // Xóa file tạm
+      fs.unlinkSync(req.file.path); 
     }
 
     const userId = req.session.user._id || req.session.user.id;
@@ -126,10 +108,6 @@ router.post('/add', requireSeller, uploadTemp.single('productImage'), async (req
   }
 });
 
-// ==========================================
-// 5. ẨN/HIỆN & XÓA SẢN PHẨM (Chỉ Cửa Hàng)
-// FIX: Thêm requireSeller
-// ==========================================
 router.post('/toggle/:id', requireSeller, async (req, res) => {
   try {
     const product = await Product.findOne({ _id: req.params.id, ownerId: req.session.user.id });
@@ -148,7 +126,6 @@ router.post('/delete/:id', requireSeller, async (req, res) => {
     const product = await Product.findOne({ _id: req.params.id, ownerId: req.session.user.id });
     if (!product) return res.status(403).send('Bạn không có quyền xóa món này!');
 
-    // Xóa ảnh trên Cloudinary nếu có
     if (product.imageUrl && product.imageUrl.includes('cloudinary')) {
       const urlParts = product.imageUrl.split('/');
       const publicId = urlParts[urlParts.length - 1].split('.')[0]; 
@@ -162,10 +139,6 @@ router.post('/delete/:id', requireSeller, async (req, res) => {
   }
 });
 
-// ==========================================
-// 6. LƯU CHỈNH SỬA SẢN PHẨM (Chỉ Cửa Hàng)
-// FIX: Thêm requireSeller
-// ==========================================
 router.post('/edit/:id', requireSeller, uploadTemp.single('productImage'), async (req, res) => {
   try {
     const product = await Product.findOne({ _id: req.params.id, ownerId: req.session.user.id });
@@ -199,9 +172,6 @@ router.post('/edit/:id', requireSeller, uploadTemp.single('productImage'), async
   }
 });
 
-// ==========================================
-// 7. TRANG CHI TIẾT SẢN PHẨM (Public)
-// ==========================================
 router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -226,17 +196,12 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// ==========================================
-// 8. ĐÁNH GIÁ SẢN PHẨM (Chỉ User đăng nhập)
-// FIX: Sử dụng uploadMiddleware để tải ảnh lên Cloud
-// ==========================================
 router.post('/:id/review', upload.array('reviewImages', 5), async (req, res) => {
   try {
     if (!req.session || !req.session.user) {
       return res.status(401).send('Bạn cần đăng nhập để đánh giá món ăn này!');
     }
 
-    // Nhặt ra đường link ảnh trên Cloudinary thay vì lấy đường dẫn ảo
     const imageUrls = req.files && req.files.length > 0 
       ? req.files.map(file => file.path) 
       : [];

@@ -4,13 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FoodEats - Đặt Đồ Ăn Ngon Tận Nơi</title>
-  <!-- Gọi file CSS chung cho mọi trang -->
   <link rel="stylesheet" href="/css/style.css">
-  <!-- Nếu Route có truyền biến customCss, thì mới tải thêm file CSS riêng của trang đó -->
   <% if (typeof customCss !== 'undefined') { %>
     <link rel="stylesheet" href="<%= customCss %>">
   <% } %>
-  <!-- Thư viện hỗ trợ hiệu ứng nghiêng 3D -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
 </head>
 
@@ -35,9 +32,6 @@
   <header class="navbar">
     <div class="nav-container">
       
-      <!-- ========================================== -->
-      <!-- TẦNG HEADER TRÊN (Logo, Tìm kiếm, Giỏ hàng) -->
-      <!-- ========================================== -->
       <div class="nav-top">
         <a href="/" class="logo">Food<span>Eats</span></a>
 
@@ -46,21 +40,16 @@
           <button class="btn-search"><img src="/images/iconsImages/search-interface-symbol.png" alt="search-interface-symbol" class="custom-icon-lg"></button>
         </div>
 
-        <!-- KHU VỰC CÁC NÚT BÊN PHẢI HEADER -->
         <div class="header-actions">
   
-          <!-- Nếu đã đăng nhập -->
           <% if (user) { %>
             
-            <!-- CHỈ CÓ CỬA HÀNG (seller) MỚI THẤY NÚT NÀY -->
             <% if (user.role === 'seller') { %>
               <a href="/add-product" class="btn-add-product">➕ Thêm món ăn</a>
             <% } %>
 
-            <!-- Nút Giỏ hàng trên Header -->
             <a href="/cart" id="cart-icon" style="position: relative; text-decoration: none; color: #333; font-weight: bold; margin-right: 20px;">
               🛒 
-              <!-- Chấm đỏ báo số lượng -->
               <span id="cart-badge" style="
                 position: absolute; 
                 top: -10px; 
@@ -77,9 +66,7 @@
               </span>
             </a>
 
-            <!-- Menu Thông tin người dùng -->
             <div class="user-dropdown">
-              <!-- Sửa thành user.fullName để lấy đúng tên -->
               <button class="btn-user-profile">👋 Xin chào, <%= user.fullName || user.name %></button>
               <div class="dropdown-content">
                 <div class="user-info-box">
@@ -98,17 +85,13 @@
               </div>
             </div>
 
-          <!-- Nếu chưa đăng nhập -->
           <% } else { %>
             <a href="/login" class="btn-login">Đăng nhập</a>
           <% } %>
 
-        </div> <!-- Đóng div.header-actions -->
-      </div> <!-- Đóng div.nav-top -->
+        </div>
+      </div> 
 
-      <!-- ========================================== -->
-      <!-- TẦNG HEADER DƯỚI (Chọn địa điểm) -->
-      <!-- ========================================== -->
       <div class="nav-bottom">
         <div class="nav-location">
           <a href="/location" class="location-display">
@@ -117,7 +100,7 @@
         </div>
       </div>
 
-    </div> <!-- ĐÓNG THẺ DIV.NAV-CONTAINER BỊ THIẾU -->
+    </div> 
   </header>
 
   <script>

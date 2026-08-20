@@ -1,6 +1,4 @@
-/* =========================================
-   1. KHỐI NỀN VIDEO CỐ ĐỊNH PHÍA SAU
-========================================= */
+
 .fixed-video-background {
   position: fixed;
   top: 0;
@@ -27,7 +25,6 @@
   background: rgba(0, 0, 0, 0.4); 
 }
 
-/* Nội dung trang web đè lên video */
 .main-content {
   position: relative;
   z-index: 1;
@@ -38,9 +35,6 @@
   z-index: 1;
 }
 
-/* =========================================
-   2. HERO BANNER 3D SECTION
-========================================= */
 .hero-3d-section {
   max-width: 1200px;
   margin: 20px auto;
@@ -74,7 +68,7 @@
 
 .btn-cta {
   background: #fff;
-  color: var(--primary-color, #ee4d2d); /* Thêm mã màu dự phòng */
+  color: var(--primary-color, #ee4d2d); 
   border: none;
   padding: 12px 28px;
   font-weight: bold;
@@ -83,7 +77,6 @@
   margin-top: 15px;
 }
 
-/* Khối Card 3D */
 .hero-3d-card {
   width: 350px;
   height: 350px;
@@ -125,9 +118,6 @@
   100% { transform: translateZ(50px) translateY(0px) rotate(0deg); }
 }
 
-/* =========================================
-   3. DANH MỤC & HIỆU ỨNG TRƯỢT CHỮ
-========================================= */
 .menu-section {
   max-width: 1200px;
   margin: 30px auto 60px;
@@ -156,9 +146,6 @@
   padding: 20px 0;
 }
 
-/* =========================================
-   4. BỐ CỤC SLIDER TRƯỢT NGANG (MÓN ĂN)
-========================================= */
 .food-carousel {
   display: flex;
   gap: 20px;
@@ -248,28 +235,23 @@
   -webkit-line-clamp: 1; 
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis; /* Hiện dấu ... ở cuối */
+  text-overflow: ellipsis; 
   word-break: break-word;
   font-size: 13px;
   color: #e8e2e2;
   cursor: pointer;
 }
-
-/* Style mới cho nút bấm băng chuyền */
 .slide-btn {
-  /* --- CĂN GIỮA CHIỀU DỌC --- */
   position: absolute;
   top: 50%;
-  transform: translateY(-50%); /* Căn chuẩn xác tâm của nút vào giữa */
-  z-index: 10; /* Nổi lên trên món ăn */
-  
-  /* --- KIỂU DÁNG BO TRÒN & TRONG SUỐT --- */
+  transform: translateY(-50%); 
+  z-index: 10; 
   width: 45px;
   height: 45px;
-  border-radius: 50%; /* Bo tròn hoàn toàn */
-  background-color: rgba(255, 255, 255, 0.2); /* Nền trắng trong suốt 20% */
-  border: 1px solid rgba(255, 255, 255, 0.4); /* Viền mỏng mờ */
-  color: white; /* Màu mũi tên */
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2); 
+  border: 1px solid rgba(255, 255, 255, 0.4); 
+  color: white; 
   font-size: 20px;
   display: flex;
   align-items: center;
@@ -280,13 +262,11 @@
   transition: all 0.3s ease;
 }
 
-/* Hiệu ứng khi di chuột (Hover) */
 .slide-btn:hover {
   background-color: rgba(255, 255, 255, 0.5); 
   transform: translateY(-50%) scale(1.1); 
 }
 
-/* Vị trí của nút trái và phải */
 .left-btn {
   left: 5px; 
 }
@@ -294,9 +274,7 @@
 .right-btn {
   right: 5px; 
 }
-/* =========================================
-   5. CÁC CLASS DỰ PHÒNG CŨ
-========================================= */
+
 .products-section { max-width: 1200px; margin: 30px auto; }
 .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; margin-top: 15px; }
 .product-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.3s ease; }

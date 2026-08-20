@@ -13,9 +13,6 @@
             align-items: flex-start;
         }
 
-        /* ===============================
-     CỘT TRÁI - MENU (SIDEBAR)
-     =============================== */
         .sidebar-menu {
             width: 250px;
             flex-shrink: 0;
@@ -72,10 +69,6 @@
             border-left-color: #ee4d2d;
             background: #fff0ed;
         }
-
-        /* ===============================
-     CỘT PHẢI - NỘI DUNG (TABS)
-     =============================== */
         .content-area {
             flex-grow: 1;
             background: #fff;
@@ -89,14 +82,11 @@
             display: none;
         }
 
-        /* Ẩn mặc định */
         .tab-content.active {
             display: block;
         }
 
-        /* Hiện khi được gắn class active */
 
-        /* Định dạng Form */
         .content-header {
             border-bottom: 1px solid #eee;
             padding-bottom: 15px;
@@ -167,7 +157,6 @@
             background: #d73d22;
         }
 
-        /* Giao diện Đơn hàng */
         .order-item {
             border: 1px solid #eee;
             border-radius: 8px;
@@ -199,10 +188,6 @@
             background: #d4edda;
             color: #155724;
         }
-
-        /* ===============================
-     CSS CHO HỘP THOẠI XÁC NHẬN (MODAL)
-     =============================== */
         .custom-modal-overlay {
             position: fixed;
             top: 0;
@@ -214,7 +199,6 @@
             align-items: center;
             justify-content: center;
             z-index: 99999;
-            /* Hiệu ứng ẩn mặc định */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -232,7 +216,6 @@
             width: 90%;
             max-width: 400px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            /* Hiệu ứng trượt và phóng to mượt mà */
             transform: translateY(-20px) scale(0.95);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -317,7 +300,6 @@
 
     <div class="profile-layout">
 
-        <!-- BÊN TRÁI: SIDEBAR MENU -->
         <div class="sidebar-menu">
             <div class="sidebar-header">
                 <div class="avatar-placeholder">
@@ -338,9 +320,7 @@
             </div>
         </div>
 
-        <!-- BÊN PHẢI: NỘI DUNG TƯƠNG ỨNG -->
         <div class="content-area">
-            <!-- MÀN HÌNH 1: LỊCH SỬ ĐƠN MUA -->
             <div id="tab-orders" class="tab-content active">
                 <div class="content-header">
                     <h2>Đơn hàng của tôi</h2>
@@ -361,7 +341,6 @@
                                 </div>
                             </div>
 
-                            <!-- Cột bên phải: Trạng thái và Nút Hủy -->
                             <div
                                 style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
                                 <span class="order-status status-<%= order.status %>">
@@ -371,7 +350,6 @@
                                         <%= st %>
                                 </span>
 
-                                <!-- CHỈ HIỂN THỊ NÚT HỦY KHI ĐƠN HÀNG Ở TRẠNG THÁI "PENDING" -->
                                 <% if (order.status==='Pending' ) { %>
                                     <form action="/profile/cancel-order/<%= order._id %>" method="POST"
                                         onsubmit="showCustomConfirm(event, this, 'Bạn có chắc chắn muốn hủy đơn hàng này không? Không thể khôi phục sau khi hủy.');"
@@ -392,7 +370,6 @@
                                 <% } %>
             </div>
 
-            <!-- MÀN HÌNH 2: SỬA HỒ SƠ -->
             <div id="tab-profile" class="tab-content">
                 <div class="content-header">
                     <h2>Hồ sơ của tôi</h2>
@@ -423,7 +400,6 @@
                 </form>
             </div>
 
-            <!-- MÀN HÌNH 3: ĐỔI MẬT KHẨU -->
             <div id="tab-password" class="tab-content">
                 <div class="content-header">
                     <h2>Đổi mật khẩu</h2>
@@ -458,7 +434,6 @@
         </div>
     </div>
 
-    <!-- KHUNG HỘP THOẠI XÁC NHẬN (Ẩn mặc định) -->
     <div id="customConfirmModal" class="custom-modal-overlay">
         <div class="custom-modal-box">
             <h3 id="customConfirmTitle">Xác nhận</h3>
@@ -471,9 +446,6 @@
     </div>
 
 <script>
-        // ==========================================
-        // Tính năng 1: Chuyển Tabs mượt mà
-        // ==========================================
         function switchTab(tabId, element) {
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
             element.classList.add('active');
@@ -482,9 +454,6 @@
             document.getElementById(tabId).classList.add('active');
         }
 
-        // ==========================================
-        // Tính năng 2: Kiểm tra bắt lỗi "Xác nhận mật khẩu"
-        // ==========================================
         document.getElementById('passwordForm').addEventListener('submit', function (e) {
             const pass = document.getElementById('newPassword').value;
             const confirm = document.getElementById('confirmPassword').value;
@@ -496,11 +465,8 @@
             } else {
                 document.getElementById('passError').style.display = 'none'; 
             }
-        }); // <-- LƯU Ý: Sự kiện của passwordForm đã ĐÓNG LẠI tại đây!
+        }); 
 
-        // ==========================================
-        // Tính năng 3: HỆ THỐNG HỘP THOẠI XÁC NHẬN TÙY CHỈNH
-        // ==========================================
         let formToSubmit = null; 
 
         function showCustomConfirm(event, formElement, message) {

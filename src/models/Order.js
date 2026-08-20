@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  // 1. THÔNG TIN NGƯỜI ĐẶT
   userId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
@@ -14,7 +13,6 @@ const orderSchema = new mongoose.Schema({
     deliveryNote: { type: String, default: '' }
   },
 
-  // 2. CHI TIẾT CÁC MÓN ĂN
   items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
@@ -26,7 +24,6 @@ const orderSchema = new mongoose.Schema({
     }
   ],
 
-  // 3. TỔNG TIỀN VÀ THANH TOÁN
   totalAmount: { type: Number, required: true },
   paymentMethod: { 
     type: String, 
@@ -35,7 +32,6 @@ const orderSchema = new mongoose.Schema({
   },
   isPaid: { type: Boolean, default: false },
 
-  // 4. TRẠNG THÁI ĐƠN HÀNG
   status: { 
     type: String, 
     enum: ['Pending', 'Preparing', 'Shipping', 'Delivered', 'Cancelled'], 

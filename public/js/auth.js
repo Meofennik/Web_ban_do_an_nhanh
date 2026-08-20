@@ -1,5 +1,4 @@
 
-// 1. Chuyển đổi giữa Người mua và Cửa hàng
 function switchRole(role) {
   document.getElementById('roleInput').value = role;
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -17,7 +16,6 @@ function switchRole(role) {
   }
 }
 
-// 2. Ẩn / Hiện mật khẩu
 function togglePassword(inputId, iconBtn) {
   const passwordInput = document.getElementById(inputId);
   if (passwordInput.type === 'password') {
@@ -29,7 +27,6 @@ function togglePassword(inputId, iconBtn) {
   }
 }
 
-// 3. Hàm hiển thị thông báo Toast
 function showToast(message, type = 'success') {
   const toast = document.getElementById('toast');
   if (!toast) return;
@@ -38,9 +35,8 @@ function showToast(message, type = 'success') {
   setTimeout(() => { toast.className = 'toast'; }, 3500);
 }
 
-// 4. Xử lý Đăng ký (AJAX)
 async function handleRegister(e) {
-  e.preventDefault(); // Chặn việc Form tự động chuyển trang
+  e.preventDefault();
 
   const form = document.getElementById('registerForm');
   const role = document.getElementById('roleInput').value;
@@ -48,7 +44,6 @@ async function handleRegister(e) {
   const confirmPass = document.getElementById('confirmPassword').value;
   const address = document.getElementById('reg-address').value;
 
-  // --- CÁC RÀNG BUỘC KIỂM TRA TẠI TRÌNH DUYỆT ---
   if (pass.length <= 6) {
     return showToast("Mật khẩu phải dài hơn 6 ký tự!", "error");
   }
@@ -57,29 +52,24 @@ async function handleRegister(e) {
     return showToast("Mật khẩu nhập lại không khớp!", "error");
   }
 
-  // Đổi thành: Chỉ kiểm tra địa chỉ nếu role là 'seller'
   if (role === 'seller' && (!address || address.trim() === '')) {
     return showToast("Cửa hàng bắt buộc phải nhập địa chỉ!", "error");
   }
 
-  // --- GỬI DỮ LIỆU NGẦM LÊN SERVER ---
   const formData = new FormData(form);
 
   try {
     const response = await fetch('/register', {
       method: 'POST',
-      body: formData 
+      body: formData
     });
 
-    // Đọc câu trả lời từ Server
     const result = await response.json();
 
     if (response.ok) {
       showToast("Đăng ký thành công! Đang chuyển trang...", "success");
-      // Sau 1.5 giây mới chuyển sang trang đăng nhập
       setTimeout(() => { window.location.href = '/login'; }, 1500);
     } else {
-      // Server báo lỗi (Ví dụ: trùng số điện thoại)
       showToast(result.message, "error");
     }
   } catch (error) {
@@ -87,20 +77,17 @@ async function handleRegister(e) {
   }
 }
 
-// 5. Xử lý Đăng nhập (AJAX)
 async function handleLogin(e) {
-  e.preventDefault(); 
+  e.preventDefault();
 
   const phone = document.getElementById('loginPhone').value;
   const password = document.getElementById('loginPassword').value;
 
-  // Kiểm tra sơ bộ ở trình duyệt
   if (!password || password.length < 6) {
     return showToast("Mật khẩu không chính xác!", "error");
   }
 
   try {
-    // Gửi ngầm dữ liệu lên Server dưới dạng JSON
     const response = await fetch('/login', {
       method: 'POST',
       headers: {
@@ -109,17 +96,14 @@ async function handleLogin(e) {
       body: JSON.stringify({ phone: phone, password: password })
     });
 
-    // Đọc tin nhắn trả lời từ Server
     const result = await response.json();
 
     if (response.ok) {
-      // Đăng nhập thành công, hiện Toast xanh và cho quay về trang chủ
       showToast("Đăng nhập thành công! Đang chuyển hướng...", "success");
-      setTimeout(() => { 
-        window.location.href = '/'; 
+      setTimeout(() => {
+        window.location.href = '/';
       }, 1500);
     } else {
-      // Sai mật khẩu, sđt không tồn tại... -> Hiện Toast đỏ chứa tin nhắn của Server
       showToast(result.message, "error");
     }
   } catch (error) {
