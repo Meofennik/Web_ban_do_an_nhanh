@@ -37,37 +37,27 @@
 
         <div class="search-box">
           <input id="global-search" type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
-          <button class="btn-search"><img src="/images/iconsImages/search-interface-symbol.png" alt="search-interface-symbol" class="custom-icon-lg"></button>
+          <button class="btn-search" aria-label="Tìm kiếm"><img src="/images/iconsImages/search-interface-symbol.png" alt="search" class="custom-icon"></button>
         </div>
 
         <div class="header-actions">
-  
           <% if (user) { %>
-            
             <% if (user.role === 'seller') { %>
-              <a href="/add-product" class="btn-add-product">➕ Thêm món ăn</a>
+              <a href="/add-product" class="btn-add-product">➕ <span class="btn-text">Thêm món</span></a>
             <% } %>
 
-            <a href="/cart" id="cart-icon" style="position: relative; text-decoration: none; color: #333; font-weight: bold; margin-right: 20px;">
-              🛒 
-              <span id="cart-badge" style="
-                position: absolute; 
-                top: -10px; 
-                right: -20px; 
-                background: #ee4d2d; 
-                color: white; 
-                border-radius: 50%; 
-                padding: 2px 7px; 
-                font-size: 12px; 
-                font-weight: bold;
-                border: 2px solid white;
-                display: <%= cartItemCount > 0 ? 'inline-block' : 'none' %>;">
+            <a href="/cart" id="cart-icon" class="nav-cart-btn" aria-label="Giỏ hàng">
+              <span class="cart-icon-symbol">🛒</span>
+              <span id="cart-badge" class="cart-badge" style="display: <%= cartItemCount > 0 ? 'inline-flex' : 'none' %>;">
                 <%= cartItemCount %>
               </span>
             </a>
 
             <div class="user-dropdown">
-              <button class="btn-user-profile">👋 Xin chào, <%= user.fullName || user.name %></button>
+              <button class="btn-user-profile" title="<%= user.fullName || user.name %>">
+                <span class="user-icon">👤</span>
+                <span class="user-name-text"><%= user.fullName || user.name %></span>
+              </button>
               <div class="dropdown-content">
                 <div class="user-info-box">
                   <p><strong><%= user.fullName || user.name %></strong></p>
@@ -88,7 +78,6 @@
           <% } else { %>
             <a href="/login" class="btn-login">Đăng nhập</a>
           <% } %>
-
         </div>
       </div> 
 
