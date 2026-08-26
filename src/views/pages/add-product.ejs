@@ -300,7 +300,10 @@
 
           <div class="field-group">
             <label for="productImage">Hình ảnh sản phẩm</label>
-            <input id="productImage" type="file" name="productImage" accept="image/*" required>
+            <input id="productImage" type="file" name="productImage" accept="image/*" required onchange="previewImage(this, 'img-preview-add')">
+            <div id="preview-wrapper-add" style="margin-top: 10px; display: none;">
+              <img id="img-preview-add" src="" alt="Preview" style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px; border: 2px solid #ee4d2d; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            </div>
           </div>
 
           <div class="field-group full-width">
@@ -320,6 +323,22 @@
       </section>
     </form>
   </div>
+
+  <script>
+    function previewImage(input, targetImgId) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById(targetImgId);
+          if (img) {
+            img.src = e.target.result;
+            document.getElementById('preview-wrapper-add').style.display = 'block';
+          }
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+  </script>
 </body>
 
 </html>

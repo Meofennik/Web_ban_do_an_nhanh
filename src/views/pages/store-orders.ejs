@@ -38,15 +38,29 @@
   .btn-modal-cancel { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #f0f0f0; color: #333; font-weight: bold; }
   .btn-modal-ok { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; background: #ee4d2d; color: #fff; font-weight: bold; }
 </style>
+<% 
+  const pendingCount = orders.filter(o => o.status === 'Pending').length;
+  const preparingCount = orders.filter(o => o.status === 'Preparing').length;
+  const shippingCount = orders.filter(o => o.status === 'Shipping').length;
+  const historyCount = orders.filter(o => o.status === 'Delivered' || o.status === 'Cancelled').length;
+%>
 
 <div class="store-orders-container">
-  <h2 class="page-title">Quản lý đơn đặt hàng</h2>
+  <h2 class="page-title">📦 Quản lý đơn đặt hàng của quán</h2>
 
   <div class="tabs-header">
-    <div class="tab-btn active" onclick="switchStoreTab('tab-pending', this)">Đơn Mới (Chờ xác nhận)</div>
-    <div class="tab-btn" onclick="switchStoreTab('tab-preparing', this)">Đang chuẩn bị</div>
-    <div class="tab-btn" onclick="switchStoreTab('tab-shipping', this)">Đang giao hàng</div>
-    <div class="tab-btn" onclick="switchStoreTab('tab-history', this)">Lịch sử đơn</div>
+    <div class="tab-btn active" onclick="switchStoreTab('tab-pending', this)">
+      Đơn Mới <% if (pendingCount > 0) { %><span style="background: #ee4d2d; color: white; border-radius: 12px; padding: 2px 7px; font-size: 11.5px; margin-left: 5px;"><%= pendingCount %></span><% } %>
+    </div>
+    <div class="tab-btn" onclick="switchStoreTab('tab-preparing', this)">
+      Đang chuẩn bị <% if (preparingCount > 0) { %><span style="background: #ffa502; color: white; border-radius: 12px; padding: 2px 7px; font-size: 11.5px; margin-left: 5px;"><%= preparingCount %></span><% } %>
+    </div>
+    <div class="tab-btn" onclick="switchStoreTab('tab-shipping', this)">
+      Đang giao <% if (shippingCount > 0) { %><span style="background: #007bff; color: white; border-radius: 12px; padding: 2px 7px; font-size: 11.5px; margin-left: 5px;"><%= shippingCount %></span><% } %>
+    </div>
+    <div class="tab-btn" onclick="switchStoreTab('tab-history', this)">
+      Lịch sử đơn (<%= historyCount %>)
+    </div>
   </div>
 
   <% function renderOrders(filterStatus, emptyMsg) { %>

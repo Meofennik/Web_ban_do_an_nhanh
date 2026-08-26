@@ -1,123 +1,419 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('../partials/header') %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thanh toán đơn hàng</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
+<style>
+    .checkout-page-wrapper {
+        max-width: 1050px;
+        margin: 30px auto 60px;
+        padding: 0 15px;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+    }
 
-<body>
-    <div style="max-width: 1000px; margin: 40px auto; display: flex; gap: 30px;">
+    /* Order Steps */
+    .order-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+        gap: 15px;
+    }
+    .step-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #999;
+    }
+    .step-item.active {
+        color: #ee4d2d;
+    }
+    .step-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #eee;
+        color: #777;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+    }
+    .step-item.active .step-circle {
+        background: #ee4d2d;
+        color: #fff;
+    }
+    .step-line {
+        width: 40px;
+        height: 2px;
+        background: #eee;
+    }
 
-        <div
-            style="flex: 2; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <a href="/cart" class="back-home">❮ Quay lại giỏ hàng</a>
-            <h2 style="margin-top: 0; text-align: center;"> Địa chỉ giao hàng</h2>
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        gap: 30px;
+        align-items: flex-start;
+    }
+
+    .checkout-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-heading {
+        margin: 0 0 20px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #222;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group-checkout {
+        margin-bottom: 18px;
+    }
+    .form-group-checkout label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #444;
+    }
+    .form-control-checkout {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 14.5px;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control-checkout:focus {
+        border-color: #ee4d2d;
+        box-shadow: 0 0 0 3px rgba(238, 77, 45, 0.1);
+    }
+
+    /* Payment Option Cards */
+    .payment-options-grid {
+        display: grid;
+        gap: 12px;
+        margin-top: 10px;
+        margin-bottom: 25px;
+    }
+    .payment-option-card {
+        display: flex;
+        align-items: center;
+        padding: 14px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        gap: 12px;
+    }
+    .payment-option-card:hover {
+        border-color: #ffd8cc;
+        background: #fff9f8;
+    }
+    .payment-option-card.selected {
+        border-color: #ee4d2d;
+        background: #fff5f2;
+    }
+    .payment-option-card input[type="radio"] {
+        accent-color: #ee4d2d;
+        width: 18px;
+        height: 18px;
+    }
+    .payment-info strong {
+        display: block;
+        font-size: 14.5px;
+        color: #222;
+    }
+    .payment-info span {
+        font-size: 12.5px;
+        color: #777;
+    }
+
+    /* Summary items */
+    .summary-item-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed #eee;
+    }
+    .summary-item-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 14.5px;
+    }
+    .summary-item-meta {
+        font-size: 12.5px;
+        color: #777;
+        margin-top: 3px;
+    }
+
+    .voucher-input-group {
+        display: flex;
+        gap: 8px;
+        margin-top: 15px;
+        margin-bottom: 20px;
+    }
+    .btn-apply-voucher {
+        background: #333;
+        color: #fff;
+        border: none;
+        padding: 0 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 13.5px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.2s;
+    }
+    .btn-apply-voucher:hover {
+        background: #ee4d2d;
+    }
+
+    .cost-breakdown-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    .grand-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-top: 18px;
+        padding-top: 15px;
+        border-top: 2px solid #eee;
+    }
+
+    .btn-submit-order {
+        width: 100%;
+        background: linear-gradient(135deg, #ff7e5f, #ee4d2d);
+        color: white;
+        border: none;
+        padding: 16px;
+        font-size: 17px;
+        font-weight: 700;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 6px 16px rgba(238, 77, 45, 0.35);
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 20px;
+    }
+    .btn-submit-order:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(238, 77, 45, 0.45);
+    }
+
+    @media (max-width: 868px) {
+        .checkout-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .checkout-page-wrapper {
+            margin: 15px auto 40px;
+            padding: 0 12px;
+        }
+        .order-steps {
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+        .step-item span:not(.step-circle) {
+            font-size: 12.5px;
+        }
+        .payment-methods-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="checkout-page-wrapper">
+    <!-- Progress Steps -->
+    <div class="order-steps">
+        <div class="step-item">
+            <span class="step-circle">1</span>
+            <span>Giỏ hàng</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item active">
+            <span class="step-circle">2</span>
+            <span>Thanh toán</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item">
+            <span class="step-circle">3</span>
+            <span>Hoàn tất</span>
+        </div>
+    </div>
+
+    <div class="checkout-grid">
+        <!-- Delivery and Payment Form -->
+        <div class="checkout-card">
+            <h2 class="card-heading">📍 Thông tin nhận hàng</h2>
 
             <form action="/order/create" method="POST" id="checkout-form">
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Họ và tên người nhận</label>
-                    <input type="text" name="name" value="<%= user.fullName || user.name || '' %>" required
-                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <div class="form-group-checkout">
+                    <label>Họ và tên người nhận</label>
+                    <input type="text" name="name" class="form-control-checkout" value="<%= user.fullName || user.name || '' %>" placeholder="Nhập tên người nhận" required>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Số điện thoại</label>
-                    <input type="text" name="phone" value="<%= user.phone || '' %>" required
-                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <div class="form-group-checkout">
+                    <label>Số điện thoại liên hệ</label>
+                    <input type="tel" name="phone" class="form-control-checkout" value="<%= user.phone || '' %>" placeholder="09xxxxxxxx" required>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <label style="font-weight: bold; margin: 0;">Địa chỉ nhận hàng</label>
-                        <a href="/location"
-                            style="color: #ee4d2d; text-decoration: none; font-weight: bold; font-size: 14px; cursor: pointer;">
-                            Thay đổi
+                <div class="form-group-checkout">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="margin: 0;">Địa chỉ nhận hàng</label>
+                        <a href="/location" style="color: #ee4d2d; text-decoration: none; font-weight: 600; font-size: 13.5px;">
+                            🗺️ Đổi vị trí bản đồ
                         </a>
                     </div>
-                    <input type="text" id="address-input" name="address"
+                    <input type="text" id="address-input" name="address" class="form-control-checkout"
                         value="<%= user && user.address ? user.address : '' %>" required readonly
-                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: #f0f0f0; color: #555; outline: none; transition: 0.3s;">
+                        style="background-color: #f8f9fa; cursor: pointer;" onclick="window.location.href='/location'">
                 </div>
 
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">Ghi chú cho người giao hàng (Tùy
-                        chọn)</label>
-                    <textarea name="notes" placeholder="VD: thêm địa chỉ cụ thể, nhắc nhở tài xế,..." rows="3"
-                        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: none; box-sizing: border-box;"></textarea>
+                <div class="form-group-checkout">
+                    <label>Ghi chú cho tài xế (Tùy chọn)</label>
+                    <textarea name="notes" class="form-control-checkout" placeholder="Ví dụ: Giao lên tầng 3, gọi trước khi đến..." rows="3" style="resize: none;"></textarea>
                 </div>
 
-                <h3 style="border-top: 1px solid #eee; padding-top: 20px;">Phương thức thanh toán</h3>
-                <div style="margin-bottom: 10px;">
-                    <label style="cursor: pointer;">
+                <h2 class="card-heading" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 25px;">
+                    💳 Phương thức thanh toán
+                </h2>
+
+                <div class="payment-options-grid">
+                    <label class="payment-option-card selected" onclick="selectPayment(this)">
                         <input type="radio" name="paymentMethod" value="COD" checked>
-                        💵 Thanh toán khi nhận hàng (COD)
+                        <div class="payment-info">
+                            <strong>💵 Thanh toán khi nhận hàng (COD)</strong>
+                            <span>Thanh toán tiền mặt cho Shipper khi nhận món ăn</span>
+                        </div>
                     </label>
-                </div>
-                <div style="margin-bottom: 20px;">
-                    <label style="cursor: pointer;">
+
+                    <label class="payment-option-card" onclick="selectPayment(this)">
                         <input type="radio" name="paymentMethod" value="BANK_TRANSFER">
-                        💳 Chuyển khoản ngân hàng
+                        <div class="payment-info">
+                            <strong>💳 Chuyển khoản ngân hàng / Ví điện tử</strong>
+                            <span>Quét mã QR chuyển khoản nhanh sau khi xác nhận đơn</span>
+                        </div>
                     </label>
                 </div>
 
-                <button type="submit"
-                    style="width: 100%; background: #ee4d2d; color: white; border: none; padding: 15px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer;">
-                    ĐẶT HÀNG NGAY
+                <button type="submit" class="btn-submit-order">
+                    XÁC NHẬN ĐẶT HÀNG
                 </button>
             </form>
         </div>
 
-        <div
-            style="flex: 1; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); height: fit-content;">
-            <h3 style="margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px;">Tóm tắt đơn hàng</h3>
+        <!-- Order Summary Card -->
+        <div class="checkout-card" style="height: fit-content;">
+            <h2 class="card-heading">
+                🛒 Tóm tắt đơn hàng (<%= cart && cart.items ? cart.items.length : 0 %> món)
+            </h2>
 
-            <% let grandTotal=0; %>
-                <% cart.items.forEach(item=> { %>
-                    <% if (item.productId) { %>
-                        <% const itemTotal=item.productId.price * item.quantity; %>
-                            <% grandTotal +=itemTotal; %>
-
-                                <div
-                                    style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px dashed #eee; padding-bottom: 10px;">
-                                    <div>
-                                        <div style="font-weight: bold;">
-                                            <%= item.productId.name %>
-                                        </div>
-                                        <div style="color: #777; font-size: 13px;">SL: <%= item.quantity %> x <%=
-                                                    item.productId.price.toLocaleString('vi-VN') %>đ</div>
-                                    </div>
-                                    <div style="font-weight: bold;">
-                                        <%= itemTotal.toLocaleString('vi-VN') %>đ
+            <div style="max-height: 280px; overflow-y: auto; margin-bottom: 20px; padding-right: 5px;">
+                <% let grandTotal = 0; %>
+                <% if (cart && cart.items) { %>
+                    <% cart.items.forEach(item => { %>
+                        <% if (item.productId) { %>
+                            <% const itemTotal = item.productId.price * item.quantity; %>
+                            <% grandTotal += itemTotal; %>
+                            <div class="summary-item-row">
+                                <div>
+                                    <div class="summary-item-name"><%= item.productId.name %></div>
+                                    <div class="summary-item-meta">
+                                        <%= item.quantity %> x <%= (Number(item.productId.price) || 0).toLocaleString('vi-VN') %>đ
+                                        <% if (item.note) { %>
+                                            <span style="color: #ee4d2d;">• <%= item.note %></span>
+                                        <% } %>
                                     </div>
                                 </div>
-                                <% } %>
-                                    <% }) %>
+                                <div style="font-weight: 700; color: #222; font-size: 14.5px;">
+                                    <%= itemTotal.toLocaleString('vi-VN') %>đ
+                                </div>
+                            </div>
+                        <% } %>
+                    <% }) %>
+                <% } %>
+            </div>
 
-                                        <div
-                                            style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 18px;">
-                                            <strong>TỔNG CỘNG:</strong>
-                                            <strong style="color: #ee4d2d;">
-                                                <%= grandTotal.toLocaleString('vi-VN') %>đ
-                                            </strong>
-                                        </div>
+            <!-- Voucher Box -->
+            <div class="voucher-input-group">
+                <input type="text" id="voucher-code" placeholder="Mã giảm giá FoodEats" class="form-control-checkout" style="padding: 10px;">
+                <button type="button" class="btn-apply-voucher" onclick="applyVoucher()">Áp dụng</button>
+            </div>
+
+            <!-- Cost Breakdown -->
+            <div class="cost-breakdown-row">
+                <span>Tạm tính món ăn:</span>
+                <span id="subtotal-cost"><%= grandTotal.toLocaleString('vi-VN') %>đ</span>
+            </div>
+            <div class="cost-breakdown-row">
+                <span>Phí giao hàng:</span>
+                <span style="color: #2ed573; font-weight: 600;">Miễn phí (Ưu đãi)</span>
+            </div>
+            <div class="cost-breakdown-row" id="discount-row" style="display: none; color: #ee4d2d;">
+                <span>Giảm giá voucher:</span>
+                <span id="discount-val">-0đ</span>
+            </div>
+
+            <div class="grand-total-row">
+                <span style="font-size: 16px; font-weight: 700; color: #333;">TỔNG CỘNG:</span>
+                <span style="color: #ee4d2d; font-size: 26px; font-weight: 800;" id="final-total">
+                    <%= grandTotal.toLocaleString('vi-VN') %>đ
+                </span>
+            </div>
         </div>
-
     </div>
+</div>
 
-    <script>
+<script>
+    function selectPayment(cardElement) {
+        document.querySelectorAll('.payment-option-card').forEach(card => card.classList.remove('selected'));
+        cardElement.classList.add('selected');
+        const radio = cardElement.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
+    }
+
+    function applyVoucher() {
+        const input = document.getElementById('voucher-code');
+        const code = input ? input.value.trim().toUpperCase() : '';
+        if (!code) {
+            if (typeof showToast === 'function') showToast('Vui lòng nhập mã giảm giá!', 'warning');
+            return;
+        }
+
+        if (code === 'FOODEATS' || code === 'FREESHIP' || code === 'GIAM20K') {
+            if (typeof showToast === 'function') showToast(`Áp dụng thành công mã ưu đãi ${code}!`, 'success');
+            document.getElementById('discount-row').style.display = 'flex';
+            document.getElementById('discount-val').innerText = '-20.000đ';
+            
+            const grandTotal = <%= grandTotal %>;
+            const newTotal = Math.max(0, grandTotal - 20000);
+            document.getElementById('final-total').innerText = newTotal.toLocaleString('vi-VN') + 'đ';
+        } else {
+            if (typeof showToast === 'function') showToast('Mã ưu đãi không hợp lệ hoặc đã hết lượt!', 'error');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const savedAddress = localStorage.getItem('userAddress');     
         const addressInput = document.getElementById('address-input');
-        if (savedAddress && addressInput) {
+        if (savedAddress && addressInput && !addressInput.value) {
             addressInput.value = savedAddress;
         }
     });
 </script>
-</body>
 
-</html>
+<%- include('../partials/footer') %>

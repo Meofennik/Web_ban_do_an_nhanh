@@ -14,6 +14,61 @@ function switchRole(role) {
     activeContent.classList.add('active');
     activeContent.querySelectorAll('input').forEach(input => input.disabled = false);
   }
+
+  const subtitleEl = document.getElementById('auth-subtitle');
+  if (subtitleEl) {
+    if (role === 'seller') {
+      subtitleEl.textContent = 'Mở quán kinh doanh trên FoodEats để tiếp cận hàng triệu khách hàng!';
+    } else {
+      subtitleEl.textContent = 'Trở thành thành viên FoodEats để nhận ngàn ưu đãi hấp dẫn!';
+    }
+  }
+}
+
+function checkPasswordStrength(password) {
+  const container = document.getElementById('password-strength-container');
+  const bar = document.getElementById('strength-bar');
+  const text = document.getElementById('strength-text');
+
+  if (!container || !bar || !text) return;
+
+  if (!password) {
+    container.style.display = 'none';
+    return;
+  }
+
+  container.style.display = 'flex';
+
+  let score = 0;
+  if (password.length >= 6) score += 1;
+  if (password.length >= 10) score += 1;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1;
+  if (/\d/.test(password)) score += 1;
+  if (/[^a-zA-Z0-9]/.test(password)) score += 1;
+
+  bar.className = 'strength-bar';
+
+  if (score <= 1) {
+    bar.style.width = '25%';
+    bar.classList.add('strength-weak');
+    text.textContent = 'Yếu';
+    text.style.color = '#ff4757';
+  } else if (score === 2 || score === 3) {
+    bar.style.width = '55%';
+    bar.classList.add('strength-medium');
+    text.textContent = 'Trung bình';
+    text.style.color = '#ffa502';
+  } else if (score === 4) {
+    bar.style.width = '80%';
+    bar.classList.add('strength-strong');
+    text.textContent = 'Mạnh';
+    text.style.color = '#2ed573';
+  } else {
+    bar.style.width = '100%';
+    bar.classList.add('strength-very-strong');
+    text.textContent = 'Rất mạnh';
+    text.style.color = '#00d2d3';
+  }
 }
 
 function togglePassword(inputId, iconBtn) {

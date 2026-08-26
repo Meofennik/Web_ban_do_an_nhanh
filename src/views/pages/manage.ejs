@@ -1,58 +1,230 @@
 <%- include('../partials/header') %>
 
-<div class="container" style="max-width: 1000px; margin: 40px auto; padding: 20px;">
-  <h2>📦 Quản Lý Sản Phẩm Của Tôi</h2>
-  
-  <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-    <thead>
-      <tr style="background: #f4f4f4; text-align: left;">
-        <th style="padding: 12px; border: 1px solid #ddd;">Hình ảnh</th>
-        <th style="padding: 12px; border: 1px solid #ddd;">Tên món</th>
-        <th style="padding: 12px; border: 1px solid #ddd;">Giá bán</th>
-        <th style="padding: 12px; border: 1px solid #ddd;">Trạng thái</th>
-        <th style="padding: 12px; border: 1px solid #ddd;">Hành động</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% products.forEach(product => { %>
-        <tr>
-          <td style="padding: 12px; border: 1px solid #ddd;">
-            <img src="<%= product.imageUrl %>" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-          </td>
-          <td style="padding: 12px; border: 1px solid #ddd;"><strong><%= product.name %></strong></td>
-          <td style="padding: 12px; border: 1px solid #ddd;"><%= product.price.toLocaleString('vi-VN') %> đ</td>
-          
-          <td style="padding: 12px; border: 1px solid #ddd;">
-            <span style="color: <%= product.isAvailable ? 'green' : 'red' %>; font-weight: bold;">
-              <%= product.isAvailable ? 'Đang bán' : 'Tạm ẩn' %>
-            </span>
-          </td>
-          
-          <td style=" padding: 12px; border: 1px solid #ddd;">
-            <div style="display: flex; justify-content: space-around;">
-            <a href="/products/edit/<%= product._id %>" style="padding: 7px 14px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; display: inline-block; margin-right: 5px;">
-  <img src="/images/iconsImages/pen.png" alt="pen" class="custom-icon-lg"> Sửa
-</a>
-            <form action="/products/toggle/<%= product._id %>" method="POST" style="display:inline;">
-              <button type="submit" style="padding: 9px 20px; cursor: pointer; background: #ffcc00; border: none; border-radius: 4px;">
-                <%- product.isAvailable 
-  ? '<img src="/images/iconsImages/hide.png" alt="Hide" class="custom-icon"> Ẩn' 
-  : '<img src="/images/iconsImages/view.png" alt="Show" class="custom-icon"> Hiện' 
-%>
-              </button>
-            </form>
+<style>
+  .seller-manage-container {
+    max-width: 1050px;
+    margin: 35px auto 60px;
+    padding: 0 15px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+  }
 
-            <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hẳn món này và ảnh của nó khỏi hệ thống không?');">
-              <button type="submit" style="padding: 7px 14px; cursor: pointer; background: #ff4d4d; color: white; border: none; border-radius: 4px;">
-                <img src="/images/iconsImages/bin.png" alt="bin" class="custom-icon-lg"> Xóa
-              </button>
-            </form>
-            </div>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
+  .manage-header-card {
+    background: #fff;
+    padding: 24px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .manage-title {
+    margin: 0;
+    font-size: 24px;
+    color: #222;
+    font-weight: 700;
+  }
+  .manage-subtitle {
+    margin: 4px 0 0;
+    color: #777;
+    font-size: 13.5px;
+  }
+
+  .btn-add-new-prod {
+    background: linear-gradient(135deg, #ff7e5f, #ee4d2d);
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14.5px;
+    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-add-new-prod:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(238, 77, 45, 0.4);
+  }
+
+  .manage-table-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  .search-filter-bar {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+  }
+  .search-input-manage {
+    flex: 1;
+    max-width: 360px;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+  }
+  .search-input-manage:focus {
+    border-color: #ee4d2d;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .status-active {
+    background: #e6f9ed;
+    color: #2ed573;
+  }
+  .status-inactive {
+    background: #fff1f0;
+    color: #ff4757;
+  }
+
+  .action-btn-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-action-sm {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: 0.2s;
+  }
+  .btn-edit-prod {
+    background: #e6f2ff;
+    color: #007bff;
+  }
+  .btn-edit-prod:hover {
+    background: #007bff;
+    color: #fff;
+  }
+  .btn-toggle-prod {
+    background: #fff8e6;
+    color: #ffa502;
+  }
+  .btn-toggle-prod:hover {
+    background: #ffa502;
+    color: #fff;
+  }
+  .btn-delete-prod {
+    background: #fff1f0;
+    color: #ff4757;
+  }
+  .btn-delete-prod:hover {
+    background: #ff4757;
+    color: #fff;
+  }
+</style>
+
+<div class="seller-manage-container">
+  <div class="manage-header-card">
+    <div>
+      <h2 class="manage-title">📦 Quản Lý Sản Phẩm Cửa Hàng</h2>
+      <p class="manage-subtitle">Tổng cộng <%= products.length %> món ăn trên gian hàng của bạn</p>
+    </div>
+    <a href="/add-product" class="btn-add-new-prod">➕ Thêm món mới</a>
+  </div>
+
+  <div class="manage-table-card">
+    <div class="search-filter-bar">
+      <input type="text" id="filterInput" class="search-input-manage" placeholder="🔍 Tìm kiếm tên món ăn..." onkeyup="filterTable()">
+    </div>
+
+    <% if (products && products.length > 0) { %>
+      <div style="overflow-x: auto;">
+        <table id="productsTable" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background: #fafafa; border-bottom: 2px solid #eee; text-align: left; font-size: 13.5px; color: #666;">
+              <th style="padding: 12px;">Hình ảnh</th>
+              <th style="padding: 12px;">Tên món</th>
+              <th style="padding: 12px;">Giá bán</th>
+              <th style="padding: 12px;">Trạng thái</th>
+              <th style="padding: 12px;">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% products.forEach(product => { %>
+              <tr style="border-bottom: 1px solid #f0f0f0;">
+                <td style="padding: 12px;">
+                  <img src="<%= product.imageUrl %>" style="width: 55px; height: 55px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
+                </td>
+                <td style="padding: 12px; font-weight: 600; color: #333;" class="prod-name-cell">
+                  <%= product.name %>
+                </td>
+                <td style="padding: 12px; color: #ee4d2d; font-weight: 700;">
+                  <%= (Number(product.price) || 0).toLocaleString('vi-VN') %>đ
+                </td>
+                <td style="padding: 12px;">
+                  <span class="status-badge <%= product.isAvailable ? 'status-active' : 'status-inactive' %>">
+                    <%= product.isAvailable ? '✔ Đang bán' : '✖ Tạm ẩn' %>
+                  </span>
+                </td>
+                <td style="padding: 12px;">
+                  <div class="action-btn-cell">
+                    <a href="/products/edit/<%= product._id %>" class="btn-action-sm btn-edit-prod">
+                      ✏️ Sửa
+                    </a>
+                    
+                    <form action="/products/toggle/<%= product._id %>" method="POST" style="margin:0;">
+                      <button type="submit" class="btn-action-sm btn-toggle-prod">
+                        <%= product.isAvailable ? '👁️ Ẩn' : '👁️ Hiện' %>
+                      </button>
+                    </form>
+
+                    <form action="/products/delete/<%= product._id %>" method="POST" style="margin:0;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa món này vĩnh viễn không?');">
+                      <button type="submit" class="btn-action-sm btn-delete-prod">
+                        🗑️ Xóa
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div style="text-align: center; padding: 50px 20px; color: #777;">
+        <div style="font-size: 50px; margin-bottom: 12px;">🍽️</div>
+        <h3 style="margin: 0 0 8px; color: #333;">Chưa có món ăn nào trong cửa hàng</h3>
+        <p style="margin-bottom: 20px; font-size: 14px;">Hãy bắt đầu đăng bán món đầu tiên để tiếp cận khách hàng!</p>
+        <a href="/add-product" class="btn-add-new-prod">Đăng món ngay</a>
+      </div>
+    <% } %>
+  </div>
 </div>
+
+<script>
+  function filterTable() {
+    const query = document.getElementById('filterInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#productsTable tbody tr');
+    rows.forEach(row => {
+      const name = row.querySelector('.prod-name-cell').textContent.toLowerCase();
+      if (name.includes(query)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+</script>
 
 <%- include('../partials/footer') %>

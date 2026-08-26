@@ -328,46 +328,77 @@
                 </div>
                 <% if (orders && orders.length> 0) { %>
                     <% orders.forEach(order=> { %>
-                        <div class="order-item">
-                            <div>
-                                <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px; color: #333;">
-                                    Mã đơn: #<%= order._id.toString().substring(0, 8).toUpperCase() %>
+                        <div class="order-item" style="flex-direction: column; align-items: stretch; gap: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;">
+                                <div>
+                                    <span style="font-weight: 700; font-size: 15px; color: #333;">
+                                        Mã đơn: #<%= order._id.toString().substring(0, 8).toUpperCase() %>
+                                    </span>
+                                    <span style="color: #888; font-size: 13px; margin-left: 10px;">
+                                        <%= new Date(order.createdAt).toLocaleString('vi-VN') %>
+                                    </span>
                                 </div>
-                                <div style="color: #777; font-size: 13px; margin-bottom: 8px;">
-                                    Ngày đặt: <%= new Date(order.createdAt).toLocaleString('vi-VN') %>
-                                </div>
-                                <div style="color: #ee4d2d; font-weight: bold; font-size: 16px;">
-                                    <%= order.totalAmount.toLocaleString('vi-VN') %>đ
-                                </div>
+                                <span class="order-status status-<%= order.status %>">
+                                    <% let st=order.status; 
+                                       if (st==='Pending' ) st='Chờ xác nhận' ; 
+                                       if (st==='Preparing' ) st='Đang chuẩn bị' ; 
+                                       if (st==='Shipping' ) st='Đang giao' ; 
+                                       if (st==='Delivered' ) st='Hoàn thành' ; 
+                                       if (st==='Cancelled' ) st='Đã hủy' ; %>
+                                    <%= st %>
+                                </span>
                             </div>
 
-                            <div
-                                style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
-                                <span class="order-status status-<%= order.status %>">
-                                    <% let st=order.status; if (st==='Pending' ) st='Chờ xác nhận' ; if
-                                        (st==='Preparing' ) st='Đang chuẩn bị' ; if (st==='Shipping' ) st='Đang giao' ;
-                                        if (st==='Delivered' ) st='Hoàn thành' ; if (st==='Cancelled' ) st='Đã hủy' ; %>
-                                        <%= st %>
-                                </span>
+                            <!-- List of items in this order -->
+                            <% if (order.items && order.items.length > 0) { %>
+                                <div style="display: flex; flex-direction: column; gap: 8px; background: #fafafa; padding: 12px; border-radius: 8px;">
+                                    <% order.items.forEach(item => { %>
+                                        <div style="display: flex; justify-content: space-between; font-size: 14px; color: #444;">
+                                            <div>
+                                                <strong><%= item.quantity %>x</strong> <%= item.name %>
+                                                <% if (item.note) { %>
+                                                    <span style="color: #ee4d2d; font-size: 12px;">(<%= item.note %>)</span>
+                                                <% } %>
+                                            </div>
+                                            <div style="color: #666;">
+                                                <%= ((Number(item.price) || 0) * item.quantity).toLocaleString('vi-VN') %>đ
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                </div>
+                            <% } %>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 5px;">
+                                <div style="color: #333; font-size: 14.5px;">
+                                    Tổng thanh toán: 
+                                    <strong style="color: #ee4d2d; font-size: 17px; margin-left: 5px;">
+                                        <%= order.totalAmount.toLocaleString('vi-VN') %>đ
+                                    </strong>
+                                </div>
 
                                 <% if (order.status==='Pending' ) { %>
                                     <form action="/profile/cancel-order/<%= order._id %>" method="POST"
                                         onsubmit="showCustomConfirm(event, this, 'Bạn có chắc chắn muốn hủy đơn hàng này không? Không thể khôi phục sau khi hủy.');"
                                         style="margin: 0;">
                                         <button type="submit"
-                                            style="background: #f8d7da; color: #721c24; border: none; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 4px rgba(220,53,69,0.15);">
-                                            Hủy đơn
+                                            style="background: #fff1f0; color: #ff4d4f; border: 1px solid #ffccc7; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s;">
+                                            Hủy đơn hàng
                                         </button>
                                     </form>
-                                    <% } %>
+                                <% } %>
                             </div>
                         </div>
-                        <% }) %>
-                            <% } else { %>
-                                <div style="text-align: center; padding: 50px 0; color: #777;">
-                                    <p>Chưa có đơn hàng nào.</p>
-                                </div>
-                                <% } %>
+                    <% }) %>
+                <% } else { %>
+                    <div style="text-align: center; padding: 60px 20px; color: #777;">
+                        <div style="font-size: 60px; margin-bottom: 12px;">🧾</div>
+                        <h3 style="margin: 0 0 8px; color: #333;">Bạn chưa có đơn hàng nào</h3>
+                        <p style="margin-bottom: 20px; font-size: 14.5px;">Hãy khám phá các món ngon hấp dẫn và đặt món ngay hôm nay!</p>
+                        <a href="/" style="display: inline-block; background: linear-gradient(135deg, #ff7e5f, #ee4d2d); color: #fff; padding: 12px 28px; border-radius: 25px; font-weight: bold; text-decoration: none; font-size: 14px; box-shadow: 0 4px 12px rgba(238, 77, 45, 0.3);">
+                            Đặt món ngay
+                        </a>
+                    </div>
+                <% } %>
             </div>
 
             <div id="tab-profile" class="tab-content">

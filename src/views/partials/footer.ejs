@@ -59,6 +59,22 @@
     opacity: 0.8;
   }
   .toast-close:hover { opacity: 1; }
+
+  /* Global Scroll Reveal / Fade-up */
+  .reveal-item {
+    opacity: 0;
+    transform: translateY(35px) scale(0.98);
+    filter: blur(3px);
+    transition: opacity 1.35s cubic-bezier(0.19, 1, 0.22, 1), 
+                transform 1.35s cubic-bezier(0.19, 1, 0.22, 1), 
+                filter 1.35s cubic-bezier(0.19, 1, 0.22, 1);
+    will-change: opacity, transform, filter;
+  }
+  .reveal-item.is-revealed {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 </style>
 
 <script>
@@ -96,7 +112,7 @@
   }
 </script>
 
-  <footer class="footer">
+  <footer class="footer reveal-item">
     <div class="footer-container">
       <div class="footer-col">
         <h3 class="logo">Food<span>Eats</span></h3>
@@ -125,7 +141,32 @@
     </div>
   </footer>
 
- 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if ('IntersectionObserver' in window) {
+        const globalRevealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-revealed');
+            }
+          });
+        }, {
+          root: null,
+          rootMargin: '0px 0px -40px 0px',
+          threshold: 0.08
+        });
+
+        document.querySelectorAll('.reveal-item, .category-wrapper').forEach(el => {
+          globalRevealObserver.observe(el);
+        });
+      } else {
+        document.querySelectorAll('.reveal-item, .category-wrapper').forEach(el => {
+          el.classList.add('is-revealed');
+        });
+      }
+    });
+  </script>
+
 <% if (typeof customJs !== 'undefined') { %>
   <script src="<%= customJs %>"></script>
 <% } %>

@@ -62,25 +62,39 @@
       </div>
 
       <div style="margin-bottom: 15px;">
-        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Hình ảnh hiện tại:</label>
-        <img src="<%= product.imageUrl %>"
-          style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; display: block;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px;">Hình ảnh sản phẩm:</label>
+        <img id="edit-img-preview" src="<%= product.imageUrl %>"
+          style="width: 110px; height: 110px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; display: block; border: 1px solid #ddd;">
 
-        <label style="display: block; font-size: 13px; color: #666;">Đổi ảnh mới (Nếu không chọn, ảnh cũ sẽ được giữ
-          nguyên):</label>
-        <input type="file" name="productImage" accept="image/*">
+        <label style="display: block; font-size: 13px; color: #666; margin-bottom: 5px;">Đổi ảnh mới (Nếu không chọn, ảnh cũ sẽ được giữ nguyên):</label>
+        <input type="file" name="productImage" accept="image/*" onchange="previewEditImage(this)">
       </div>
 
-      <div style="margin-top: 20px; display: flex; gap: 10px;">
+      <div style="margin-top: 25px; display: flex; gap: 12px;">
         <button type="submit"
-          style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Cập
-          nhật</button>
+          style="background: #28a745; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px;">
+          Lưu Cập Nhật
+        </button>
         <a href="/products/manage"
-          style="background: #6c757d; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; display: inline-block;">Hủy
-          bỏ</a>
+          style="background: #6c757d; color: white; padding: 12px 20px; border-radius: 6px; text-decoration: none; display: inline-block; font-size: 14px; font-weight: 500;">
+          Hủy bỏ
+        </a>
       </div>
 
     </form>
   </div>
+
+  <script>
+    function previewEditImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('edit-img-preview');
+          if (img) img.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+  </script>
 
   <%- include('../partials/footer') %>

@@ -26,140 +26,266 @@
             margin-right: 8px;
         }
 
-        .qty-btn {
+        .cart-page-wrapper {
+            max-width: 1000px;
+            margin: 30px auto 60px;
+            padding: 0 15px;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Order Steps */
+        .order-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #999;
+        }
+        .step-item.active {
+            color: #ee4d2d;
+        }
+        .step-circle {
             width: 28px;
             height: 28px;
-            border: 1px solid #ccc;
-            background: #f0f0f0;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 4px;
+            border-radius: 50%;
+            background: #eee;
+            color: #777;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+        .step-item.active .step-circle {
+            background: #ee4d2d;
+            color: #fff;
+        }
+        .step-line {
+            width: 40px;
+            height: 2px;
+            background: #eee;
         }
 
-        .qty-input {
-            width: 50px;
-            height: 28px;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin: 0 4px;
+        .cart-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
 
-        .btn-delete {
-            background: #ff4d4f;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
+        .cart-title {
+            margin: 0 0 20px;
+            font-size: 24px;
+            color: #222;
             display: flex;
             align-items: center;
         }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .qty-btn:hover {
+            background: #e9ecef;
+        }
+
+        .qty-input {
+            width: 45px;
+            height: 32px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin: 0 5px;
+            font-weight: 600;
+        }
+
+        .btn-delete {
+            background: #fff1f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .btn-delete:hover {
+            background: #ff4d4f;
+            color: #fff;
+        }
+
+        /* Empty state */
+        .empty-cart-container {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .empty-cart-icon {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+        .empty-cart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 10px;
+        }
+        .empty-cart-desc {
+            color: #777;
+            font-size: 14.5px;
+            max-width: 400px;
+            margin: 0 auto 25px;
+            line-height: 1.5;
+        }
+        .btn-browse-menu {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff7e5f, #ee4d2d);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            box-shadow: 0 6px 15px rgba(238, 77, 45, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-browse-menu:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(238, 77, 45, 0.4);
+        }
     </style>
 
-    <div
-        style="max-width: 900px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h2><img src="/images/iconsImages/shopping-cart.png" alt="shopping-cart" class="custom-icon-lg"> Giỏ Hàng Của
-            Bạn</h2>
-
-        <% if (cart && cart.items && cart.items.length > 0) { %>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <thead>
-                    <tr style="background: #f8f9fa; border-bottom: 2px solid #dee2e6; text-align: left;">
-                        <th style="padding: 12px;">Món ăn</th>
-                        <th style="padding: 12px;">Đơn giá</th>
-                        <th style="padding: 12px;">Số lượng</th>
-                        <th style="padding: 12px;">Thành tiền</th>
-                        <th style="padding: 12px;">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% let grandTotal = 0; %>
-                        <% cart.items.forEach(item => { %>
-                            <% if (item.productId) { %>
-                                <% const itemTotal = item.productId.price * item.quantity; %>
-                                    <% grandTotal += itemTotal; %>
-                                        <tr style="border-bottom: 1px solid #eee;">
-                                            <td
-                                                style="padding: 12px; display: flex; align-items: flex-start; gap: 12px;">
-                                                <img src="<%= item.productId.imageUrl %>"
-                                                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
-                                                <div style="flex: 1;">
-                                                    <strong style="display: block; margin-bottom: 5px;">
-                                                        <%= item.productId.name %>
-                                                    </strong>
-                                                    <input type="text" class="note-input"
-                                                        data-id="<%= item.productId._id %>"
-                                                        value="<%= item.note || '' %>"
-                                                        placeholder="Ghi chú (VD: Không hành, ít cay...)"
-                                                        style="width: 100%; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; box-sizing: border-box; outline: none;">
-                                                </div>
-                                            </td>
-                                            <td style="padding: 12px;">
-                                                <%= item.productId.price.toLocaleString('vi-VN') %>đ
-                                            </td>
-
-                                            <td style="padding: 12px;">
-                                                <div style="display: flex; align-items: center;">
-                                                    <button type="button" class="qty-btn btn-minus"
-                                                        data-id="<%= item.productId._id %>">-</button>
-
-                                                    <input type="number" class="qty-input"
-                                                        id="qty-<%= item.productId._id %>"
-                                                        data-id="<%= item.productId._id %>"
-                                                        data-price="<%= item.productId.price %>"
-                                                        value="<%= item.quantity %>" min="1" max="999">
-
-                                                    <button type="button" class="qty-btn btn-plus"
-                                                        data-id="<%= item.productId._id %>">+</button>
-                                                </div>
-                                            </td>
-
-                                            <td style="padding: 12px; color: #ee4d2d; font-weight: bold;"
-                                                id="item-total-<%= item.productId._id %>">
-                                                <%= itemTotal.toLocaleString('vi-VN') %>đ
-                                            </td>
-
-                                            <td style="padding: 12px;">
-                                                <button type="button" class="btn-delete"
-                                                    data-id="<%= item.productId._id %>">
-                                                    <img src="/images/iconsImages/bin.png" alt="bin"
-                                                        class="custom-icon"> Xóa
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <% } %>
-                                            <% }) %>
-                </tbody>
-            </table>
-
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px; border-top: 2px solid #eee; padding-top: 20px;">
-                <a href="/" style="color: #ee4d2d; text-decoration: none; font-weight: bold; font-size: 15px;">
-                    ← Tiếp tục khám phá món ngon
-                </a>
-                <div style="text-align: right;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #333;">
-                        Tổng thanh toán:
-                        <span id="grand-total"
-                            style="color: #ee4d2d; font-size: 24px; font-weight: bold; margin-left: 8px;">
-                            <%= grandTotal.toLocaleString('vi-VN') %>đ
-                        </span>
-                    </h3>
-                    <a href="/order/checkout"
-                        style="background: #ee4d2d; color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-block;">
-                        Tiến Hành Đặt Hàng
-                    </a>
-                </div>
+    <div class="cart-page-wrapper">
+        <!-- Progress Steps -->
+        <div class="order-steps">
+            <div class="step-item active">
+                <span class="step-circle">1</span>
+                <span>Giỏ hàng</span>
             </div>
-            <% } else { %>
-                <div style="text-align: center; padding: 40px 0;">
-                    <p style="color: #777; font-size: 16px;">Giỏ hàng của bạn đang trống.</p>
-                    <a href="/"
-                        style="display: inline-block; margin-top: 10px; color: #007bff; text-decoration: none; font-weight: bold;">←
-                        Tiếp tục khám phá món ngon</a>
+            <div class="step-line"></div>
+            <div class="step-item">
+                <span class="step-circle">2</span>
+                <span>Thanh toán</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item">
+                <span class="step-circle">3</span>
+                <span>Hoàn tất</span>
+            </div>
+        </div>
+
+        <div class="cart-card">
+            <h2 class="cart-title">
+                <img src="/images/iconsImages/shopping-cart.png" alt="shopping-cart" class="custom-icon-lg"> Giỏ Hàng Của Bạn
+            </h2>
+
+            <% if (cart && cart.items && cart.items.length > 0) { %>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                        <thead>
+                            <tr style="background: #fafafa; border-bottom: 2px solid #eee; text-align: left; color: #555; font-size: 14px;">
+                                <th style="padding: 14px 12px;">Món ăn</th>
+                                <th style="padding: 14px 12px;">Đơn giá</th>
+                                <th style="padding: 14px 12px;">Số lượng</th>
+                                <th style="padding: 14px 12px;">Thành tiền</th>
+                                <th style="padding: 14px 12px; text-align: center;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% let grandTotal = 0; %>
+                            <% cart.items.forEach(item => { %>
+                                <% if (item.productId) { %>
+                                    <% const itemTotal = item.productId.price * item.quantity; %>
+                                    <% grandTotal += itemTotal; %>
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 14px 12px; display: flex; align-items: center; gap: 14px;">
+                                            <img src="<%= item.productId.imageUrl %>" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
+                                            <div style="flex: 1;">
+                                                <strong style="display: block; font-size: 15px; color: #222; margin-bottom: 6px;">
+                                                    <%= item.productId.name %>
+                                                </strong>
+                                                <input type="text" class="note-input"
+                                                    data-id="<%= item.productId._id %>"
+                                                    value="<%= item.note || '' %>"
+                                                    placeholder="Ghi chú bếp (VD: Không cay, ít đá...)"
+                                                    style="width: 100%; max-width: 280px; padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 12.5px; box-sizing: border-box; outline: none; background: #fafafa;">
+                                            </div>
+                                        </td>
+                                        <td style="padding: 14px 12px; font-size: 15px; color: #444;">
+                                            <%= (Number(item.productId.price) || 0).toLocaleString('vi-VN') %>đ
+                                        </td>
+
+                                        <td style="padding: 14px 12px;">
+                                            <div style="display: flex; align-items: center;">
+                                                <button type="button" class="qty-btn btn-minus" data-id="<%= item.productId._id %>">-</button>
+                                                <input type="number" class="qty-input"
+                                                    id="qty-<%= item.productId._id %>"
+                                                    data-id="<%= item.productId._id %>"
+                                                    data-price="<%= item.productId.price %>"
+                                                    value="<%= item.quantity %>" min="1" max="999">
+                                                <button type="button" class="qty-btn btn-plus" data-id="<%= item.productId._id %>">+</button>
+                                            </div>
+                                        </td>
+
+                                        <td style="padding: 14px 12px; color: #ee4d2d; font-weight: 700; font-size: 15px;" id="item-total-<%= item.productId._id %>">
+                                            <%= itemTotal.toLocaleString('vi-VN') %>đ
+                                        </td>
+
+                                        <td style="padding: 14px 12px; text-align: center;">
+                                            <button type="button" class="btn-delete" data-id="<%= item.productId._id %>" style="margin: 0 auto;">
+                                                <img src="/images/iconsImages/bin.png" alt="bin" class="custom-icon"> Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            <% }) %>
+                        </tbody>
+                    </table>
                 </div>
-                <% } %>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; border-top: 2px solid #f0f0f0; padding-top: 25px; flex-wrap: wrap; gap: 20px;">
+                    <a href="/" style="color: #ee4d2d; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-flex; align-items: center; gap: 6px;">
+                        ← Tiếp tục khám phá món ngon
+                    </a>
+                    <div style="text-align: right;">
+                        <div style="margin-bottom: 12px; font-size: 16px; color: #444;">
+                            Tổng thanh toán:
+                            <span id="grand-total" style="color: #ee4d2d; font-size: 26px; font-weight: 800; margin-left: 8px;">
+                                <%= grandTotal.toLocaleString('vi-VN') %>đ
+                            </span>
+                        </div>
+                        <a href="/order/checkout" style="background: linear-gradient(135deg, #ff7e5f, #ee4d2d); color: white; border: none; padding: 14px 36px; font-size: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-block; box-shadow: 0 6px 15px rgba(238, 77, 45, 0.3);">
+                            Tiến Hành Đặt Hàng →
+                        </a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="empty-cart-container">
+                    <div class="empty-cart-icon">🛒</div>
+                    <h3 class="empty-cart-title">Giỏ hàng của bạn đang trống</h3>
+                    <p class="empty-cart-desc">Có vẻ như bạn chưa chọn món ăn nào. Hãy khám phá thực đơn đa dạng và tận hưởng ưu đãi hôm nay!</p>
+                    <a href="/" class="btn-browse-menu">Khám phá món ngon ngay</a>
+                </div>
+            <% } %>
+        </div>
     </div>
 
     <script>
