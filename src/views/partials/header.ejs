@@ -41,19 +41,20 @@
         </div>
 
         <div class="header-actions">
+          <% if (user && user.role === 'seller') { %>
+            <a href="/add-product" class="btn-add-product desktop-only">➕ <span class="btn-text">Thêm món</span></a>
+          <% } %>
+
+          <a href="/cart" id="cart-icon" class="nav-cart-btn" aria-label="Giỏ hàng">
+            <span class="cart-icon-symbol">🛒</span>
+            <span id="cart-badge" class="cart-badge" style="display: <%= cartItemCount > 0 ? 'inline-flex' : 'none' %>;">
+              <%= cartItemCount %>
+            </span>
+          </a>
+
+          <!-- Desktop User Profile Dropdown -->
           <% if (user) { %>
-            <% if (user.role === 'seller') { %>
-              <a href="/add-product" class="btn-add-product">➕ <span class="btn-text">Thêm món</span></a>
-            <% } %>
-
-            <a href="/cart" id="cart-icon" class="nav-cart-btn" aria-label="Giỏ hàng">
-              <span class="cart-icon-symbol">🛒</span>
-              <span id="cart-badge" class="cart-badge" style="display: <%= cartItemCount > 0 ? 'inline-flex' : 'none' %>;">
-                <%= cartItemCount %>
-              </span>
-            </a>
-
-            <div class="user-dropdown">
+            <div class="user-dropdown desktop-only">
               <button class="btn-user-profile" title="<%= user.fullName || user.name %>">
                 <span class="user-icon">👤</span>
                 <span class="user-name-text"><%= user.fullName || user.name %></span>
@@ -74,10 +75,16 @@
                 <a href="/logout" class="text-danger">Đăng xuất</a>
               </div>
             </div>
-
           <% } else { %>
-            <a href="/login" class="btn-login">Đăng nhập</a>
+            <a href="/login" class="btn-login desktop-only">Đăng nhập</a>
           <% } %>
+
+          <!-- Mobile 3-Bar Hamburger Menu Button -->
+          <button type="button" class="btn-hamburger mobile-only" id="btn-hamburger" onclick="toggleMobileMenu()" aria-label="Menu tài khoản">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </button>
         </div>
       </div> 
 
@@ -92,7 +99,64 @@
     </div> 
   </header>
 
+  <!-- Mobile Slide-out Menu Drawer -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+  <aside class="mobile-menu-drawer" id="mobile-menu-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <a href="/" class="logo">Food<span>Eats</span></a>
+      <button type="button" class="btn-close-drawer" onclick="toggleMobileMenu()" aria-label="Đóng menu">✕</button>
+    </div>
+
+    <% if (user) { %>
+      <div class="drawer-user-card">
+        <div class="drawer-avatar">👤</div>
+        <div class="drawer-user-info">
+          <strong class="drawer-user-name"><%= user.fullName || user.name %></strong>
+          <span class="drawer-role-badge"><%= user.role === 'seller' ? '🏪 Cửa hàng' : 'Thành viên' %></span>
+        </div>
+      </div>
+
+      <nav class="drawer-menu-links">
+        <a href="/" class="drawer-link"><span class="drawer-icon">🏠</span> Trang chủ</a>
+        <a href="/profile" class="drawer-link"><span class="drawer-icon">👤</span> Hồ sơ cá nhân</a>
+        <% if (user.role === 'seller') { %>
+          <a href="/products/manage" class="drawer-link"><span class="drawer-icon">📦</span> Quản lý món ăn</a>
+          <a href="/order/store-orders" class="drawer-link"><span class="drawer-icon">📋</span> Quản lý đơn hàng</a>
+          <a href="/add-product" class="drawer-link"><span class="drawer-icon">➕</span> Đăng món mới</a>
+        <% } else { %>
+          <a href="/cart" class="drawer-link"><span class="drawer-icon">🛒</span> Giỏ hàng của tôi</a>
+          <a href="/profile" class="drawer-link"><span class="drawer-icon">🧾</span> Lịch sử đơn hàng</a>
+        <% } %>
+        <a href="/location" class="drawer-link"><span class="drawer-icon">📍</span> Đổi địa chỉ giao hàng</a>
+        <div class="drawer-divider"></div>
+        <a href="/logout" class="drawer-link text-danger"><span class="drawer-icon">🚪</span> Đăng xuất</a>
+      </nav>
+    <% } else { %>
+      <div class="drawer-guest-box">
+        <p>Đăng nhập để đặt món và nhận ngập tràn ưu đãi hôm nay!</p>
+        <div class="drawer-auth-buttons">
+          <a href="/login" class="btn-drawer-login">Đăng nhập</a>
+          <a href="/register" class="btn-drawer-register">Đăng ký</a>
+        </div>
+      </div>
+      <nav class="drawer-menu-links">
+        <a href="/" class="drawer-link"><span class="drawer-icon">🏠</span> Trang chủ</a>
+        <a href="/location" class="drawer-link"><span class="drawer-icon">📍</span> Chọn địa chỉ giao hàng</a>
+      </nav>
+    <% } %>
+  </aside>
+
   <script>
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobile-menu-drawer');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      if (drawer && overlay) {
+        drawer.classList.toggle('open');
+        overlay.classList.toggle('show');
+        document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const addressEl = document.getElementById('navbar-address');
       if (!addressEl) return;
