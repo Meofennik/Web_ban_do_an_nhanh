@@ -38,6 +38,10 @@ app.use(async (req, res, next) => {
   res.locals.user = req.session ? req.session.user : null;
   res.locals.cartItemCount = 0; 
 
+  // Full header only on homepage and search results page
+  const currentUrl = req.originalUrl || req.url || '';
+  res.locals.showFullHeader = (currentUrl === '/' || currentUrl === '/products' || currentUrl === '/products/' || currentUrl.startsWith('/products/search'));
+
   if (req.session && req.session.user) {
     try {
       const currentUserId = req.session.user._id || req.session.user.id;

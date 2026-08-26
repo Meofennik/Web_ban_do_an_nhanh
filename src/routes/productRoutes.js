@@ -25,6 +25,110 @@ const requireSeller = (req, res, next) => {
     next();
 };
 
+const { makeVietnameseRegex, calculateRelevanceScore } = require('../utils/searchHelper');
+
+const ALL_CATEGORIES = [
+  'Đồ ăn nhanh',
+  'Đồ uống',
+  'Combo Tiết kiệm',
+  'Ăn vặt & Tráng miệng',
+  'Cơm văn phòng',
+  'Cơm gia đình',
+  'Món nước',
+  'Đồ chay & Healthy',
+  'Ăn đêm',
+  'Thuốc & Tiện lợi'
+];
+
+// Live Autocomplete / Instant Search API
+router.get('/api/search', async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim();
+    if (!q) {
+      // Return top 5 popular available products if empty query
+      const topProducts = await Product.find({ isAvailable: true }).limit(5).select('name price imageUrl category storeName');
+      return res.json({ success: true, count: topProducts.length, data: topProducts });
+    }
+
+    const regex = makeVietnameseRegex(q);
+    const matchedProducts = await Product.find({
+      isAvailable: true,
+      $or: [
+        { name: regex },
+        { category: regex },
+        { storeName: regex },
+        { description: regex }
+      ]
+    }).select('name price imageUrl category storeName description');
+
+    // Sort by algorithmic relevance score
+    matchedProducts.sort((a, b) => {
+      const scoreB = calculateRelevanceScore(b, q);
+      const scoreA = calculateRelevanceScore(a, q);
+      return scoreB - scoreA;
+    });
+
+    // Take top 8 matches for the live dropdown
+    const results = matchedProducts.slice(0, 8);
+    res.json({ success: true, count: results.length, totalMatched: matchedProducts.length, data: results });
+  } catch (error) {
+    console.error('Lỗi API Search:', error);
+    res.status(500).json({ success: false, message: 'Lỗi tìm kiếm sản phẩm' });
+  }
+});
+
+// Full Search Results Page
+router.get('/search', async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim();
+    const sort = req.query.sort || 'relevance';
+    const category = req.query.category || 'all';
+
+    let filter = { isAvailable: true };
+    if (category && category !== 'all') {
+      filter.category = category;
+    }
+
+    let products = [];
+    if (q) {
+      const regex = makeVietnameseRegex(q);
+      filter.$or = [
+        { name: regex },
+        { category: regex },
+        { storeName: regex },
+        { description: regex }
+      ];
+      products = await Product.find(filter);
+
+      if (sort === 'relevance') {
+        products.sort((a, b) => calculateRelevanceScore(b, q) - calculateRelevanceScore(a, q));
+      }
+    } else {
+      products = await Product.find(filter);
+    }
+
+    if (sort === 'price_asc') {
+      products.sort((a, b) => a.price - b.price);
+    } else if (sort === 'price_desc') {
+      products.sort((a, b) => b.price - a.price);
+    } else if (sort === 'newest') {
+      products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    res.render('pages/search-results', {
+      query: q,
+      products: products,
+      currentSort: sort,
+      currentCategory: category,
+      allCategories: ALL_CATEGORIES,
+      totalCount: products.length
+    });
+  } catch (error) {
+    console.error('Lỗi trang tìm kiếm:', error);
+    res.status(500).send('Lỗi máy chủ khi tìm kiếm sản phẩm');
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     const allProducts = await Product.find({ isAvailable: true }).sort({ createdAt: -1 });
@@ -49,7 +153,7 @@ router.get('/', async (req, res) => {
 router.get('/manage', requireSeller, async (req, res) => {
   try {
     const myProducts = await Product.find({ ownerId: req.session.user.id }).sort({ createdAt: -1 });
-    res.render('pages/manage', { products: myProducts });
+    res.render('pages/manage', { products: myProducts, minimalHeader: true });
   } catch (error) {
     res.status(500).send('Lỗi tải trang quản lý');
   }
@@ -60,7 +164,7 @@ router.get('/edit/:id', requireSeller, async (req, res) => {
     const product = await Product.findOne({ _id: req.params.id, ownerId: req.session.user.id });
     if (!product) return res.status(403).send('Không tìm thấy sản phẩm!');
     
-    res.render('pages/edit-product', { product: product });
+    res.render('pages/edit-product', { product: product, minimalHeader: true });
   } catch (error) {
     res.status(500).send('Lỗi máy chủ');
   }

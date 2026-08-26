@@ -1,0 +1,414 @@
+<%- include('../partials/header', { showFullHeader: true }) %>
+
+<style>
+  .search-results-page {
+    max-width: 1200px;
+    margin: 25px auto 60px;
+    padding: 0 16px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .search-header-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 22px 26px;
+    color: #fff;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  }
+
+  .search-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .search-headline {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+  }
+  .search-headline span {
+    color: #ffd32a;
+  }
+
+  .search-count-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+
+  /* Filters & Sorters */
+  .search-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .category-filter-select,
+  .sort-filter-select {
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+  }
+  .category-filter-select option,
+  .sort-filter-select option {
+    background: #222;
+    color: #fff;
+  }
+
+  /* Product Grid */
+  .search-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 20px;
+  }
+
+  .search-food-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.35s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .search-food-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 16px 35px rgba(0,0,0,0.3);
+  }
+
+  .card-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .search-food-card:hover .card-img-wrapper img {
+    transform: scale(1.06);
+  }
+
+  .card-category-tag {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+  }
+
+  .search-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 10px 0 4px 0;
+    color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 38px;
+    line-height: 1.3;
+  }
+
+  .search-card-store {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .search-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .search-card-price {
+    color: #ff6b6b;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .btn-search-add-cart {
+    background: linear-gradient(135deg, #ff6b6b, #ee4d2d);
+    color: #fff;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(238, 77, 45, 0.35);
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .btn-search-add-cart:hover {
+    transform: scale(1.18) rotate(90deg);
+  }
+
+  /* Empty State */
+  .search-empty-box {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    border-radius: 16px;
+    padding: 60px 20px;
+    text-align: center;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .search-empty-icon {
+    font-size: 55px;
+    margin-bottom: 15px;
+  }
+  .search-empty-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .search-empty-desc {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+    max-width: 420px;
+    margin: 0 auto 20px;
+    line-height: 1.5;
+  }
+  .btn-back-home-search {
+    background: #ee4d2d;
+    color: #fff;
+    padding: 11px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-block;
+    box-shadow: 0 4px 14px rgba(238, 77, 45, 0.4);
+    transition: transform 0.2s;
+  }
+  .btn-back-home-search:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .search-results-page {
+      margin: 15px auto 40px;
+      padding: 0 12px;
+    }
+    .search-header-card {
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+    .search-headline {
+      font-size: 17px;
+    }
+    .search-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .category-filter-select,
+    .sort-filter-select {
+      width: 100%;
+    }
+    .search-product-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .search-food-card {
+      padding: 8px;
+      border-radius: 12px;
+    }
+    .card-img-wrapper {
+      height: 105px;
+      border-radius: 8px;
+    }
+    .search-card-title {
+      font-size: 12.5px;
+      height: 32px;
+      margin: 6px 0 2px 0;
+    }
+    .search-card-store {
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .search-card-price {
+      font-size: 14px;
+    }
+    .btn-search-add-cart {
+      width: 28px;
+      height: 28px;
+      font-size: 15px;
+    }
+  }
+</style>
+
+<div class="search-results-page">
+  <!-- Search Header Card -->
+  <div class="search-header-card">
+    <div class="search-title-row">
+      <h1 class="search-headline">
+        <% if (query) { %>
+          Kết quả tìm kiếm cho: "<span><%= query %></span>"
+        <% } else { %>
+          Tất cả món ăn thơm ngon tại <span>FoodEats</span>
+        <% } %>
+      </h1>
+      <span class="search-count-badge">🔍 <%= totalCount %> món ăn</span>
+    </div>
+
+    <!-- Filter & Sort Bar -->
+    <div class="search-controls">
+      <div style="display: flex; gap: 10px; flex: 1; flex-wrap: wrap;">
+        <select class="category-filter-select" id="catFilter" onchange="applyFilters()">
+          <option value="all" <%= currentCategory === 'all' ? 'selected' : '' %>>Tất cả danh mục</option>
+          <% allCategories.forEach(cat => { %>
+            <option value="<%= cat %>" <%= currentCategory === cat ? 'selected' : '' %>><%= cat %></option>
+          <% }) %>
+        </select>
+
+        <select class="sort-filter-select" id="sortFilter" onchange="applyFilters()">
+          <option value="relevance" <%= currentSort === 'relevance' ? 'selected' : '' %>>Độ liên quan nhất</option>
+          <option value="price_asc" <%= currentSort === 'price_asc' ? 'selected' : '' %>>Giá: Thấp đến Cao</option>
+          <option value="price_desc" <%= currentSort === 'price_desc' ? 'selected' : '' %>>Giá: Cao đến Thấp</option>
+          <option value="newest" <%= currentSort === 'newest' ? 'selected' : '' %>>Mới nhất hôm nay</option>
+        </select>
+      </div>
+
+      <% if (query || currentCategory !== 'all' || currentSort !== 'relevance') { %>
+        <a href="/products/search" style="color: #ffd32a; text-decoration: none; font-size: 13px; font-weight: 600;">
+          ↺ Xóa tất cả bộ lọc
+        </a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Results Grid -->
+  <% if (products && products.length > 0) { %>
+    <div class="search-product-grid">
+      <% products.forEach(product => { %>
+        <div class="search-food-card" onclick="location.href='/products/<%= product._id %>'" style="cursor: pointer;">
+          <div class="card-img-wrapper">
+            <img src="<%= product.imageUrl %>" alt="<%= product.name %>" loading="lazy">
+            <span class="card-category-tag"><%= product.category %></span>
+          </div>
+
+          <h3 class="search-card-title"><%= product.name %></h3>
+          <p class="search-card-store">📍 <%= product.storeName %></p>
+
+          <div class="search-card-bottom">
+            <span class="search-card-price"><%= Number(product.price).toLocaleString('vi-VN') %>đ</span>
+            <button type="button" class="btn-search-add-cart" onclick="event.stopPropagation(); addToCartSearch('<%= product._id %>', this)" title="Thêm vào giỏ">
+              +
+            </button>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <!-- Empty State -->
+    <div class="search-empty-box">
+      <div class="search-empty-icon">🍽️</div>
+      <h2 class="search-empty-title">Không tìm thấy món ăn phù hợp</h2>
+      <p class="search-empty-desc">
+        Rất tiếc, chúng tôi không tìm thấy kết quả nào cho từ khóa "<strong><%= query %></strong>". Hãy thử tìm kiếm với từ khóa khác như <em>trà sữa, gà rán, cơm, bún bò...</em>
+      </p>
+      <a href="/products" class="btn-back-home-search">Khám phá thực đơn hôm nay</a>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  function applyFilters() {
+    const cat = document.getElementById('catFilter').value;
+    const sort = document.getElementById('sortFilter').value;
+    const currentQ = encodeURIComponent('<%= query %>');
+    window.location.href = `/products/search?q=${currentQ}&category=${encodeURIComponent(cat)}&sort=${encodeURIComponent(sort)}`;
+  }
+
+  async function addToCartSearch(productId, btnElement) {
+    try {
+      const originalText = btnElement.innerHTML;
+      btnElement.disabled = true;
+      btnElement.innerHTML = '✓';
+
+      const response = await fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId: productId, quantity: 1 })
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        const badge = document.getElementById('cart-badge');
+        if (badge) {
+          badge.textContent = data.totalItems || data.cartItemCount || 1;
+          badge.style.display = 'inline-flex';
+        }
+        if (typeof showToast === 'function') {
+          showToast('Đã thêm món vào giỏ hàng thành công!', 'success');
+        }
+      } else {
+        if (typeof showToast === 'function') {
+          showToast(data.message || 'Không thể thêm vào giỏ!', 'warning');
+        }
+      }
+
+      setTimeout(() => {
+        btnElement.disabled = false;
+        btnElement.innerHTML = originalText;
+      }, 700);
+    } catch (err) {
+      console.error(err);
+      if (typeof showToast === 'function') {
+        showToast('Lỗi khi thêm vào giỏ!', 'warning');
+      }
+    }
+  }
+</script>
+
+<%- include('../partials/footer') %>
+

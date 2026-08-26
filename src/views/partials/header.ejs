@@ -29,20 +29,27 @@
 </style>
 <body>
 
-  <header class="navbar">
-    <div class="nav-container">
+<% const isFull = (typeof showFullHeader !== 'undefined' && showFullHeader && (typeof minimalHeader === 'undefined' || !minimalHeader)); %>
+  <header class="navbar <%= !isFull ? 'navbar-minimal' : '' %>">
+    <div class="nav-container <%= !isFull ? 'nav-container-minimal' : '' %>">
       
-      <div class="nav-top">
+      <!-- Row 1: Logo left, Cart + Hamburger right -->
+      <div class="nav-top-bar">
         <a href="/" class="logo">Food<span>Eats</span></a>
 
-        <div class="search-box">
-          <input id="global-search" type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
-          <button class="btn-search" aria-label="Tìm kiếm"><img src="/images/iconsImages/search-interface-symbol.png" alt="search" class="custom-icon"></button>
-        </div>
+        <% if (isFull) { %>
+          <!-- Desktop Search Bar (Only on Homepage & Search results) -->
+          <div class="search-box desktop-search desktop-only">
+            <input id="global-search" type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
+            <button class="btn-search" aria-label="Tìm kiếm"><img src="/images/iconsImages/search-interface-symbol.png" alt="search" class="custom-icon"></button>
+          </div>
+        <% } %>
 
         <div class="header-actions">
-          <% if (user && user.role === 'seller') { %>
-            <a href="/add-product" class="btn-add-product desktop-only">➕ <span class="btn-text">Thêm món</span></a>
+          <% if (isFull) { %>
+            <% if (user && user.role === 'seller') { %>
+              <a href="/add-product" class="btn-add-product desktop-only">➕ <span class="btn-text">Thêm món</span></a>
+            <% } %>
           <% } %>
 
           <a href="/cart" id="cart-icon" class="nav-cart-btn" aria-label="Giỏ hàng">
@@ -52,49 +59,67 @@
             </span>
           </a>
 
-          <!-- Desktop User Profile Dropdown -->
-          <% if (user) { %>
-            <div class="user-dropdown desktop-only">
-              <button class="btn-user-profile" title="<%= user.fullName || user.name %>">
-                <span class="user-icon">👤</span>
-                <span class="user-name-text"><%= user.fullName || user.name %></span>
-              </button>
-              <div class="dropdown-content">
-                <div class="user-info-box">
-                  <p><strong><%= user.fullName || user.name %></strong></p>
-                  <p class="role-badge"><%= user.role === 'seller' ? 'Cửa hàng' : 'Thành viên' %></p>
+          <% if (isFull) { %>
+            <!-- Desktop User Profile Dropdown -->
+            <% if (user) { %>
+              <div class="user-dropdown desktop-only">
+                <button class="btn-user-profile" title="<%= user.fullName || user.name %>">
+                  <span class="user-icon">👤</span>
+                  <span class="user-name-text"><%= user.fullName || user.name %></span>
+                </button>
+                <div class="dropdown-content">
+                  <div class="user-info-box">
+                    <p><strong><%= user.fullName || user.name %></strong></p>
+                    <p class="role-badge"><%= user.role === 'seller' ? 'Cửa hàng' : 'Thành viên' %></p>
+                  </div>
+                  <hr>
+                  <a href="/profile">Hồ sơ cá nhân</a>
+                  <% if (user.role === 'seller') { %>
+                    <a href="/products/manage">Quản lý sản phẩm</a>
+                    <a href="/order/store-orders" class="dropdown-item">Quản lý đơn đặt hàng</a>
+                  <% } else { %>
+                    <a href="/cart">🛒 Đơn hàng của tôi</a>
+                  <% } %>
+                  <a href="/logout" class="text-danger">Đăng xuất</a>
                 </div>
-                <hr>
-                <a href="/profile">Hồ sơ cá nhân</a>
-                <% if (user.role === 'seller') { %>
-                  <a href="/products/manage">Quản lý sản phẩm</a>
-                  <a href="/order/store-orders" class="dropdown-item">Quản lý đơn đặt hàng</a>
-                <% } else { %>
-                  <a href="/cart">🛒 Đơn hàng của tôi</a>
-                <% } %>
-                <a href="/logout" class="text-danger">Đăng xuất</a>
               </div>
-            </div>
-          <% } else { %>
-            <a href="/login" class="btn-login desktop-only">Đăng nhập</a>
-          <% } %>
+            <% } else { %>
+              <a href="/login" class="btn-login desktop-only">Đăng nhập</a>
+            <% } %>
 
-          <!-- Mobile 3-Bar Hamburger Menu Button -->
-          <button type="button" class="btn-hamburger mobile-only" id="btn-hamburger" onclick="toggleMobileMenu()" aria-label="Menu tài khoản">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </button>
+            <!-- Mobile 3-Bar Hamburger Menu Button -->
+            <button type="button" class="btn-hamburger mobile-only" id="btn-hamburger" onclick="toggleMobileMenu()" aria-label="Menu tài khoản">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </button>
+          <% } else { %>
+            <!-- For secondary pages (manage, profile, orders, cart, checkout, etc.), ONLY show 3-line Hamburger Menu Button -->
+            <button type="button" class="btn-hamburger" id="btn-hamburger" onclick="toggleMobileMenu()" aria-label="Menu điều hướng" title="Menu điều hướng & tài khoản">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </button>
+          <% } %>
         </div>
       </div> 
 
-      <div class="nav-bottom">
-        <div class="nav-location">
-          <a href="/location" class="location-display">
-            <img src="/images/iconsImages/placeholder.png" alt="placeholder" class="custom-icon-lg"> <span id="navbar-address">Giao đến: Nhấn để chọn địa điểm</span>
-          </a>
+      <% if (isFull) { %>
+        <!-- Mobile Search Bar (Row 2 - Only on main browsing pages) -->
+        <div class="search-box mobile-search mobile-only">
+          <input id="mobile-global-search" type="text" placeholder="Tìm món ăn, quán ăn, trà sữa...">
+          <button class="btn-search" aria-label="Tìm kiếm"><img src="/images/iconsImages/search-interface-symbol.png" alt="search" class="custom-icon"></button>
         </div>
-      </div>
+
+        <!-- Row 3: Location (Only on main browsing pages) -->
+        <div class="nav-bottom">
+          <div class="nav-location">
+            <a href="/location" class="location-display">
+              <img src="/images/iconsImages/placeholder.png" alt="placeholder" class="custom-icon-lg"> <span id="navbar-address">Giao đến: Nhấn để chọn địa điểm</span>
+            </a>
+          </div>
+        </div>
+      <% } %>
 
     </div> 
   </header>

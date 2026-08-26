@@ -1,21 +1,15 @@
-<!DOCTYPE html>
-<html lang="vi">
+<%- include('../partials/header', { minimalHeader: true }) %>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thêm món ăn mới</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <style>
-    .fixed-video-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      pointer-events: none;
-    }
+<style>
+  .fixed-video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+  }
 
     .fixed-video-background video {
       width: 100%;
@@ -339,6 +333,5 @@
       }
     }
   </script>
-</body>
 
-</html>
+<%- include('../partials/footer') %>

@@ -52,7 +52,7 @@ router.get('/', async (req, res) => {
 
     const cart = await Cart.findOne({ userId: req.session.user.id }).populate('items.productId');
 
-    res.render('pages/cart', { cart: cart || { items: [] } });
+    res.render('pages/cart', { cart: cart || { items: [] }, minimalHeader: true });
   } catch (error) {
     console.error('Lỗi tải giỏ hàng:', error);
     res.status(500).send('Lỗi máy chủ khi tải giỏ hàng');

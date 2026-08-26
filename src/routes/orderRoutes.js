@@ -19,7 +19,8 @@ router.get('/checkout', async (req, res) => {
 
     res.render('pages/checkout', { 
       cart: cart,
-      user: req.session.user 
+      user: req.session.user,
+      minimalHeader: true
     });
 
   } catch (error) {
@@ -113,7 +114,7 @@ router.get('/store-orders', async (req, res) => {
             'items.productId': { $in: myProductIds }
         }).sort({ createdAt: -1 });
 
-        res.render('pages/store-orders', { orders: storeOrders });
+        res.render('pages/store-orders', { orders: storeOrders, minimalHeader: true });
 
     } catch (error) {
         console.error('Lỗi tải trang quản lý đơn hàng:', error);

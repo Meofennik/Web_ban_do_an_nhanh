@@ -21,7 +21,8 @@ router.get('/', async (req, res) => {
 
         res.render('pages/profile', { 
             userInfo: user, 
-            orders: myOrders 
+            orders: myOrders,
+            minimalHeader: true
         });
     } catch (error) {
         console.error('Lỗi tải hồ sơ:', error);
